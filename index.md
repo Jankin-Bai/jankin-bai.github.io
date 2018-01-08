@@ -11,12 +11,10 @@
 ### SuperNova
 ####  _《机甲大师》片首曲_
 
-<embed src="https://imgcache.qq.com/tencentvideo_v1/playerv3/TPout.swf?max_age=86400&v=20161117&vid=w0556hw2eb0&auto=0" allowFullScreen="true" quality="high" width="500" height="400" align="middle" allowScriptAccess="always" type="application/x-shockwave-flash">
 
 ```
-《机甲大师》是由RoboMasters组委会[1]  企划，深圳市大疆创新科技有限公司出品，
+《机甲大师》是由RoboMasters组委会企划，深圳市大疆创新科技有限公司出品，
           日本动画公司DandeLion Animation Studio和GONZO共同制作的原创电视动画。
-
 ```
 
 
