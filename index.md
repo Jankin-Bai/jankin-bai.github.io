@@ -1,4 +1,4 @@
-## Welcome to GitHub Pages
+## Welcome to Jankin-Bai'S Blog
 
 You can use the [editor on GitHub](https://github.com/Jankin-Bai/Jankin-Bai.github.io/edit/master/index.md) to maintain and preview the content for your website in Markdown files.
 
