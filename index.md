@@ -11,6 +11,8 @@
 ### SuperNova
 ####  _《机甲大师》片首曲_
 
+<embed src="http://static.video.qq.com/TencentPlayer.swf?vid=w0556hw2eb0&amp;auto=0&amp;outhost=http://cf.qq.com/" type="application/x-shockwave-flash" width="657" height="450" quality="high" allowfullscreen="true">
+
 
 
 <embed src="http://imgcache.qq.com/tencentvideo_v1/player/TPout.swf?Aautoplay=1&outhost=http://cf.qq.com/&skin=http://imgcache.qq.com/minivideo_v1/vd/res/skins/TencentPlayerMiniSkin.swf&vid=w0556hw2eb0" allowFullScreen="true" quality="high" width="480" height="400" align="middle" allowScriptAccess="always" type="application/x-shockwave-flash">
