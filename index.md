@@ -1,6 +1,6 @@
-## 还没写什么，先听听歌吧。ฅ(⌯͒• ɪ •⌯͒)ฅ❣(=^.^=)
+## 还没写什么，先听听歌吧。ฅ(⌯͒• ɪ •⌯͒)ฅ❣(=^.^=)...
 
-## [Maps](https://github.com/Jankin-Bai/Bookmarks/blob/master/README/)
+## [Maps](/Maps/)
 
 ### 你
 ####  **RoboMaster EP**
