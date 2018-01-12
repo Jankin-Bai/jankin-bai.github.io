@@ -21,6 +21,6 @@
 ####  **JankinBai**
 
 
-<embed src="http://www.xiami.com/widget/232376656_V_L_collect/wallPlayer.swf" type="application/x-shockwave-flash" width="227" height="627" wmode="transparent">
+<embed src="http://www.xiami.com/widget/232376656_275677117_235_346_e29833_60362a_0/collectPlayer.swf" type="application/x-shockwave-flash" width="235" height="346" wmode="opaque">
 
 #### 73!
