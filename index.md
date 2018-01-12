@@ -1,10 +1,12 @@
 ## ฅ(⌯͒• ɪ •⌯͒)ฅ❣(.=^・ェ・^=)
 
-## [Maps](/maps/)
+## [Maps](http://jankinbai.icoc.in)
 
 
+### 山丘
+####  **李宗盛**
 
-
+<embed src="http://www.xiami.com/widget/232376656_1772001102/singlePlayer.swf" type="application/x-shockwave-flash" width="257" height="33" wmode="transparent">
 
 ### A
 ####  **BH9DDI**
@@ -19,4 +21,3 @@
 
 #### 73!
 
-<embed src="http://www.xiami.com/widget/232376656_1776033790/singlePlayer.swf" type="application/x-shockwave-flash" width="330" height="33" wmode="transparent">
