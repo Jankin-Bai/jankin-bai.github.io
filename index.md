@@ -5,12 +5,12 @@
 ### 你
 ####  **RoboMaster EP**
 
-<embed src="//music.163.com/style/swf/widget.swf?sid=518895890&type=2&auto=1&width=320&height=66" width="330" height="86"  allowNetworking="all">
+<embed src="//music.163.com/style/swf/widget.swf?sid=518895890&type=2&auto=1&width=320&height=66" width="340" height="86"  allowNetworking="all">
 
 ### SUPERNOVA
 ####  **RoboMaster OP**
 
-<embed src="//music.163.com/style/swf/widget.swf?sid=909799896&type=3&auto=0&width=320&height=66" width="330" height="86"  allowNetworking="all">
+<embed src="//music.163.com/style/swf/widget.swf?sid=909799896&type=3&auto=0&width=320&height=66" width="340" height="86"  allowNetworking="all">
 
 ### 我的歌单
 ####  **BH9DDI**
