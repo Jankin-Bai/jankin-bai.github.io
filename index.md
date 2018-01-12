@@ -13,6 +13,6 @@
 ####  **JankinBai**
 
 
-<embed src="http://www.xiami.com/widget/232376656_275677117_235_346_e29833_60362a_0/collectPlayer.swf" type="application/x-shockwave-flash" width="330" height="450" wmode="opaque">
+<embed src="http://www.xiami.com/widget/232376656_275677117_330_450_e29833_60362a_0/collectPlayer.swf" type="application/x-shockwave-flash" width="330" height="450" wmode="opaque">
 
 #### 73!
