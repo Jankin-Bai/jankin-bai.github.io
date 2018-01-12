@@ -2,7 +2,7 @@
 
 ## [Maps](http://jankinbai.icoc.in)
 
-<img src="//img.hb.aicdn.com/92d200c93e1d2a3999ada769ac897be00745ec442273d-RH0Gr9_fw658" width="567" height="850" alt="" data-baiduimageplus-ignore="1">
+<img id="zoomr_img" src="//img.hb.aicdn.com/92d200c93e1d2a3999ada769ac897be00745ec442273d-RH0Gr9" width="567" height="850" alt="采集图片" data-baiduimageplus-ignore="1">
 
 ### 山丘
 ####  **李宗盛**
