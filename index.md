@@ -1,4 +1,4 @@
-## ฅ(⌯͒• ɪ •⌯͒)ฅ❣(.=^・ェ・^=)
+## JankinBai's  Blog
 
 ## [Maps](http://jankinbai.icoc.in)
 
