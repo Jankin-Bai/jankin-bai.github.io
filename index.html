@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jankin的技术笔记</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #9b59b6;
+            --background-color: #f8f9fa;
+            --text-color: #333;
+            --border-color: #e1e4e8;
+            --code-bg: #f6f8fa;
+            --sidebar-bg: #fff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 20px;
+            min-height: 100vh;
+        }
+
+        header {
+            grid-column: 1 / -1;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            margin-bottom: 20px;
+            background: linear-gradient(120deg, var(--primary-color), var(--accent-color));
+            color: white;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .sidebar {
+            background: var(--sidebar-bg);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        .repo-info {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .repo-info h3 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .repo-link {
+            display: inline-block;
+            background: var(--secondary-color);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .repo-link:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .stats {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .search-box {
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        .file-list {
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .folder {
+            margin-bottom: 10px;
+        }
+
+        .folder-header {
+            padding: 10px;
+            background: var(--background-color);
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+            color: var(--primary-color);
+            transition: all 0.3s;
+        }
+
+        .folder-header:hover {
+            background: #e9ecef;
+        }
+
+        .folder-icon {
+            margin-right: 8px;
+            transition: transform 0.3s;
+        }
+
+        .folder.open .folder-icon {
+            transform: rotate(90deg);
+        }
+
+        .folder-content {
+            padding-left: 20px;
+            display: none;
+        }
+
+        .folder.open .folder-content {
+            display: block;
+        }
+
+        .file-item {
+            padding: 10px 10px 10px 25px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .file-item:hover {
+            background: var(--background-color);
+        }
+
+        .file-item.active {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        .file-icon {
+            margin-right: 8px;
+            opacity: 0.7;
+        }
+
+        .content {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            min-height: 80vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .content-title {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+            margin: 0;
+            word-break: break-all;
+        }
+
+        .breadcrumb {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .breadcrumb a {
+            color: var(--secondary-color);
+            text-decoration: none;
+        }
+
+        .back-to-list {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .back-to-list:hover {
+            background: #8e44ad;
+        }
+
+        .markdown-body {
+            font-size: 16px;
+            line-height: 1.7;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .markdown-body h1 {
+            font-size: 2.2em;
+            margin-top: 0;
+            padding-bottom: 0.3em;
+            border-bottom: 2px solid var(--border-color);
+            color: var(--primary-color);
+        }
+
+        .markdown-body h2 {
+            font-size: 1.8em;
+            margin-top: 1.5em;
+            margin-bottom: 0.8em;
+            color: var(--primary-color);
+        }
+
+        .markdown-body h3 {
+            font-size: 1.4em;
+            margin-top: 1.2em;
+            margin-bottom: 0.6em;
+            color: var(--primary-color);
+        }
+
+        .markdown-body p {
+            margin-bottom: 1.2em;
+        }
+
+        .markdown-body ul, 
+        .markdown-body ol {
+            padding-left: 2em;
+            margin-bottom: 1.2em;
+        }
+
+        .markdown-body li {
+            margin-bottom: 0.5em;
+        }
+
+        .markdown-body blockquote {
+            padding: 0.8em 1.2em;
+            background: var(--background-color);
+            border-left: 4px solid var(--secondary-color);
+            margin-bottom: 1.2em;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .markdown-body code {
+            padding: 0.2em 0.4em;
+            background-color: var(--code-bg);
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        .markdown-body pre {
+            padding: 1.2em;
+            overflow-x: auto;
+            background-color: var(--code-bg);
+            border-radius: 6px;
+            margin-bottom: 1.2em;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .markdown-body pre code {
+            padding: 0;
+            background: transparent;
+        }
+
+        .markdown-body table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 1.2em;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .markdown-body table th,
+        .markdown-body table td {
+            padding: 10px 15px;
+            border: 1px solid var(--border-color);
+        }
+
+        .markdown-body table th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 600;
+        }
+
+        .markdown-body table tr:nth-child(even) {
+            background-color: var(--background-color);
+        }
+
+        .markdown-body img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 6px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin: 1em 0;
+        }
+
+        .welcome-message {
+            text-align: center;
+            padding: 40px 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .welcome-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: var(--secondary-color);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px 20px;
+            color: #666;
+        }
+
+        .error {
+            color: #e74c3c;
+            padding: 15px;
+            background: #ffeaea;
+            border-radius: 6px;
+            margin: 15px 0;
+        }
+
+        footer {
+            grid-column: 1 / -1;
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                position: static;
+                margin-bottom: 20px;
+                max-height: 40vh;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            header {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .content-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .back-to-list {
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Jankin的技术笔记</h1>
+            <p class="subtitle">知识整理与分享</p>
+        </header>
+
+        <aside class="sidebar">
+            <div class="repo-info">
+                <h3>笔记仓库</h3>
+                <p>ClassNotes 仓库</p>
+                <a href="https://github.com/Jankin-Bai/ClassNotes" class="repo-link" target="_blank">查看GitHub仓库</a>
+                <div class="stats" id="stats">加载中...</div>
+            </div>
+            
+            <div class="search-box">
+                <input type="text" id="search-input" class="search-input" placeholder="搜索笔记...">
+            </div>
+            
+            <div id="file-list" class="file-list">
+                <div class="loading">加载笔记列表中...</div>
+            </div>
+        </aside>
+
+        <main class="content">
+            <div class="content-header">
+                <div>
+                    <div class="breadcrumb" id="breadcrumb">首页</div>
+                    <h2 class="content-title" id="content-title">欢迎</h2>
+                </div>
+                <button id="back-to-list" class="back-to-list" style="display: none;">返回列表</button>
+            </div>
+            
+            <div id="content-area">
+                <div class="welcome-message">
+                    <div class="welcome-icon">📚</div>
+                    <h2>欢迎访问我的技术笔记</h2>
+                    <p>这里展示了我整理的各类技术笔记和文档。</p>
+                    <p>请从左侧选择一篇笔记开始阅读。</p>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>Powered by GitHub Pages | 笔记仓库: <a href="https://github.com/Jankin-Bai/ClassNotes" target="_blank">Jankin-Bai/ClassNotes</a></p>
+        </footer>
+    </div>
+
+    <!-- 使用marked.js进行Markdown解析 -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    
+    <script>
+        // 配置marked.js
+        marked.setOptions({
+            highlight: function(code, lang) {
+                // 简单的代码高亮实现
+                return '<pre><code class="language-' + lang + '">' + code + '</code></pre>';
+            },
+            breaks: true,
+            gfm: true
+        });
+
+        // 您的笔记仓库信息
+        const REPO_OWNER = 'Jankin-Bai';
+        const REPO_NAME = 'ClassNotes';
+        const REPO_FULL_NAME = `${REPO_OWNER}/${REPO_NAME}`;
+
+        // DOM元素
+        const searchInput = document.getElementById('search-input');
+        const fileList = document.getElementById('file-list');
+        const contentArea = document.getElementById('content-area');
+        const contentTitle = document.getElementById('content-title');
+        const backToListBtn = document.getElementById('back-to-list');
+        const breadcrumb = document.getElementById('breadcrumb');
+        const stats = document.getElementById('stats');
+
+        // 存储所有找到的Markdown文件
+        let allMarkdownFiles = [];
+
+        // 递归获取目录下的所有Markdown文件
+        async function fetchDirectoryContents(path = '') {
+            try {
+                const response = await fetch(`https://api.github.com/repos/${REPO_FULL_NAME}/contents/${path}`);
+                
+                if (!response.ok) {
+                    throw new Error(`无法访问目录: ${path}`);
+                }
+                
+                const contents = await response.json();
+                const mdFiles = [];
+                
+                // 如果是文件数组
+                if (Array.isArray(contents)) {
+                    for (const item of contents) {
+                        if (item.type === 'file' && item.name.endsWith('.md')) {
+                            mdFiles.push({
+                                name: item.name,
+                                path: item.path,
+                                url: item.download_url,
+                                sha: item.sha,
+                                size: item.size
+                            });
+                        } else if (item.type === 'dir') {
+                            // 递归获取子目录
+                            const subFiles = await fetchDirectoryContents(item.path);
+                            mdFiles.push(...subFiles);
+                        }
+                    }
+                }
+                
+                return mdFiles;
+            } catch (error) {
+                console.error(`获取目录 ${path} 失败:`, error);
+                return [];
+            }
+        }
+
+        // 获取仓库中的所有Markdown文件
+        async function fetchAllMarkdownFiles() {
+            try {
+                fileList.innerHTML = '<div class="loading">扫描仓库中的Markdown文件...</div>';
+                
+                // 开始递归扫描
+                allMarkdownFiles = await fetchDirectoryContents();
+                
+                if (allMarkdownFiles.length === 0) {
+                    fileList.innerHTML = '<div class="error">未找到任何Markdown文件</div>';
+                    return;
+                }
+                
+                // 更新统计信息
+                stats.innerHTML = `找到 ${allMarkdownFiles.length} 个笔记文件`;
+                
+                // 构建文件夹结构并显示
+                const fileStructure = buildFileStructure(allMarkdownFiles);
+                renderFileList(fileStructure);
+                
+            } catch (error) {
+                fileList.innerHTML = `<div class="error">扫描失败: ${error.message}</div>`;
+                console.error('获取Markdown文件失败:', error);
+            }
+        }
+
+        // 构建文件夹结构
+        function buildFileStructure(files) {
+            const structure = {};
+            
+            files.forEach(file => {
+                const pathParts = file.path.split('/');
+                let currentLevel = structure;
+                
+                for (let i = 0; i < pathParts.length; i++) {
+                    const part = pathParts[i];
+                    
+                    if (i === pathParts.length - 1) {
+                        // 文件
+                        currentLevel[part] = file;
+                    } else {
+                        // 文件夹
+                        if (!currentLevel[part]) {
+                            currentLevel[part] = { _type: 'folder', _path: pathParts.slice(0, i+1).join('/') };
+                        }
+                        currentLevel = currentLevel[part];
+                    }
+                }
+            });
+            
+            return structure;
+        }
+
+        // 渲染文件列表
+        function renderFileList(structure, level = 0) {
+            fileList.innerHTML = '';
+            
+            const renderStructure = (struct, container, currentLevel = 0) => {
+                // 获取所有键并排序（文件夹在前，文件在后）
+                const keys = Object.keys(struct).filter(key => key !== '_type' && key !== '_path');
+                keys.sort((a, b) => {
+                    const aIsFolder = struct[a]._type === 'folder';
+                    const bIsFolder = struct[b]._type === 'folder';
+                    
+                    if (aIsFolder && !bIsFolder) return -1;
+                    if (!aIsFolder && bIsFolder) return 1;
+                    return a.localeCompare(b);
+                });
+                
+                keys.forEach(key => {
+                    const item = struct[key];
+                    
+                    if (item._type === 'folder') {
+                        // 文件夹
+                        const folderEl = document.createElement('div');
+                        folderEl.className = 'folder';
+                        
+                        const folderHeader = document.createElement('div');
+                        folderHeader.className = 'folder-header';
+                        folderHeader.innerHTML = `
+                            <span class="folder-icon">▶</span>
+                            ${key}
+                        `;
+                        
+                        const folderContent = document.createElement('div');
+                        folderContent.className = 'folder-content';
+                        
+                        folderHeader.addEventListener('click', () => {
+                            folderEl.classList.toggle('open');
+                        });
+                        
+                        folderEl.appendChild(folderHeader);
+                        folderEl.appendChild(folderContent);
+                        container.appendChild(folderEl);
+                        
+                        // 递归渲染子内容
+                        renderStructure(item, folderContent, currentLevel + 1);
+                    } else {
+                        // 文件
+                        const fileItem = document.createElement('div');
+                        fileItem.className = 'file-item';
+                        fileItem.innerHTML = `
+                            <span class="file-icon">📄</span>
+                            ${key}
+                        `;
+                        
+                        fileItem.addEventListener('click', () => {
+                            // 移除所有active类
+                            document.querySelectorAll('.file-item').forEach(item => {
+                                item.classList.remove('active');
+                            });
+                            // 添加active类到当前项
+                            fileItem.classList.add('active');
+                            // 加载文件内容
+                            loadFileContent(item);
+                        });
+                        
+                        container.appendChild(fileItem);
+                    }
+                });
+            };
+            
+            renderStructure(structure, fileList);
+        }
+
+        // 加载并渲染Markdown文件内容
+        async function loadFileContent(file) {
+            try {
+                contentArea.innerHTML = '<div class="loading">加载内容中...</div>';
+                backToListBtn.style.display = 'none';
+                
+                const response = await fetch(file.url);
+                
+                if (!response.ok) {
+                    throw new Error(`无法获取文件内容: ${response.status}`);
+                }
+                
+                const markdownText = await response.text();
+                
+                // 使用marked.js渲染Markdown
+                const htmlContent = marked.parse(markdownText);
+                
+                // 显示渲染后的内容
+                contentArea.innerHTML = `
+                    <div class="markdown-body">
+                        ${htmlContent}
+                    </div>
+                `;
+                
+                // 更新标题和面包屑
+                contentTitle.textContent = file.name.replace('.md', '');
+                breadcrumb.innerHTML = generateBreadcrumb(file.path);
+                backToListBtn.style.display = 'block';
+                
+                // 滚动到顶部
+                window.scrollTo(0, 0);
+            } catch (error) {
+                contentArea.innerHTML = `<div class="error">加载文件失败: ${error.message}</div>`;
+                console.error('加载文件内容失败:', error);
+            }
+        }
+
+        // 生成面包屑导航
+        function generateBreadcrumb(filePath) {
+            const pathParts = filePath.split('/');
+            let breadcrumbHtml = '<a href="javascript:void(0)" onclick="showWelcome()">首页</a>';
+            
+            for (let i = 0; i < pathParts.length - 1; i++) {
+                const pathSegment = pathParts[i];
+                const pathSoFar = pathParts.slice(0, i+1).join('/');
+                breadcrumbHtml += ` / <a href="javascript:void(0)" onclick="navigateToFolder('${pathSoFar}')">${pathSegment}</a>`;
+            }
+            
+            breadcrumbHtml += ` / ${pathParts[pathParts.length - 1]}`;
+            return breadcrumbHtml;
+        }
+
+        // 显示欢迎页面
+        function showWelcome() {
+            contentArea.innerHTML = `
+                <div class="welcome-message">
+                    <div class="welcome-icon">📚</div>
+                    <h2>欢迎访问我的技术笔记</h2>
+                    <p>这里展示了我整理的各类技术笔记和文档。</p>
+                    <p>请从左侧选择一篇笔记开始阅读。</p>
+                </div>
+            `;
+            contentTitle.textContent = '欢迎';
+            breadcrumb.innerHTML = '首页';
+            backToListBtn.style.display = 'none';
+            
+            // 移除所有active类
+            document.querySelectorAll('.file-item').forEach(item => {
+                item.classList.remove('active');
+            });
+        }
+
+        // 导航到文件夹（未来扩展功能）
+        function navigateToFolder(path) {
+            // 这里可以实现在内容区域显示文件夹内容
+            // 目前先显示欢迎页面
+            showWelcome();
+        }
+
+        // 搜索功能
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const fileItems = document.querySelectorAll('.file-item');
+            
+            fileItems.forEach(item => {
+                const fileName = item.textContent.toLowerCase();
+                if (fileName.includes(searchTerm)) {
+                    item.style.display = 'flex';
+                    
+                    // 展开包含匹配文件的文件夹
+                    let parentFolder = item.closest('.folder');
+                    while (parentFolder) {
+                        parentFolder.classList.add('open');
+                        parentFolder = parentFolder.parentElement.closest('.folder');
+                    }
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+
+        // 返回文件列表
+        backToListBtn.addEventListener('click', showWelcome);
+
+        // 页面加载完成后获取文件列表
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchAllMarkdownFiles();
+        });
+
+        // 使函数在全局可访问（用于面包屑导航）
+        window.showWelcome = showWelcome;
+        window.navigateToFolder = navigateToFolder;
+    </script>
+</body>
+</html>
