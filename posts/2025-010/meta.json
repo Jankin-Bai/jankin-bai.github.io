@@ -1,0 +1,18 @@
+{
+  "id": "2025-010",
+  "title": "【C】指针应用场景",
+  "date": "2025-03-07T10:00:00",
+  "tags": [
+    "tech"
+  ],
+  "milestone": false,
+  "summary": "场景一 #include void MinMax(int num[], int lon, int *min, int *...",
+  "theme": "default",
+  "image": "",
+  "links": [
+    {
+      "text": "原文链接",
+      "url": "https://blog.csdn.net/sinat_36912383/article/details/72805933"
+    }
+  ]
+}

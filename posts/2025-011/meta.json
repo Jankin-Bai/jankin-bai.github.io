@@ -1,0 +1,18 @@
+{
+  "id": "2025-011",
+  "title": "前端 持续更新",
+  "date": "2025-03-07T10:00:00",
+  "tags": [
+    "tech"
+  ],
+  "milestone": false,
+  "summary": "json 如何写一个简单的网页 要创建一个简单的网站，您首先需要选择一种技术。 由于根据网站要实现什么功能来选择技术可能...",
+  "theme": "default",
+  "image": "",
+  "links": [
+    {
+      "text": "原文链接",
+      "url": "https://blog.csdn.net/sinat_36912383/article/details/126660815"
+    }
+  ]
+}

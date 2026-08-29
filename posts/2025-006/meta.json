@@ -1,0 +1,18 @@
+{
+  "id": "2025-006",
+  "title": "混沌电路学习笔记",
+  "date": "2025-03-07T10:00:00",
+  "tags": [
+    "tech"
+  ],
+  "milestone": false,
+  "summary": "混沌信号产生实验装置 任务 使用电阻、电容、电感和运算放大器设计一个能生成稳定周期信号和混沌信号的信号产生实验装置，装置...",
+  "theme": "default",
+  "image": "",
+  "links": [
+    {
+      "text": "原文链接",
+      "url": "https://blog.csdn.net/sinat_36912383/article/details/131655042"
+    }
+  ]
+}

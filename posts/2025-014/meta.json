@@ -1,0 +1,18 @@
+{
+  "id": "2025-014",
+  "title": "XSS笔记",
+  "date": "2025-03-12T10:00:00",
+  "tags": [
+    "tech"
+  ],
+  "milestone": false,
+  "summary": "靶场环境部署 phpstudy(网页运行环境)xss-libs 用到的payload jankinscript> ale...",
+  "theme": "default",
+  "image": "",
+  "links": [
+    {
+      "text": "原文链接",
+      "url": "https://blog.csdn.net/sinat_36912383/article/details/146138898"
+    }
+  ]
+}

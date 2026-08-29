@@ -1,0 +1,9 @@
+{
+  "widgets": [
+    {
+      "id": "ad-cartoon",
+      "position": "sidebar-top",
+      "order": 1
+    }
+  ]
+}

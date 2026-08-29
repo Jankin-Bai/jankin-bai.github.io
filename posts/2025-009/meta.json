@@ -1,0 +1,18 @@
+{
+  "id": "2025-009",
+  "title": "【C】指针数组与数组指针",
+  "date": "2025-03-07T10:00:00",
+  "tags": [
+    "tech"
+  ],
+  "milestone": false,
+  "summary": "（１）指针数组：一个数组里存放的都是同一个类型的指针，通常我们把他叫做指针数组。 比如 int * a[10];它里边放...",
+  "theme": "default",
+  "image": "",
+  "links": [
+    {
+      "text": "原文链接",
+      "url": "https://blog.csdn.net/sinat_36912383/article/details/72868484"
+    }
+  ]
+}

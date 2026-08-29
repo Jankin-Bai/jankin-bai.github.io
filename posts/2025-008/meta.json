@@ -1,0 +1,18 @@
+{
+  "id": "2025-008",
+  "title": "全平台硬件环境搭建",
+  "date": "2025-03-07T10:00:00",
+  "tags": [
+    "tech"
+  ],
+  "milestone": false,
+  "summary": "MCU/MPU ESP32 stm32 msp430 51 FPGA RKxxxx 传感器 三轴传感器 GPS 硬件搭建...",
+  "theme": "default",
+  "image": "",
+  "links": [
+    {
+      "text": "原文链接",
+      "url": "https://blog.csdn.net/sinat_36912383/article/details/132023482"
+    }
+  ]
+}
