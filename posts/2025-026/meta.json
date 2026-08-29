@@ -1,0 +1,20 @@
+{
+  "id": "2025-026",
+  "title": "机器学习笔记（TensorFlow 实战）",
+  "date": "2025-07-25T10:00:00",
+  "tags": [
+    "tech",
+    "works"
+  ],
+  "milestone": false,
+  "summary": "机器学习入门笔记，基于 TensorFlow 实现人工神经网络，涵盖监督学习概念、神经网络基本架构、Session/Variable/placeholder 语法、激励函数、训练架构及 TensorBoard 可视化。",
+  "theme": "default",
+  "image": "",
+  "links": [
+    {
+      "text": "原始仓库",
+      "url": "https://github.com/Jankin-Bai/ClassNotes"
+    }
+  ],
+  "format": "markdown"
+}

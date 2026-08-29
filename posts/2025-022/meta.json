@@ -1,0 +1,20 @@
+{
+  "id": "2025-022",
+  "title": "矿石收音机制作笔记",
+  "date": "2025-07-05T10:00:00",
+  "tags": [
+    "tech",
+    "works"
+  ],
+  "milestone": false,
+  "summary": "矿石收音机（Crystal Radio）制作笔记，涵盖天地线、铁氧体磁环线圈（锰锌/镍锌）、丝包线、可调电容、检波二极管、耳机及整机调试。",
+  "theme": "default",
+  "image": "",
+  "links": [
+    {
+      "text": "原始仓库",
+      "url": "https://github.com/Jankin-Bai/ClassNotes"
+    }
+  ],
+  "format": "markdown"
+}

@@ -1,0 +1,18 @@
+{
+  "id": "2025-005",
+  "title": "【汇编】指令集概念与数的机器表示",
+  "date": "2025-03-07T10:00:00",
+  "tags": [
+    "tech"
+  ],
+  "milestone": false,
+  "summary": "指令集 CISC （复杂指令集） X86架构 向下兼容变长指令 1-15字节，多数为2-3字节长度 多种寻址方式(可访问...",
+  "theme": "default",
+  "image": "",
+  "links": [
+    {
+      "text": "原文链接",
+      "url": "https://blog.csdn.net/sinat_36912383/article/details/82766617"
+    }
+  ]
+}

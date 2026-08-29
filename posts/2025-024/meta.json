@@ -1,0 +1,20 @@
+{
+  "id": "2025-024",
+  "title": "全球无线电与电视直播源收集",
+  "date": "2025-07-15T10:00:00",
+  "tags": [
+    "tech",
+    "life"
+  ],
+  "milestone": false,
+  "summary": "DAUM Player 播放列表收集，涵盖国内 CCTV/BTV 高清频道、央广中国之声/经济之声/音乐之声、日本/欧洲/台湾等全球网络电台直播源（m3u8/mms/mp3）。",
+  "theme": "default",
+  "image": "",
+  "links": [
+    {
+      "text": "原始仓库",
+      "url": "https://github.com/Jankin-Bai/ClassNotes"
+    }
+  ],
+  "format": "markdown"
+}

@@ -1,0 +1,19 @@
+{
+  "id": "2025-023",
+  "title": "CSAPP 深入理解计算机系统笔记",
+  "date": "2025-07-10T10:00:00",
+  "tags": [
+    "tech"
+  ],
+  "milestone": false,
+  "summary": "《深入理解计算机系统》(CSAPP) 学习笔记，涵盖指令集架构（CISC vs RISC、X86/MIPS/ARM）、数的机器表示（原码/补码、无符号/带符号整数）等核心内容。",
+  "theme": "serif",
+  "image": "",
+  "links": [
+    {
+      "text": "原始仓库",
+      "url": "https://github.com/Jankin-Bai/ClassNotes"
+    }
+  ],
+  "format": "markdown"
+}

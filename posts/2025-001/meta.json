@@ -1,0 +1,18 @@
+{
+  "id": "2025-001",
+  "title": "NFC学习【笔记】",
+  "date": "2025-06-21T23:48:58",
+  "tags": [
+    "tech"
+  ],
+  "milestone": false,
+  "summary": "一、射频 参考视频：【是德科技】近场通信NFC是啥?NFC和RFID的区别呢？ 二、通信协议 1. ISO/IEC 14...",
+  "theme": "default",
+  "image": "",
+  "links": [
+    {
+      "text": "原文链接（CSDN）",
+      "url": "https://blog.csdn.net/sinat_36912383/article/details/148188773"
+    }
+  ]
+}

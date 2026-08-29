@@ -1,0 +1,21 @@
+{
+  "id": "2026-001",
+  "title": "Markdown 写作完全指南（Demo 演示）",
+  "date": "2026-08-30T15:00:00",
+  "tags": ["tech", "works"],
+  "milestone": false,
+  "summary": "本文演示 Jankin's Timeline 博客支持的所有 Markdown 语法，包括标题、列表、表格、代码块、引用、KaTeX 数学公式、Mermaid 流程图、图片、链接等，是新建文章的参考模板。",
+  "theme": "default",
+  "image": "",
+  "links": [
+    {
+      "text": "Markdown 官方教程",
+      "url": "https://www.markdownguide.org/"
+    },
+    {
+      "text": "KaTeX 支持的函数",
+      "url": "https://katex.org/docs/supported.html"
+    }
+  ],
+  "format": "markdown"
+}

@@ -1,0 +1,18 @@
+{
+  "id": "2025-019",
+  "title": "线性代数（1）用 excel 计算鸡兔同笼",
+  "date": "2025-06-21T10:00:00",
+  "tags": [
+    "tech"
+  ],
+  "milestone": false,
+  "summary": "案例：鸡兔同笼问题的三种解法（递进式教学） 一、问题描述 已知鸡和兔关在同一个笼子里，共有 35个头 和 94只脚。求鸡...",
+  "theme": "default",
+  "image": "",
+  "links": [
+    {
+      "text": "原文链接",
+      "url": "https://blog.csdn.net/sinat_36912383/article/details/146219927"
+    }
+  ]
+}

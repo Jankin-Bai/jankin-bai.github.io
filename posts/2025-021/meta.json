@@ -1,0 +1,19 @@
+{
+  "id": "2025-021",
+  "title": "ARM Cortex-R 汇编语言笔记",
+  "date": "2025-07-01T10:00:00",
+  "tags": [
+    "tech"
+  ],
+  "milestone": false,
+  "summary": "ARMv7-R 架构汇编语言学习笔记，涵盖 ARM/Thumb 指令集、Thumb-2 技术、代码密度与性能权衡等核心概念。",
+  "theme": "mono",
+  "image": "",
+  "links": [
+    {
+      "text": "原始仓库",
+      "url": "https://github.com/Jankin-Bai/ClassNotes"
+    }
+  ],
+  "format": "markdown"
+}

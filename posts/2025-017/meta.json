@@ -1,0 +1,18 @@
+{
+  "id": "2025-017",
+  "title": "【ESP32】问题汇总 更新中",
+  "date": "2025-06-21T10:00:00",
+  "tags": [
+    "tech"
+  ],
+  "milestone": false,
+  "summary": "【已解决待验证】Openocd debug 【已解决】关于usb转串口你永远可以相信Zadig 无论PL2303还是其他...",
+  "theme": "default",
+  "image": "",
+  "links": [
+    {
+      "text": "原文链接",
+      "url": "https://blog.csdn.net/sinat_36912383/article/details/127860032"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "2025-025",
+  "title": "Linux Ubuntu 学习笔记",
+  "date": "2025-07-20T10:00:00",
+  "tags": [
+    "tech"
+  ],
+  "milestone": false,
+  "summary": "Linux Ubuntu 日常使用与开发环境笔记，涵盖常见问题解决（输入法/声音/vim乱码）、STC单片机开发环境搭建（sdcc+stcflash）、Linux 常用命令收集（增删查改）。",
+  "theme": "mono",
+  "image": "",
+  "links": [
+    {
+      "text": "原始仓库",
+      "url": "https://github.com/Jankin-Bai/ClassNotes"
+    }
+  ],
+  "format": "markdown"
+}
