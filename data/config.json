@@ -1,0 +1,145 @@
+{
+  "site": {
+    "title": "Jankin's Timeline",
+    "subtitle": "一纵一横，记录思想与历程",
+    "author": "Jankin Bai",
+    "url": "https://jankinbai.top",
+    "description": "个人时间线博客，记录书籍、作品、心情、技术文档等多维度人生历程"
+  },
+  "timeline": {
+    "defaultView": "timeline",
+    "startYear": 2015,
+    "endYear": "now",
+    "density": "comfortable",
+    "showMilestoneOnly": false,
+    "groupBy": "year",
+    "milestoneMarker": "★",
+    "_note_defaultEra": "已废弃：日期默认同时显示公元+干支"
+  },
+  "dimensions": [
+    {
+      "id": "books",
+      "name": "书籍",
+      "nameEn": "Books",
+      "icon": "📚",
+      "color": "#4A6FA5",
+      "colorLight": "#E8EEF7",
+      "colorDark": "#2C4A7A",
+      "bgGradient": "linear-gradient(135deg, #4A6FA5 0%, #6B8FC5 100%)",
+      "borderStyle": "2px solid #4A6FA5",
+      "cardBg": "#F8FAFD",
+      "description": "阅读记录、读书笔记、书籍拆解",
+      "active": true
+    },
+    {
+      "id": "works",
+      "name": "作品输出",
+      "nameEn": "Works",
+      "icon": "🎨",
+      "color": "#C75B39",
+      "colorLight": "#FBEDE8",
+      "colorDark": "#8B3A1E",
+      "bgGradient": "linear-gradient(135deg, #C75B39 0%, #E07A55 100%)",
+      "borderStyle": "2px solid #C75B39",
+      "cardBg": "#FDF5F2",
+      "description": "创作作品、项目输出、设计成果、代码项目",
+      "active": true
+    },
+    {
+      "id": "emotions",
+      "name": "心情感情",
+      "nameEn": "Emotions",
+      "icon": "💭",
+      "color": "#8B5A9E",
+      "colorLight": "#F2EBF5",
+      "colorDark": "#5C3A6E",
+      "bgGradient": "linear-gradient(135deg, #8B5A9E 0%, #A878BC 100%)",
+      "borderStyle": "2px solid #8B5A9E",
+      "cardBg": "#FAF6FC",
+      "description": "心情记录、情感感悟、人生思考、梦境记录",
+      "active": true
+    },
+    {
+      "id": "tech",
+      "name": "技术文档",
+      "nameEn": "Tech Docs",
+      "icon": "⚙️",
+      "color": "#2D8659",
+      "colorLight": "#E6F2EC",
+      "colorDark": "#1A5A3A",
+      "bgGradient": "linear-gradient(135deg, #2D8659 0%, #4DA878 100%)",
+      "borderStyle": "2px solid #2D8659",
+      "cardBg": "#F2F9F5",
+      "description": "技术笔记、架构设计、调试记录、学习文档",
+      "active": true
+    },
+    {
+      "id": "travel",
+      "name": "旅行足迹",
+      "nameEn": "Travel",
+      "icon": "🗺️",
+      "color": "#D4913A",
+      "colorLight": "#FBF3E6",
+      "colorDark": "#9E6520",
+      "bgGradient": "linear-gradient(135deg, #D4913A 0%, #E8B060 100%)",
+      "borderStyle": "2px solid #D4913A",
+      "cardBg": "#FDF8F0",
+      "description": "旅行记录、城市探索、风景摄影、文化体验",
+      "active": false
+    },
+    {
+      "id": "life",
+      "name": "生活日常",
+      "nameEn": "Life",
+      "icon": "🌿",
+      "color": "#5A9E6F",
+      "colorLight": "#EDF5EF",
+      "colorDark": "#3A6E4A",
+      "bgGradient": "linear-gradient(135deg, #5A9E6F 0%, #7AB88F 100%)",
+      "borderStyle": "2px solid #5A9E6F",
+      "cardBg": "#F4F9F5",
+      "description": "日常生活、美食、健康、习惯养成、家庭",
+      "active": false
+    }
+  ],
+  "ui": {
+    "fontFamily": "'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', Georgia, serif",
+    "fontFamilySans": "'Noto Sans SC', 'Source Han Sans SC', 'PingFang SC', -apple-system, sans-serif",
+    "fontMono": "'JetBrains Mono', 'Fira Code', 'Consolas', monospace",
+    "maxWidth": "1400px",
+    "sidebarWidth": "280px",
+    "timelineWidth": "3px",
+    "cardRadius": "4px",
+    "transitionSpeed": "250ms",
+    "darkMode": false,
+    "showSearch": true,
+    "showEraSwitcher": true,
+    "showViewSwitcher": true,
+    "showDimensionLegend": true
+  },
+  "ganzhi": {
+    "showYear": true,
+    "showMonth": true,
+    "showDay": true,
+    "showHour": false,
+    "showZodiac": true,
+    "format": "短"
+  },
+  "discovery": {
+    "enabled": true,
+    "startYear": 2015,
+    "batchSize": 20,
+    "maxEmptyBatches": 2,
+    "cacheTTL": 300000
+  },
+  "sidebarSlot": {
+    "enabled": false,
+    "id": "default",
+    "type": "announcement",
+    "title": "公告",
+    "content": "在这里填写公告内容。修改 config.json 的 sidebarSlot.enabled 为 true 即可启用。",
+    "html": "",
+    "dismissible": true,
+    "_comment": "type: announcement(公告,可关闭) | ad(广告位) | custom(自定义HTML)。html 字段优先级高于 content。"
+  }
+}

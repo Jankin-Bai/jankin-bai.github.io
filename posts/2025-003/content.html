@@ -1,0 +1,85 @@
+<!-- Post: Git使用从建仓到删库跑路 | ID: 2025-003 | Created: 2025-03-07 | Tags: tech | Source: CSDN sinat_36912383 -->
+
+<blockquote>本文复刻自 <a href="https://blog.csdn.net/sinat_36912383/article/details/133686872" target="_blank" rel="noopener">CSDN 博主 sinat_36912383</a> 的原创文章，原文发布于 2025-03-07。</blockquote>
+
+<h4>建仓</h4>
+<p>在已有的文件夹中生成一个Git仓库并将其新建到Gitee的步骤如下：</p>
+<h5>1. 创建一个本地Git仓库</h5>
+<ol><li>
+<p>打开终端或命令提示符，进入你想要创建Git仓库的文件夹：</p>
+<pre><code class="prism language-bash">cd /path/to/your/folder
+</code></pre>
+</li><li>
+<p>初始化Git仓库：</p>
+<pre><code class="prism language-bash">git init
+</code></pre>
+</li></ol>
+<h5>2. 添加和提交文件到本地仓库</h5>
+<ol><li>
+<p>添加文件到Git暂存区：</p>
+<pre><code class="prism language-bash">git add .
+</code></pre>
+</li><li>
+<p>提交文件到本地仓库：</p>
+<pre><code class="prism language-bash">git commit -m "Initial commit"
+</code></pre>
+</li></ol>
+<h5>3. 在Gitee上创建一个新的仓库</h5>
+<ol><li>
+<p>登录到你的Gitee账户。</p>
+</li><li>
+<p>点击右上角的“+”按钮，并选择“新建仓库”。</p>
+</li><li>
+<p>填写仓库名称、描述等信息，并点击“创建”按钮。</p>
+</li></ol>
+<h5>4. 将本地仓库连接到Gitee仓库</h5>
+<ol><li>
+<p>返回到终端或命令提示符，添加Gitee远程仓库地址。假设你的Gitee仓库地址为<code>https://gitee.com/your-username/your-repo.git</code>：</p>
+<pre><code class="prism language-bash">git remote add origin https://gitee.com/your-username/your-repo.git
+
+</code></pre>
+</li><li>
+<p>推送本地仓库的内容到Gitee远程仓库：</p>
+<pre><code class="prism language-bash">git push -u origin master 
+</code></pre>
+</li></ol>
+<h5>5. 确认推送成功</h5>
+<ol><li>打开Gitee并导航到你新建的仓库，检查仓库是否包含你本地仓库的文件和提交记录。</li></ol>
+<p>这样，你就成功地在已有的文件夹中生成了一个Git仓库并将其新建到Gitee。如果你之后有任何变更需要推送到Gitee，只需重复 <code>git add .</code>、<code>git commit -m "your message"</code> 和 <code>git push</code> 这些步骤。</p>
+<h5>6.初始设置</h5>
+<p>for warning: in the working copy of 'main.ino', LF will be replaced by CRLF the next time Git touches it<br>
+win: <code>git config --global core.autocrlf true</code><br>
+mac: <code>git config --global core.autocrlf input</code></p>
+<hr>
+<p><img src="https://i-blog.csdnimg.cn/blog_migrate/bcd081cd606bc24dd82afd236df323a6.png" alt="在这里插入图片描述"><br>
+<img src="https://i-blog.csdnimg.cn/blog_migrate/a848a2fd70166dfa0ad4bdf5c9e42cce.png" alt="在这里插入图片描述"><br>
+User\xxx\Exx</p>
+<h4>git 一键回到解放前【慎重】</h4>
+<pre><code>git reset --hard xxxxxxx
+git push -f origin HEAD:master
+</code></pre>
+<h4>当你在cmake中遇到"-Werror=all"时</h4>
+<p><code>"-Werror=all"</code>的后果是编译走不过去。<br>
+用<code>-Wno-error=xxx</code>或许可以救你<br>
+如下例子</p>
+<pre><code class="prism language-cmake">
+ list(APPEND compile_options "-ffunction-sections"
+ "-fdata-sections"
+ # warning-related flags
+ "-Wall"
+ "-Werror=all"
+ "-Wno-error=missing-braces"
+ "-Wno-error=unused-function"
+ "-Wno-error=unused-variable"
+ "-Wno-error=deprecated-declarations"
+ "-Wextra"
+ "-Wno-unused-parameter"
+ "-Wno-sign-compare"
+ # always generate debug symbols (even in release mode, these don't
+ # go into the final binary so have no impact on size
+ "-ggdb")
+</code></pre>
+<h4>VMware网络</h4>
+<p>桥接：与主机ip<code>同一层级</code>，没有从属关系（公网ip下不会桥接出来）<br>
+NAT: 与主机从属关系 <code> 虚拟机ip</code>-><code>网关</code>-><code>VMwareAdapter</code>-><code>主机</code><br>
+<img src="https://i-blog.csdnimg.cn/blog_migrate/eb2c37a51d27843d7f6691be6af54859.png" alt="在这里插入图片描述"></p>

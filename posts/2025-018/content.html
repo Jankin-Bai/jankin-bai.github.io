@@ -1,0 +1,16 @@
+<!-- Post: Burpsuite使用笔记 | ID: 2025-018 | Created: 2025-06-21 | Tags: tech | Source: CSDN sinat_36912383 -->
+
+<blockquote>本文复刻自 <a href="https://blog.csdn.net/sinat_36912383/article/details/146189875" target="_blank" rel="noopener">CSDN 博主 sinat_36912383</a> 的原创文章，原文发布于 2025-06-21。</blockquote>
+
+<h3>抓包</h3> 
+<ul><li> <h4>设置代理</h4> <p><img src="https://i-blog.csdnimg.cn/direct/42a687ac50ec412c8f7a61176288aa7b.png" alt="在这里插入图片描述"></p> </li><li> <h4>open Browser</h4> <p>打开内置浏览器<br> <img src="https://i-blog.csdnimg.cn/direct/488491b00df149b6a18ad15c55e490a0.png" alt="在这里插入图片描述"></p> </li><li> <h4>intercept on</h4> <p><img src="https://i-blog.csdnimg.cn/direct/b628ddd1677c4c829cd6b9475ac5195b.png" alt="在这里插入图片描述"></p> </li><li> <h4>输入要抓包的网站回车</h4> <p><img src="https://i-blog.csdnimg.cn/direct/02d6ef69dd024fb296c06cd707955fa5.png" alt="在这里插入图片描述"></p> <p>此时可以看到网页还没有跳转，说明此时拦截到请求的数据，（可以分析或者修改。）还没有真正发送出去请求数据</p> </li><li> <h4>Forward</h4> <p>继续将拦截的或者修改过的数据真正发送出去<br> <img src="https://i-blog.csdnimg.cn/direct/d01bb5517f35403f8b25475cfa6df4da.png" alt="在这里插入图片描述"></p> </li></ul> 
+<p>一直按forward，直到没有request数据</p> 
+<p><img src="https://i-blog.csdnimg.cn/direct/057022157efb4600a6d60a3a05beb3f4.png" alt="在这里插入图片描述"></p> 
+<ul><li> <h4>HTTP history查看抓包数据</h4> <p><img src="https://i-blog.csdnimg.cn/direct/39d258856ae349df8fbd08e661349963.png" alt="在这里插入图片描述"></p> </li><li> <h4>其他浏览器</h4> 
+ <ul><li> <h5>配置burpsuite代理</h5> <p>查看代理 仅本机使用则，127.0.0.1：8080，如果要抓局域网数据包，则将burpsuite所在的局域网ip配置成代理服务器。</p> </li></ul> <p><img src="https://i-blog.csdnimg.cn/direct/6d8343e5a92d46799e7879c9e0198b2c.png" alt="在这里插入图片描述"></p> 
+ <ul><li> <h5>浏览器代理器插件配置</h5> <p><img src="https://i-blog.csdnimg.cn/direct/5e7d401cb8cd4333adc4283e25e2b9b9.png" alt="在这里插入图片描述"></p> </li><li> <h5>打开代理</h5> <p><img src="https://i-blog.csdnimg.cn/direct/3d0f5bbd3cb9463196d4328a0cb05d47.png" alt="在这里插入图片描述"></p> </li><li> <h5>同样步骤访问</h5> <p><img src="https://i-blog.csdnimg.cn/direct/7cfa529f350a498995288737b8fdffd4.png" alt="在这里插入图片描述"></p> <p><img src="https://i-blog.csdnimg.cn/direct/c63d8f2ea8964356a90cb9258affda66.png" alt="在这里插入图片描述"></p> </li></ul> </li></ul> 
+<h4>原理</h4> 
+<div class="mermaid">
+ 
+ </foreignobject>
+ </g>

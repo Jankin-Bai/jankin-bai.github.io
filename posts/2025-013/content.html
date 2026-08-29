@@ -1,0 +1,30 @@
+<!-- Post: 用显微镜自制光刻机 | ID: 2025-013 | Created: 2025-03-07 | Tags: tech | Source: CSDN sinat_36912383 -->
+
+<blockquote>本文复刻自 <a href="https://blog.csdn.net/sinat_36912383/article/details/131641897" target="_blank" rel="noopener">CSDN 博主 sinat_36912383</a> 的原创文章，原文发布于 2025-03-07。</blockquote>
+
+<p>首先感谢文章：<a href="https://www.mmsonline.com.cn/info/331755.shtml" rel="nofollow">蔡司显微镜：悄悄告诉你，显微镜也可以作光刻机！</a></p> 
+<blockquote> 
+ <p>该文章专业，通俗易懂的，并附上大量文献</p> 
+</blockquote> 
+<h3><a href="http://sam.zeloof.xyz/mark-iv-maskless-photolithography-stepper/" rel="nofollow">1.Mark IV Maskless Submicron Photolithography Stepper</a></h3> 
+<p><img src="https://i-blog.csdnimg.cn/blog_migrate/ed0e213ec647bff2134f07daa297bbf5.png" alt="在这里插入图片描述"><br> 用于 2“ （50mm） 晶圆的自动 DLP 亚微米步进机，具有 LabView 控制、计算机校准和晶圆真空吸盘。基于具有定制光学组件和原位紫外-可见光谱的旧尼康显微镜，用于照明过程控制。衍射极限分辨率为<250nm，光源为365nm。<br> <img src="https://i-blog.csdnimg.cn/blog_migrate/e3b98dcff60b5713f305313936d68c80.png" alt="四阶曝光"><br> <img src="https://i-blog.csdnimg.cn/blog_migrate/f77ac130a922b154f290235865c5e329.png" alt="Stepped array"><br> <a href="http://sam.zeloof.xyz/maskless-photolithography/" rel="nofollow">详细</a></p> 
+<h4>Mark I</h4> 
+<p><img src="https://i-blog.csdnimg.cn/blog_migrate/ff2095c22d501a87ef0aba5cb49c6cc0.png" alt="在这里插入图片描述"><br> <img src="https://i-blog.csdnimg.cn/blog_migrate/356f330998a2623e51716139caefd1bb.png" alt="图像缩小"><br> <img src="https://i-blog.csdnimg.cn/blog_migrate/7e49d795e214ac0a236218297d147c89.png" alt="图像缩小"></p> 
+<h4>Mark II</h4> 
+<blockquote> 
+ <p>手动DLP投影对准仪 >10um 特性。由于其在400nm以下无法传输太多光线，因此移除了彩色轮。通过仿真（弛豫振荡器）电路来产生投影机期望从彩色轮背电动势驱动/传感器和光电二极管处接收到的信号。</p> 
+</blockquote> 
+<p><img src="https://i-blog.csdnimg.cn/blog_migrate/96d30c86eaecd11a74490c6d8c2f6720.png" alt="拆除投影仪色轮"><br> <img src="https://img-blog.csdnimg.cn/a7d97ca7277c4898885193bc18257497.png" alt="色轮模拟，我猜是让投影仪不产生异常而加入的"><br> <img src="https://i-blog.csdnimg.cn/blog_migrate/d7ced25fbb50b1ee7ecd19494abdddaf.png" alt="用来模拟色轮的振荡器"><br> <img src="https://img-blog.csdnimg.cn/35ab873f7b8e479187ba502e5a0c091b.png" alt="Reduction lens assembly"></p> 
+<p><img src="https://img-blog.csdnimg.cn/8566a749e5854fc8bd1286677ac3bac7.png" alt="二代完成"></p> 
+<h4>Mark III</h4> 
+<blockquote> 
+ <p>带红色激光对准照明的手动 LCoS 亚微米步进机。在显微镜物镜上给定数值孔径为0.98，曝光波长为365纳米，简单计算得到的分辨率为0.227微米，然而由于此投影系统固有的衍射限制，实际分辨率可能在0.5微米左右。焦深在数值孔径为0.98时计算出约为1.8微米，但很可能更差。</p> 
+</blockquote> 
+<p><img src="https://img-blog.csdnimg.cn/71e26a734b1744ff94f2d8ad01f84de7.png" alt="LCoS pico projector"><br> <img src="https://img-blog.csdnimg.cn/7ec8242501704c348bff1d115a1d600b.png" alt="投影仪光学模组"><br> <img src="https://img-blog.csdnimg.cn/ad434c48149c46e59ac3f6228ed25ab9.png" alt="UV LED 和 红色激光加入"></p> 
+<p><img src="https://img-blog.csdnimg.cn/c49d86514cb6407396981d20c286c2e9.png" alt="控制器和电源"><br> <img src="https://img-blog.csdnimg.cn/b1035f2c4db54be29d064570f2bef9ff.png" alt="完整系统"></p> 
+<p><img src="https://img-blog.csdnimg.cn/40bfdd29de23442083884fe70d2d029c.png" alt="带红色激光对准照明的手动 LCoS 亚微米步进机"></p> 
+<p><img src="https://img-blog.csdnimg.cn/ef1b9be8e1074167878fc0b8998f74fe.png" alt="在这里插入图片描述"></p> 
+<h3><a href="https://dlinnovations.com/wp-content/uploads/white-paper-a-maskless-photolithographic-prototyping-system.pdf" rel="nofollow">2.A maskless photolithographic prototyping system using a low-cost consumer projector and a microscope</a></h3> 
+<h3><a href="https://www.diva-portal.org/smash/get/diva2:575458/FULLTEXT01.pdf" rel="nofollow">3.Optical devices and methods for distributed lab-on-a-chip analyses</a></h3> 
+<h3><a href="https://arxiv.org/ftp/arxiv/papers/2002/2002.11639.pdf" rel="nofollow">4.Microscope Projection Photolithography Based on Liquid Crystal Microdisplay </a></h3> 
+<h3><a href="http://people.ece.umn.edu/users/hjacobs/publications/2001Langmuir-Love.pdf" rel="nofollow">5.Microscope Projection Photolithography for RapidPrototyping of Masters with Micron-Scale Features for Use in Soft Lithography</a></h3> 

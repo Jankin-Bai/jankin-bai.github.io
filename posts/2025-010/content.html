@@ -1,0 +1,39 @@
+<!-- Post: 【C】指针应用场景 | ID: 2025-010 | Created: 2025-03-07 | Tags: tech | Source: CSDN sinat_36912383 -->
+
+<blockquote>本文复刻自 <a href="https://blog.csdn.net/sinat_36912383/article/details/72805933" target="_blank" rel="noopener">CSDN 博主 sinat_36912383</a> 的原创文章，原文发布于 2025-03-07。</blockquote>
+
+<h3>场景一</h3> 
+<blockquote> 
+ <p>函数返回多个值，某些值就只能通过指针返回传入的参数实际上是需要保存带回的结果的变量<br> 例子：</p> 
+</blockquote> 
+<pre><code class="prism language-c">#include<stdio.h>
+ void MinMax(int num[], int lon, int *min, int *max)//声明函数（建议函数写好之后再声明，或者直接将需要的函数写在主函数前面,可以免去声明，然后免去很多麻烦
+int main(void){
+ int num[]={1,9,3,8,12,23,43,33,6,10};
+ int min, max;
+ MinMax(num, sizeof(num)/sizeof(num[0]),&min, &max);
+ printf("MIn=%d,\nMax=%d\n",min, max);
+ return 0;}
+//下面的指针代表数组，简而言之，数组就是特殊的指针
+void MinMax(int *num, int lon, int *min, int *max)//函数部分，将数组传入函数中要注意：1.传入时只将数组名带入,2.接收数组时要用数组接收
+ {
+ int i;
+ *min=*max=num[0];
+ for(i=0; i<=lon; i++){
+ if(num[i]<*min){
+ *min=num[i];
+ }
+ if(num[i]>*max){
+ *max=num[i];
+ }
+ }
+ } 
+</code></pre> 
+<h3>场景二</h3> 
+<blockquote> 
+ <p>函数返回运算状态，结果通过指针返回<br> 常用的套路是让函数返回特殊的不属于有效范围内的值来表示出错：<br> -1或0（在文件操作会看到大量的例子）<br> 但是当任何数值都是有效的可能结果时，就得分开返回了<br> 后续的语言（C++，Java）采用了异常机制来解决这个问题</p> 
+</blockquote> 
+<h3>常见错误</h3> 
+<blockquote> 
+ <p>定义了指针变量，还没指向任何变量就开始使用指针</p> 
+</blockquote>
