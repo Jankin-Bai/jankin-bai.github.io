@@ -1,0 +1,194 @@
+{
+  "default": {
+    "name": "默认书卷",
+    "preview": {
+      "bg": "#f7f3ed",
+      "accent": "#8b6914"
+    },
+    "vars": {
+      "--color-bg": "#f7f3ed",
+      "--color-surface": "#fdfbf7",
+      "--color-text": "#2c2416",
+      "--color-text-secondary": "#6b5d45",
+      "--color-text-muted": "#7a6d58",
+      "--color-border": "#e0d8c8",
+      "--color-border-light": "#ece5d8",
+      "--color-primary": "#8b6914",
+      "--color-primary-light": "#f0e8d0",
+      "--color-primary-dark": "#5c4509",
+      "--color-accent": "#a0522d",
+      "--font-family": "'Noto Serif SC', 'Source Han Serif SC', Georgia, serif",
+      "--font-family-serif": "'Noto Serif SC', Georgia, serif",
+      "--font-family-mono": "'JetBrains Mono', Consolas, monospace",
+      "--border-radius": "4px",
+      "--border-radius-sm": "2px",
+      "--card-shadow": "0 1px 4px rgba(80,60,20,0.08)",
+      "--card-shadow-hover": "0 4px 16px rgba(80,60,20,0.12)",
+      "--timeline-color": "#8b6914",
+      "--link-color": "#8b6914",
+      "--code-bg": "#f0ead8",
+      "--blockquote-border": "#8b6914",
+      "--transition": "300ms ease"
+    }
+  },
+  "serif": {
+    "name": "学术书卷",
+    "preview": {
+      "bg": "#faf8f5",
+      "accent": "#2c3e50"
+    },
+    "vars": {
+      "--color-bg": "#faf8f5",
+      "--color-surface": "#ffffff",
+      "--color-text": "#1a1a1a",
+      "--color-text-secondary": "#4a4a4a",
+      "--color-text-muted": "#6b6b6b",
+      "--color-border": "#e0e0e0",
+      "--color-border-light": "#f0f0f0",
+      "--color-primary": "#2c3e50",
+      "--color-primary-light": "#ecf0f1",
+      "--color-primary-dark": "#1a252f",
+      "--color-accent": "#c0392b",
+      "--font-family": "'Source Han Serif SC', 'Noto Serif SC', Georgia, serif",
+      "--font-family-serif": "'Source Han Serif SC', Georgia, serif",
+      "--font-family-mono": "'JetBrains Mono', Consolas, monospace",
+      "--border-radius": "2px",
+      "--border-radius-sm": "1px",
+      "--card-shadow": "0 1px 3px rgba(0,0,0,0.06)",
+      "--card-shadow-hover": "0 2px 8px rgba(0,0,0,0.1)",
+      "--timeline-color": "#2c3e50",
+      "--link-color": "#2980b9",
+      "--code-bg": "#f5f5f5",
+      "--blockquote-border": "#2c3e50",
+      "--transition": "200ms ease"
+    }
+  },
+  "mono": {
+    "name": "终端极客",
+    "preview": {
+      "bg": "#0d1117",
+      "accent": "#58a6ff"
+    },
+    "vars": {
+      "--color-bg": "#0d1117",
+      "--color-surface": "#161b22",
+      "--color-text": "#c9d1d9",
+      "--color-text-secondary": "#8b949e",
+      "--color-text-muted": "#8b949e",
+      "--color-border": "#30363d",
+      "--color-border-light": "#21262d",
+      "--color-primary": "#58a6ff",
+      "--color-primary-light": "#1f2d3d",
+      "--color-primary-dark": "#388bfd",
+      "--color-accent": "#7ee787",
+      "--font-family": "'JetBrains Mono', 'Fira Code', Consolas, monospace",
+      "--font-family-serif": "'JetBrains Mono', Consolas, monospace",
+      "--font-family-mono": "'JetBrains Mono', Consolas, monospace",
+      "--border-radius": "4px",
+      "--border-radius-sm": "2px",
+      "--card-shadow": "0 0 0 1px rgba(88,166,255,0.1)",
+      "--card-shadow-hover": "0 0 0 1px rgba(88,166,255,0.3), 0 4px 12px rgba(0,0,0,0.4)",
+      "--timeline-color": "#58a6ff",
+      "--link-color": "#58a6ff",
+      "--code-bg": "#0d1117",
+      "--blockquote-border": "#58a6ff",
+      "--transition": "150ms ease"
+    }
+  },
+  "minimal": {
+    "name": "极简黑白",
+    "preview": {
+      "bg": "#ffffff",
+      "accent": "#000000"
+    },
+    "vars": {
+      "--color-bg": "#ffffff",
+      "--color-surface": "#fafafa",
+      "--color-text": "#111111",
+      "--color-text-secondary": "#555555",
+      "--color-text-muted": "#888888",
+      "--color-border": "#e5e5e5",
+      "--color-border-light": "#f0f0f0",
+      "--color-primary": "#000000",
+      "--color-primary-light": "#f0f0f0",
+      "--color-primary-dark": "#000000",
+      "--color-accent": "#666666",
+      "--font-family": "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+      "--font-family-serif": "Georgia, serif",
+      "--font-family-mono": "'JetBrains Mono', Consolas, monospace",
+      "--border-radius": "0px",
+      "--border-radius-sm": "0px",
+      "--card-shadow": "none",
+      "--card-shadow-hover": "0 2px 8px rgba(0,0,0,0.08)",
+      "--timeline-color": "#000000",
+      "--link-color": "#000000",
+      "--code-bg": "#f5f5f5",
+      "--blockquote-border": "#000000",
+      "--transition": "200ms ease"
+    }
+  },
+  "warm": {
+    "name": "暖色复古",
+    "preview": {
+      "bg": "#f5e6d3",
+      "accent": "#b85c38"
+    },
+    "vars": {
+      "--color-bg": "#f5e6d3",
+      "--color-surface": "#faf0e0",
+      "--color-text": "#4a3728",
+      "--color-text-secondary": "#7a6248",
+      "--color-text-muted": "#7a6548",
+      "--color-border": "#d4b896",
+      "--color-border-light": "#e8d5b8",
+      "--color-primary": "#b85c38",
+      "--color-primary-light": "#f0d8c8",
+      "--color-primary-dark": "#8a3f20",
+      "--color-accent": "#d4a017",
+      "--font-family": "'Noto Serif SC', 'Georgia', 'Times New Roman', serif",
+      "--font-family-serif": "'Noto Serif SC', Georgia, serif",
+      "--font-family-mono": "'JetBrains Mono', Consolas, monospace",
+      "--border-radius": "8px",
+      "--border-radius-sm": "4px",
+      "--card-shadow": "0 2px 8px rgba(120,80,40,0.1)",
+      "--card-shadow-hover": "0 6px 20px rgba(120,80,40,0.15)",
+      "--timeline-color": "#b85c38",
+      "--link-color": "#b85c38",
+      "--code-bg": "#ede0cc",
+      "--blockquote-border": "#b85c38",
+      "--transition": "280ms ease"
+    }
+  },
+  "dark": {
+    "name": "深色护眼",
+    "preview": {
+      "bg": "#1a1a2e",
+      "accent": "#e94560"
+    },
+    "vars": {
+      "--color-bg": "#1a1a2e",
+      "--color-surface": "#16213e",
+      "--color-text": "#eaeaea",
+      "--color-text-secondary": "#a0a0b0",
+      "--color-text-muted": "#707080",
+      "--color-border": "#2a2a4e",
+      "--color-border-light": "#202040",
+      "--color-primary": "#e94560",
+      "--color-primary-light": "#2a1a2e",
+      "--color-primary-dark": "#c73e54",
+      "--color-accent": "#0f3460",
+      "--font-family": "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+      "--font-family-serif": "Georgia, serif",
+      "--font-family-mono": "'JetBrains Mono', Consolas, monospace",
+      "--border-radius": "6px",
+      "--border-radius-sm": "3px",
+      "--card-shadow": "0 2px 8px rgba(0,0,0,0.3)",
+      "--card-shadow-hover": "0 4px 16px rgba(0,0,0,0.4)",
+      "--timeline-color": "#e94560",
+      "--link-color": "#e94560",
+      "--code-bg": "#0f0f1a",
+      "--blockquote-border": "#e94560",
+      "--transition": "250ms ease"
+    }
+  }
+}
