@@ -6,6 +6,7 @@
  *   - XSS 转义（meta.title, meta.summary 等）
  *   - 错误处理优化
  *   - 加载状态
+ *   - CDN 加载 vendor（marked/katex/mermaid），减少仓库体积
  */
 (async function() {
   'use strict';
@@ -161,7 +162,7 @@
     let content;
 
     if (format === 'markdown') {
-      await loadScript('assets/js/vendor/marked.min.js');
+      await loadScript('https://cdn.jsdelivr.net/npm/marked/marked.min.js');
       const mdResp = await fetch(`posts/${esc(postId)}/content.md`);
       if (!mdResp.ok) throw new Error('content.md 加载失败: HTTP ' + mdResp.status);
       let mdText = await mdResp.text();
@@ -205,9 +206,9 @@
     // 按需加载 KaTeX（同时检测行内公式和块级公式）
     if (format === 'markdown' && (/\$[^$]+\$/.test(content) || /\$\$[\s\S]*?\$\$/.test(content))) {
       try {
-        await loadStyle('assets/css/vendor/katex.min.css');
-        await loadScript('assets/js/vendor/katex.min.js');
-        await loadScript('assets/js/vendor/auto-render.min.js');
+        await loadStyle('https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css');
+        await loadScript('https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js');
+        await loadScript('https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js');
         renderMathInElement($('post-content'), {
           delimiters: [
             {left: '$$', right: '$$', display: true},
@@ -221,7 +222,7 @@
     // 按需加载 Mermaid
     if (content.includes('class="mermaid"')) {
       try {
-        await loadScript('assets/js/vendor/mermaid.min.js');
+        await loadScript('https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js');
         mermaid.initialize({ startOnLoad: false, theme: 'dark', securityLevel: 'loose' });
         await mermaid.run({ querySelector: '.mermaid' });
       } catch (e) { console.warn('Mermaid 加载失败:', e.message); }
