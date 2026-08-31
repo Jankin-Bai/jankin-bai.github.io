@@ -1,0 +1,49 @@
+<!-- Post: 【汇编】指令集概念与数的机器表示 | ID: 2025-005 | Created: 2025-03-07 | Tags: tech | Source: CSDN sinat_36912383 -->
+
+<blockquote>本文复刻自 <a href="https://blog.csdn.net/sinat_36912383/article/details/82766617" target="_blank" rel="noopener">CSDN 博主 sinat_36912383</a> 的原创文章，原文发布于 2025-03-07。</blockquote>
+
+<h3>指令集</h3> 
+<h4>CISC （复杂指令集）</h4> 
+<h5>X86架构</h5> 
+<ul><li>向下兼容</li><li>变长指令</li></ul> 
+<pre><code>1-15字节，多数为2-3字节长度
+</code></pre> 
+<ul><li>多种寻址方式(可访问不对齐内存地址)</li><li>指令集的通用寄存器的个数有限</li></ul> 
+<pre><code>X86-32系统下拥有8个通用寄存器（X86-64扩展到16个）
+</code></pre> 
+<ul><li>至多只有一个操作数在内存中，另一个操作数为立即数或者寄存器</li></ul> 
+<h4>RISC （精简指令集）</h4> 
+<h5>MIPS</h5> 
+<ul><li>以寄存器为中心（32个），只有Load/Store指令访问内存，所有的计算类型指令均从寄存器堆中读取数据并把结果写入寄存器堆中。MIPS32还定义了32个浮点寄存器</li><li>MIPS指令集的指令格式非常规整，所有指令长度一定，而且指令操作码在固定的位置上。</li><li>MIPS指令的寻址方式非常简单，每条指令的操作也较简单</li><li>MIPS32^TM的指令格式只有三种</li></ul> 
+<pre><code>R (register)类型的指令从寄存器堆读取两个源操作数将结果写回寄存器堆。
+I (immediate)类型的指令使用16位的立即数作为源操作数。
+J (jump)类型的指令使用26位立即数作为跳转的目标地址(target address)。
+</code></pre> 
+<h5>ARM</h5> 
+<p>“有些不同”的RISC指令集</p> 
+<ul><li>ARM指令完成简单的操作。编译器或程序员通过几条简单指令的组合来实现一个复杂的操作</li><li>ARM指令集大多数采用相同的字节长度，并且在字边界上对齐，字段位置固定，特别是操作码的位置。</li><li>使用Load/Store 存储模式，只有Load/Store指令访问内存，所有其他指令都只能对寄存器里的操作数进行操作。</li><li>大多指令都具有“条件执行”模式</li><li>具有16位压缩指令集(Thumb)</li></ul> 
+<h3>数的机器表示</h3> 
+<h4>机器字(Machine Word)长</h4> 
+<pre><code>一般指机器进行一次整数运算所能处理的二进制数据的位数
+通常也包括数据地址长度。
+</code></pre> 
+<h4>计算机中整数二进制的编码方式</h4> 
+<ul><li>无符号数—>原码表示</li><li>带符号数—>补码表示（它的负数=原码数按位取反加一）</li></ul> 
+<p><pre><code class="math-display">i=0∑w−1​xi​∗2i</code></pre><br> <pre><code class="math-display">−xw−1​∗2w−1+i=0∑w−2​xi​∗2i</code></pre><br> <code class="math-inline"></code><br> <code class="math-inline"></code>​∗2w−1：符号位<br> <code class="math-inline"></code></p> 
+<p><a href="https://blog.csdn.net/shmilychan/article/details/51482945">插入公式详解</a></p> 
+<h4>无符号整数与带符号整数</h4> 
+<h5>取值范围</h5> 
+<ul><li>无符号数</li></ul> 
+<p><pre><code class="math-display">0</code></pre><br> <pre><code class="math-display"></code></pre><br> <pre><code class="math-display">2w−1</code></pre><br> <pre><code class="math-display"></code></pre></p> 
+<ul><li>带符号数(补码)</li></ul> 
+<p><pre><code class="math-display">−2w−1</code></pre><br> <pre><code class="math-display"></code></pre><br> <pre><code class="math-display">2w−1−1</code></pre><br> <pre><code class="math-display"></code></pre><br> <pre><code class="math-display">111...1</code></pre></p> 
+<table><thead><tr><th>X</th><th align="right">B2U(X)</th><th align="center">B2T(X)</th></tr></thead><tbody><tr><td>0000</td><td align="right">0</td><td align="center">0</td></tr><tr><td>0001</td><td align="right">1</td><td align="center">1</td></tr><tr><td>0010</td><td align="right">2</td><td align="center">2</td></tr><tr><td>0011</td><td align="right">3</td><td align="center">3</td></tr><tr><td>0100</td><td align="right">4</td><td align="center">4</td></tr><tr><td>0101</td><td align="right">5</td><td align="center">5</td></tr><tr><td>0110</td><td align="right">6</td><td align="center">6</td></tr><tr><td>0111</td><td align="right">7</td><td align="center">7</td></tr><tr><td>1000</td><td align="right">8</td><td align="center">-8</td></tr><tr><td>1001</td><td align="right">9</td><td align="center">-7</td></tr><tr><td>1010</td><td align="right">10</td><td align="center">-6</td></tr><tr><td>1011</td><td align="right">11</td><td align="center">-5</td></tr><tr><td>1100</td><td align="right">12</td><td align="center">-4</td></tr><tr><td>1101</td><td align="right">13</td><td align="center">-3</td></tr><tr><td>1110</td><td align="right">14</td><td align="center">-2</td></tr><tr><td>1111</td><td align="right">15</td><td align="center">-1</td></tr></tbody></table>
+<p>无符号数与带符号数之间的转换：二进制串本身是不变化的，只是解释的不一样</p> 
+<h4>C语言中的无符号数语带符号数</h4> 
+<h5>常数（Constants）</h5> 
+<h5>默认是带符号数</h5> 
+<ul><li>如果有“U”作为后缀则是无符号数，如0U，112312312U</li></ul> 
+<h5>>如果无符号数与带符号数混用，则带符号数则默认转换为无符号数</h5> 
+<h5>包括比较操作符</h5> 
+<h5>实例（<code class="math-inline">32</code>）</h5> 
+<table><thead><tr><th><code class="math-inline"></code>​</th><th align="right"><code class="math-inline"></code>​</th><th align="center"><code class="math-inline"></code></th><th align="center"><code class="math-inline"></code></th></tr></thead><tbody><tr><td>0</td><td align="right">0U</td><td align="center">==</td><td align="center"><code class="math-inline"></code></td></tr><tr><td>-1</td><td align="right">0</td><td align="center"><</td><td align="center"><code class="math-inline"></code></td></tr><tr><td>-1</td><td align="right">0U</td><td align="center">></td><td align="center"><code class="math-inline"></code></td></tr><tr><td>2147483647</td><td align="right">-2147483647-1</td><td align="center">></td><td align="center"><code class="math-inline"></code></td></tr><tr><td>2147483647U</td><td align="right">-2147483647-1</td><td align="center"><</td><td align="center"><code class="math-inline"></code></td></tr><tr><td>-1</td><td align="right">-2</td><td align="center">></td><td align="center"><code class="math-inline"></code></td></tr><tr><td>(<code class="math-inline"></code>)-1</td><td align="right">-2</td><td align="center">></td><td align="center"><code class="math-inline"></code></td></tr><tr><td>2147483647</td><td align="right">2147483648U</td><td align="center"><</td><td align="center"><code class="math-inline"></code></td></tr><tr><td>2147483647</td><td align="right">(<code class="math-inline"></code>)2147483648U</td><td align="center">></td><td align="center"><code class="math-inline"></code></td></tr></tbody></table>

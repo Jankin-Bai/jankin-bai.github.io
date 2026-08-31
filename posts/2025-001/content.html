@@ -1,0 +1,251 @@
+<!-- Post: NFC学习【笔记】 | ID: 2025-001 | Created: 2025-06-21T23:48:58 | Tags: tech -->
+
+<blockquote>本文复刻自 CSDN 博主 sinat_36912383 的原创文章，原文发布于 2025-06-21。<a href="https://blog.csdn.net/sinat_36912383/article/details/148188773" target="_blank" rel="noopener">查看原文</a></blockquote>
+
+<h3>一、射频</h3>
+<p>参考视频：<a href="https://www.bilibili.com/video/BV1xW411s7Qj" target="_blank" rel="noopener">【是德科技】近场通信NFC是啥?NFC和RFID的区别呢？</a></p>
+
+<h3>二、通信协议</h3>
+
+<h4>1. ISO/IEC 14443 Type A 和 Type B</h4>
+
+<h5>Standards Overview【标准概述】</h5>
+<img src="https://p11-doubao-search-sign.byteimg.com/isp-i18n-media/image/1aa13163a6ca8892183f72b7e11e89d4~tplv-be4g95zd3a-896x896.jpeg?lk3s=0ed4045e&x-expires=1803572165&x-signature=t7pNGyAkWxuL2jEGrmvcbIUZkqQ%3D" alt="ISO/IEC 14443 标准概述" referrerpolicy="no-referrer" style="max-width:100%;">
+
+<h5>History 【历史】</h5>
+<ul>
+  <li>The development of the standard was assigned to <strong>SC17</strong>/WG8 in 1994. A task force was established comprising several companies. The 1st task was to determine what the market wanted in a contactless card.
+    <br>【1994年，该标准的制定工作被委托给SC17/WG8。一个由多家公司组成的工作组应运而生。首要任务是确定市场对非接触式卡的需求。】
+    <br>The task force studied various applications, that were in use at the time and projected for the foreseeable future.</li>
+  <li>Compatibility with application layers of existing contact smart card (ISO/IEC 7816) standards was also taken into consideration for the ease of integration and deployment.
+    <br>【为了便于集成和部署，还考虑了与现有接触式智能卡（ISO/IEC 7816）标准应用层的兼容性。】</li>
+  <li>In the end, the task force defined four parts to the standard:
+    <br>【最终，工作组为该标准定义了四个部分】
+    <ol>
+      <li>ISO/IEC14443-1 Physical characteristics【物理特性】</li>
+      <li>ISO/IEC14443-2 Radio Frequency Power and Signal Interface【射频功率和信号接口】</li>
+      <li>ISO/IEC14443-3 Initialization and anticollision【初始化和防冲突/防碰撞】</li>
+      <li>ISO/IEC14443-4 Transmission Protocol【传输协议】</li>
+    </ol>
+  </li>
+</ul>
+
+<h5>History - Modes of Operation 【历史 - 运作模式】</h5>
+<ul>
+  <li>The task force felt that a standard must also be capable of defining a card that uses a microprocessor as this offers the flexibility to easily update the application through software.
+    <br>【工作组认为，标准还必须能够定义使用微处理器的卡，因为这样可以灵活地通过软件轻松更新应用程序。】</li>
+  <li>After a year of debate a consensus was reached by defining two 'modes of operation' in ISO/IEC 14443-2 (the power and signal interface). These are referred to as 'Type A' and 'Type B'.
+    <br>【经过一年的辩论，最终达成共识，在 ISO/IEC 14443-2（电源和信号接口）中定义了两种"工作模式"。这些模式被称为"Type A"和"Type B"】</li>
+  <li>In 1998 a third signal interface mode was proposed by Sony (Type C) but rejected as this did not add anything new to the standard.
+    <br>【1998 年，索尼提出了第三种信号接口模式（C 型），但由于没有为标准增添任何新内容而被否决。】</li>
+  <li>All four parts of the ISO/IEC14443 standards were completed by 2001.
+    <br>【ISO/IEC14443 标准的所有四个部分均于 2001 年完成。】</li>
+  <li>In mid 2001, a number of companies proposed an amendment that would add five additional modes to ISO/IEC14443-2. (Type C &gt; G).
+    <br>【2001 年中期，一些公司提出了一项修正案，将在 ISO/IEC14443-2 中增加五种模式（Type C &gt; G 型）。】</li>
+  <li>An <strong>SC17</strong> ballot (ISO/IEC JTC1/SC17 N2051) on 11th Jan 2001 eventually concluded to keep only the two modes A and B.
+    <br>【2001 年 1 月 11 日举行的 SC17 投票（ISO/IEC JTC1/SC17 N2051）最终决定仅保留 Type A 和 Type B 两种模式。】</li>
+</ul>
+<img src="https://p3-doubao-search-sign.byteimg.com/labis/image/41fe8c7e2979d497c6f6d23c6cd17e96~tplv-be4g95zd3a-896x896.jpeg?lk3s=0ed4045e&x-expires=1803572165&x-signature=KSZHEn778Wud9%2FwFy11u7fkF%2F4Y%3D" alt="Type A-G 模式对比表" referrerpolicy="no-referrer" style="max-width:100%;">
+
+<h5>Acronyms【缩略语】</h5>
+<ul>
+  <li>There are a vast amount of acronyms used in the standard. These are summarized in the 'Symbols and Abbreviated Terms' section at the front of all parts 1 &gt; 4 of the standard.
+    <br>【该标准中使用了大量的首字母缩略词。这些缩略词在该标准第1部分至第4部分开头的"符号和缩写"部分进行了总结。】</li>
+  <li>Primary acronyms are:【主要缩略词包括】
+    <br>PICC – Proximity Integrated Circuit Card (Transponder) 【近接集成电路卡（应答器/卡）】
+    <br>PCD – Proximity Coupling Device (Reader) 【近接耦合设备（读卡器）】</li>
+  <li>Also, many of the commands referenced in Parts 3 and 4 are formatted XXXA or XXXB. This identifies them as a Type A or Type B command.
+    <br>【此外，第3部分和第4部分中引用的许多命令的格式为XXXA或XXXB。这表示它们是Type A命令还是Type B命令。】
+    <br>i.e. 【例如】
+    <br>REQA - Request Type A PICC Command【请求A类PICC命令】
+    <br>REQB - Request Type B PICC Command【请求B类PICC命令】</li>
+</ul>
+
+<table border="1" cellpadding="6" cellspacing="0" style="border-collapse:collapse; width:100%; font-size:14px;">
+<thead><tr><th>缩写</th><th>解释</th></tr></thead>
+<tbody>
+<tr><td>ADC</td><td>Application Data Coding, Type B 应用数据编码</td></tr>
+<tr><td>AFI</td><td>Application Family Identifier. Card preselection criteria by application, Type B 应用系列标识符 按应用预选卡片的标准</td></tr>
+<tr><td>APf</td><td>Anticollision Prefix f, used in REQB/WUPB, Type B 防撞前缀 f，用于 REQB/WUPB</td></tr>
+<tr><td>APn</td><td>Anticollision Prefix n, used in Slot-MARKER command, Type B 防撞前缀 n，用于 Slot-MARKER 命令</td></tr>
+<tr><td>ATQA</td><td>Answer To reQuest, Type A</td></tr>
+<tr><td>ATQB</td><td>Answer To reQuest, Type B</td></tr>
+<tr><td>ATTRIB</td><td>PICC selection command, Type B PICC 选择命令</td></tr>
+<tr><td>BCC</td><td>Block Check Character (UID CLn check byte), Type A 块校验字符</td></tr>
+<tr><td>CID</td><td>Card IDentifier 卡标识符</td></tr>
+<tr><td>CLn</td><td>Cascade Level n, Type A 级联级别</td></tr>
+<tr><td>CT</td><td>Cascade Tag, Type A 级联标签</td></tr>
+<tr><td>CRC_A</td><td>Cyclic Redundancy Check error detection code, Type A 循环冗余校验错误检测码</td></tr>
+<tr><td>CRC_B</td><td>Cyclic Redundancy Check error detection code, Type B 循环冗余校验错误检测码</td></tr>
+<tr><td>D</td><td>Divisor 除数</td></tr>
+<tr><td>E</td><td>End of communication, Type A</td></tr>
+<tr><td>EGT</td><td>Extra Guard Time, Type B 额外保护时间</td></tr>
+<tr><td>EOF</td><td>End Of Frame, Type B</td></tr>
+<tr><td>etu</td><td>elementary time unit 基本时间单位</td></tr>
+<tr><td>FDT</td><td>Frame Delay Time, Type A 帧延迟时间</td></tr>
+<tr><td>fc</td><td>carrier frequency 载波频率</td></tr>
+<tr><td>FO</td><td>Frame Option, Type B</td></tr>
+<tr><td>fs</td><td>subcarrier frequency 副载波频率</td></tr>
+<tr><td>FWI</td><td>Frame Waiting time Integer</td></tr>
+<tr><td>FWT</td><td>Frame Waiting Time</td></tr>
+<tr><td>HLTA</td><td>HaLT command, Type A</td></tr>
+<tr><td>HLTB</td><td>HaLT command, Type B</td></tr>
+<tr><td>ID</td><td>IDentification number, Type A</td></tr>
+<tr><td>INF</td><td>INFormation field belonging to higher layer, Type B 属于高层的信息字段</td></tr>
+<tr><td>LSB</td><td>Least Significant Bit 最低有效位</td></tr>
+<tr><td>MBL</td><td>Maximum Buffer Length, Type B 最大缓冲区长度</td></tr>
+<tr><td>MBLI</td><td>Maximum Buffer Length Index, Type B 最大缓冲区长度索引</td></tr>
+<tr><td>MSB</td><td>Most Significant Bit 最高有效位</td></tr>
+<tr><td>N</td><td>Number of anticollision slots, Type B 防冲突槽数量</td></tr>
+<tr><td>n</td><td>Variable integer value as defined in the specific clause 具体子句中定义的变量整数值</td></tr>
+<tr><td>NAD</td><td>Node ADdress 节点地址</td></tr>
+<tr><td>NVB</td><td>Number of Valid Bits, Type A 有效位数</td></tr>
+<tr><td>P</td><td>Odd Parity bit, Type A 奇校验位</td></tr>
+<tr><td>PCD</td><td>Proximity Coupling Device 近接耦合设备（读卡器）</td></tr>
+<tr><td>PICC</td><td>Proximity Card or object 近接集成电路卡（应答器/卡）</td></tr>
+<tr><td>PUPI</td><td>Pseudo-Unique PICC Identifier, Type B 伪唯一 PICC 标识符</td></tr>
+<tr><td>R</td><td>Slot number chosen by the PICC during the anticollision sequence, Type B 防冲突序列期间 PICC 选择的槽号</td></tr>
+<tr><td>REQA</td><td>REQuest command, Type A</td></tr>
+<tr><td>REQB</td><td>REQuest command, Type B</td></tr>
+<tr><td>RFU</td><td>Reserved for Future Use by ISO/IEC 由 ISO/IEC 保留以供将来使用</td></tr>
+<tr><td>S</td><td>Start of communication, Type A</td></tr>
+<tr><td>SAK</td><td>Select AcKnowledge, Type A</td></tr>
+<tr><td>SEL</td><td>SELect code, Type A</td></tr>
+<tr><td>SELECT</td><td>SELECT command, Type A</td></tr>
+<tr><td>SFGI</td><td>Start-up Frame Guard time Integer 启动帧保护时间整数</td></tr>
+<tr><td>SFGT</td><td>Start-up Frame Guard Time 启动帧保护时间</td></tr>
+<tr><td>SOF</td><td>Start Of Frame, Type B</td></tr>
+<tr><td>TR0</td><td>Guard Time as defined in ISO/IEC 14443-2, Type B 保护时间</td></tr>
+<tr><td>TR1</td><td>Synchronization Time as defined in ISO/IEC 14443-2, Type B 同步时间</td></tr>
+<tr><td>TR2</td><td>Frame delay Time PICC to PCD, Type B 帧延迟时间 PICC 到 PCD</td></tr>
+<tr><td>UID</td><td>Unique IDentifier, Type A 唯一标识符</td></tr>
+<tr><td>UID CLn</td><td>Unique IDentifier of CLn, Type A</td></tr>
+<tr><td>uidn</td><td>Byte number n of Unique IDentifier, n ≥ 0 唯一标识符的字节</td></tr>
+<tr><td>WUPA</td><td>Wake-UP command, Type A 唤醒命令</td></tr>
+<tr><td>WUPB</td><td>Wake-UP command, Type B 唤醒命令</td></tr>
+</tbody>
+</table>
+
+<p>For the purposes of this part of ISO/IEC 14443, the following notation applies:</p>
+<ul>
+  <li>(xxxxx)b — Data bit representation【数据位表示】</li>
+  <li>'XY' — Hexadecimal notation, equal to XY to the base 16.【十六进制表示法】</li>
+</ul>
+
+<h5>Standard Structure【标准结构】</h5>
+
+<h6>ISO/IEC14443-1 Physical Characteristics【物理特性】</h6>
+<img src="https://p11-doubao-search-sign.byteimg.com/labis/image/92e4cb516b69589750914767f8083457~tplv-be4g95zd3a-896x896.jpeg?lk3s=0ed4045e&x-expires=1803572165&x-signature=HwczFsjSUFofcmSd7KYSt3%2Bw0fc%3D" alt="ID-1 卡物理尺寸" referrerpolicy="no-referrer" style="max-width:100%;">
+<ul>
+  <li>This part of the standard specifies the physical size of the smart card.
+    <br>【本标准部分规定了智能卡的物理尺寸。】</li>
+  <li>The card is the following size: (85.6mm x 54.0mm x .76mm) referred to as ID-1 size.
+    <br>【智能卡尺寸如下：(85.6 毫米 x 54.0 毫米 x 0.76 毫米)，简称 ID-1 尺寸。】</li>
+  <li>This is the size of a bank credit card.
+    <br>【这是银行信用卡的尺寸。】</li>
+</ul>
+
+<h6>ISO/IEC1443-2 Power and Interface 【电源和接口】</h6>
+<p>The ISO/IEC14443-2 standard has two modes with the following features:</p>
+
+<p><strong>Reader to Card (PCD &gt; PICC) 读卡器到卡</strong></p>
+<table border="1" cellpadding="6" cellspacing="0" style="border-collapse:collapse; width:100%;">
+<thead><tr><th>参数</th><th>Type A</th><th>Type B</th></tr></thead>
+<tbody>
+<tr><td>Frequency 频率</td><td>13.56 MHz</td><td>13.56 MHz</td></tr>
+<tr><td>Modulation 调制方式</td><td>100% ASK</td><td>10% ASK</td></tr>
+<tr><td>Bit coding 比特编码</td><td>Modified Miller 改进型米勒</td><td>NRZ</td></tr>
+<tr><td>Data rate 数据速率</td><td>106 kb/s</td><td>106 kb/s</td></tr>
+</tbody>
+</table>
+
+<p><strong>Card to Reader (PICC &gt; PCD) 卡到读卡器</strong></p>
+<table border="1" cellpadding="6" cellspacing="0" style="border-collapse:collapse; width:100%;">
+<thead><tr><th>参数</th><th>Type A</th><th>Type B</th></tr></thead>
+<tbody>
+<tr><td>Modulation 调制方式</td><td>Load</td><td>Load</td></tr>
+<tr><td>Bit coding 比特编码</td><td>OOK</td><td>BPSK</td></tr>
+<tr><td>Subcarrier 副载波</td><td>847kHz</td><td>847kHz</td></tr>
+<tr><td>Bit coding 比特编码</td><td>Manchester 曼彻斯特</td><td>NRZ</td></tr>
+<tr><td>Data rate 数据速率</td><td>106 kb/s</td><td>106 kb/s</td></tr>
+</tbody>
+</table>
+
+<ul>
+  <li>These features allow the reader to power and communicate with the card over a targeted range of operation of approximately 10 cm.
+    <br>【这些功能允许读卡器在约 10 厘米的目标操作范围内为卡供电并与卡通信。】</li>
+</ul>
+<p>改进米勒型如图存在信号完全消失的阶段，NRZ的信号始终存在。</p>
+<img src="https://p3-doubao-search-sign.byteimg.com/labis/image/da6da95355a845823c16044fc3d5717c~tplv-be4g95zd3a-896x896.jpeg?lk3s=0ed4045e&x-expires=1803572165&x-signature=myqsJ65IAU77h%2FXGBQNavBzSCS8%3D" alt="Type A/B 调制波形对比" referrerpolicy="no-referrer" style="max-width:100%;">
+
+<h6>ISO/IEC14443-3 Initialization and Anticollision 【初始化和防碰撞】</h6>
+<img src="https://p26-doubao-search-sign.byteimg.com/labis/image/87dff7de6a1ecf51b7b8c2478b0a8118~tplv-be4g95zd3a-896x896.jpeg?lk3s=0ed4045e&x-expires=1803572165&x-signature=ew4Rcym1cCSHlW1xRq6Jijwujqk%3D" alt="Type A 初始化和防碰撞流程" referrerpolicy="no-referrer" style="max-width:100%;">
+<ul>
+  <li>Part three of the standard enables the reader to identify the cards in the magnetic field and establish communications with a specific card. It specifies the byte format, frames and timing used during the 2 initial phases of communication.
+    <br>【该标准的第三部分使读卡器能够识别磁场中的卡片并与特定卡片建立通信。它规定了通信两个初始阶段使用的字节格式、帧和时序。】</li>
+  <li>The initialization process includes the commands between the reader and the card that activates the card to the 'READY' state.
+    <br>【初始化过程包括读卡器和卡片之间的命令，这些命令将卡片激活为"就绪"状态。】</li>
+  <li>This anticollision process follows to identify all PICC's in the PCD field.
+    <br>【此防冲突过程随后用于识别 PCD 字段中的所有 PICC 卡。】</li>
+  <li>Part 3 defines 2 anticollision processes for the 2 different modes
+    <br>【第三部分为两种不同的模式定义了两种防冲突过程】:
+    <ul>
+      <li>Type A &gt; Bit-collision detection protocol【位冲突检测协议】</li>
+      <li>Type B &gt; Slotted ALOHA with dynamic slot adaptation.【具有动态时隙自适应的分槽 ALOHA】</li>
+    </ul>
+  </li>
+</ul>
+
+<h6>ISO/IEC14443-4 Transmission protocols 【传输协议】</h6>
+<img src="https://p26-doubao-search-sign.byteimg.com/labis/image/8fd8a1654db0aea8e39590ce281da557~tplv-be4g95zd3a-896x896.jpeg?lk3s=0ed4045e&x-expires=1803572165&x-signature=cXOuXYUsDDapSuPdJpyxK6iZQig%3D" alt="Type A 传输协议激活流程" referrerpolicy="no-referrer" style="max-width:100%;">
+<ul>
+  <li>Part four of the standard defines the half-duplex block transmission protocol. In particular, it defines the activation and deactivation sequences of the protocol.
+    <br>【该标准的第四部分定义了半双工块传输协议。特别是，它定义了协议的激活和停用序列。】</li>
+  <li>The activation sequence is concluded through the Protocol and Parameter Selection (PPS) process, upon which data can be exchanged.
+    <br>【激活序列通过协议和参数选择 (PPS) 过程完成，在此基础上可以进行数据交换。】</li>
+  <li>Upon completion of data exchange, the PICC can be disabled through the de-selection process.
+    <br>【数据交换完成后，可以通过取消选择过程禁用 PICC。】</li>
+  <li>This standard has been developed with functionality and flexibility in mind.
+    <br>【该标准的制定充分考虑了功能性和灵活性。】</li>
+</ul>
+
+<h5>Complete Operation 【完整操作】</h5>
+<img src="https://p26-doubao-search-sign.byteimg.com/labis/image/0b5242a92754c2322f3376b1fb870975~tplv-be4g95zd3a-896x896.jpeg?lk3s=0ed4045e&x-expires=1803572165&x-signature=nMm0METetpFO3h77wZKjIMC2ArE%3D" alt="ISO/IEC 14443 完整操作流程图" referrerpolicy="no-referrer" style="max-width:100%;">
+
+<p><strong>注意</strong></p>
+<ul>
+  <li>MIFARE is NOT the same as 'Type A'. It is not compliant to ISO/IEC 14443-4, Type A illustrated. It uses it's own transmission protocol.
+    <br>【MIFARE 与"Type A"不同。它不符合 ISO/IEC 14443-4。它使用自己的传输协议。】</li>
+</ul>
+<img src="https://p11-doubao-search-sign.byteimg.com/labis/image/ee62c69fe797ca531315cf9410752a58~tplv-be4g95zd3a-896x896.jpeg?lk3s=0ed4045e&x-expires=1803572165&x-signature=36ID4G7pqeGFhKF3K85s1gtLYDM%3D" alt="MIFARE 与 Type A 的区别标注" referrerpolicy="no-referrer" style="max-width:100%;">
+
+<p><strong>参考：</strong></p>
+<ol>
+  <li><a href="https://blog.csdn.net/weixin_45242734/article/details/139857668" target="_blank" rel="noopener">新手指南：ISO-14443 协议全面解析</a></li>
+  <li>Understanding the Requirements of ISO/IEC14443 for Type B Proximity Contactless Identification Cards.pdf</li>
+  <li>ISO/IEC 14443 Overview.ppt</li>
+</ol>
+
+<p><strong>其他相关标准：</strong></p>
+<ul>
+  <li>JIS X 6319 – 4</li>
+  <li>ISO/IEC 15693</li>
+  <li>NFC Forum Type 1/2/3/4/5 tags</li>
+</ul>
+
+<h3>三、软件协议栈</h3>
+<ul>
+  <li>NCI 2.0、2.1</li>
+  <li>EMVCo 3.0 L1</li>
+  <li>Android、FreeRTOS、Linux</li>
+</ul>
+
+<h3>四、解决方案</h3>
+<ul>
+  <li>NFC + eSE</li>
+</ul>
+
+<h3>厂商</h3>
+<p><img src="https://p11-doubao-search-sign.byteimg.com/labis/image/0bde71f45a1888e2dc54e3993bb7b170~tplv-be4g95zd3a-896x896.jpeg?lk3s=0ed4045e&x-expires=1803572174&x-signature=W31XRFz%2FX6FVne9gFbmXHiz1T78%3D" alt="NXP" referrerpolicy="no-referrer" style="height:40px; vertical-align:middle;"> <a href="https://www.nxp.com/" target="_blank" rel="noopener">NXP</a></p>
+<p>协议栈：<a href="https://github.com/NXPNFCLinux" target="_blank" rel="noopener">NXPNFCLinux</a></p>
+<p><img src="https://p11-doubao-search-sign.byteimg.com/labis/image/ad444ca6b52052c825f25e413554fc0a~tplv-be4g95zd3a-896x896.jpeg?lk3s=0ed4045e&x-expires=1803572174&x-signature=WHJEEsfru4iHFX%2FF%2B0tasIXQCTY%3D" alt="ST" referrerpolicy="no-referrer" style="height:40px; vertical-align:middle;"> <a href="https://www.st.com/" target="_blank" rel="noopener">ST</a></p>
