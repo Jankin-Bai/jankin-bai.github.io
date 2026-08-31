@@ -1,0 +1,165 @@
+<!-- Post: 值得反复打磨的C语言【半路出家持续更新版】 | ID: 2025-015 | Created: 2025-06-15 | Tags: tech | Source: CSDN sinat_36912383 -->
+
+<blockquote>本文复刻自 <a href="https://blog.csdn.net/sinat_36912383/article/details/130968836" target="_blank" rel="noopener">CSDN 博主 sinat_36912383</a> 的原创文章，原文发布于 2025-06-15。</blockquote>
+
+<h3>GCC相关的小玩意</h3> 
+<h4>指令</h4> 
+<blockquote> 
+ <p><code>gcc --help</code> :Display help information<br> <code>gcc input.c -o output.exe -Xlinker -Map=output.map</code>:产生map文件</p> 
+</blockquote> 
+<h5>map文件</h5> 
+<blockquote> 
+ <p><code>Archive member included to satisfy reference by file (symbol)</code>:这是一个包含在map文件中的信息，说明在编译程序时，由于某些符号被引用而需要包含的对象文件或库文件。该信息可用于检查编译过程中缺失的依赖项<br> <code>Allocating common symbols</code>(<code>分配通用符号</code>):在map文件中指定的是非初始化变量或多个文件中共享的变量，它们会在链接过程中被放置在一个特殊的区域中（通常称为BSS段），并被所有使用它们的模块共享。这些变量被分配在运行时，而不是在编译时分配内存。这个过程在常规应用程序中很常见，因为它允许多个源文件共享相同的数据，从而减少程序的总大小。<br> <code>Discarded input sections(丢弃的输入段)</code>:Map中的Discarded input sections指的是在Map阶段输出键值对时被丢弃的部分输入数据。这些数据被丢弃的原因可能是不符合Map函数的输入数据格式要求（比如，数据类型错误、数据缺失等），或者是被过滤掉的无用数据（例如，行首和行尾的空格、注释等）。</p> 
+</blockquote> 
+<h4>调试技巧</h4> 
+<pre><code> backtrace_call_stack
+ addr2line -e '*.elf' -afpC stackhex
+</code></pre> 
+<pre><code class="prism language-c">#include <stdio.h>
+
+#define __FILENAME__ (__builtin_strrchr(__FILE__, '/') ? __builtin_strrchr(__FILE__, '/') + 1 : __FILE__)
+#ifdef __GNUC__
+ #define LOG_CALL(func, ...) ({ \
+ printf("[%s:%d] CALL: %s\n", __FILENAME__, __LINE__, #func); \
+ typeof(func##_real(__VA_ARGS__)) _ret = func##_real(__VA_ARGS__); \
+ _ret; \
+ })
+#else
+ #define LOG_CALL(func, ...) \
+ (printf("[%s:%d] CALL: %s\n", __FILE__, __LINE__, #func), \
+ func##_real(__VA_ARGS__))
+#endif
+
+#if defined(__GNUC__) && !defined(__clang__)
+ #define DECORATE_FUNCTION(func) \
+ #define func(...) LOG_CALL(func, ##__VA_ARGS__)
+#elif defined(__clang__)
+ #define DECORATE_FUNCTION(func) \
+ #define func(...) LOG_CALL(func, ##__VA_ARGS__)
+#elif defined(_MSC_VER)
+ #define foo(...) LOG_CALL(foo, ##__VA_ARGS__)
+ #define bar(...) LOG_CALL(bar, ##__VA_ARGS__)
+ #define calculate(...) LOG_CALL(calculate, ##__VA_ARGS__)
+#else
+ #define foo(...) LOG_CALL(foo, ##__VA_ARGS__)
+ #define bar(...) LOG_CALL(bar, ##__VA_ARGS__)
+ #define calculate(...) LOG_CALL(calculate, ##__VA_ARGS__)
+#endif
+
+// 
+void foo_real(int x);
+int bar_real(int x);
+double calculate_real(double a, double b);
+
+// 
+DECORATE_FUNCTION(foo);
+DECORATE_FUNCTION(bar);
+DECORATE_FUNCTION(calculate);
+
+</code></pre> 
+<h3>递归式堆栈遍历伪代码</h3> 
+<p>以下是使用递归方式获取调用堆栈的伪代码实现，最大递归深度为16层。这个实现抽象了不同平台的细节，专注于递归遍历的核心逻辑：</p> 
+<pre><code class="prism language-python"># 递归堆栈遍历伪代码
+def walk_stack_recursive(fp: Pointer, depth: int, max_depth: int) -> List[Address]:
+ """
+ 递归遍历调用堆栈
+ :param fp: 当前帧指针
+ :param depth: 当前递归深度
+ :param max_depth: 最大允许深度
+ :return: 返回地址列表（从当前函数到外层函数）
+ """
+ # 终止条件：达到最大深度或无效帧指针
+ if depth >= max_depth or not fp or not is_valid_frame_pointer(fp):
+ return []
+ 
+ # 获取当前函数的返回地址
+ return_address = read_return_address(fp)
+ 
+ # 验证返回地址有效性
+ if not is_valid_address(return_address):
+ return []
+ 
+ # 获取前一个帧指针（调用者的帧指针）
+ prev_fp = read_previous_frame_pointer(fp)
+ 
+ # 终止条件：无效前帧指针或循环引用
+ if not prev_fp or prev_fp == fp or not is_valid_frame_pointer(prev_fp):
+ return [return_address]
+ 
+ # 递归获取调用者堆栈
+ caller_stack = walk_stack_recursive(prev_fp, depth + 1, max_depth)
+ 
+ # 将当前返回地址添加到结果列表
+ return caller_stack + [return_address]
+
+# 主入口函数
+def get_call_stack(max_depth: int = 16) -> List[Address]:
+ """
+ 获取调用堆栈
+ :param max_depth: 最大堆栈深度
+ :return: 返回地址列表（从外层到内层）
+ """
+ # 获取当前帧指针
+ current_fp = get_frame_pointer()
+ 
+ # 处理叶子函数特殊情况
+ if is_leaf_function(current_fp):
+ leaf_ra = get_leaf_return_address()
+ if is_valid_address(leaf_ra):
+ return [leaf_ra]
+ 
+ # 启动递归遍历
+ return walk_stack_recursive(current_fp, 0, max_depth)
+
+# ----------------------------
+# 平台相关函数实现
+# ----------------------------
+
+def get_frame_pointer() -> Pointer:
+ """获取当前函数的帧指针"""
+ # 平台特定实现
+ if platform == "x86_64":
+ asm("mov %%rbp, %0" : "=r"(fp))
+ elif platform == "arm64":
+ asm("mov %0, x29" : "=r"(fp))
+ # ... 其他平台实现
+ return fp
+
+def is_leaf_function(fp: Pointer) -> bool:
+ """检查当前函数是否是叶子函数"""
+ # 启发式判断：没有调用其他函数的函数
+ # ... 具体实现
+
+def get_leaf_return_address() -> Address:
+ """获取叶子函数的返回地址"""
+ if platform == "arm64":
+ asm("mov %0, lr" : "=r"(addr))
+ elif platform == "riscv":
+ asm("mv %0, ra" : "=r"(addr))
+ # ... 其他平台实现
+ return addr
+
+def read_return_address(fp: Pointer) -> Address:
+ """从帧指针读取返回地址"""
+ # 标准位置：帧指针 + 指针大小
+ return *(fp + POINTER_SIZE)
+
+def read_previous_frame_pointer(fp: Pointer) -> Pointer:
+ """读取前一个帧指针"""
+ return *fp # 前帧指针存储在fp[0]
+
+def is_valid_frame_pointer(fp: Pointer) -> bool:
+ """检查帧指针是否有效"""
+ # 非空、对齐、在堆栈范围内
+ return fp and is_aligned(fp) and in_stack_range(fp)
+
+def is_valid_address(addr: Address) -> bool:
+ """检查地址是否有效"""
+ # 非空、对齐、在代码段范围内
+ return addr and is_aligned(addr) and in_code_range(addr)
+</code></pre> 
+<h5>递归遍历过程图解</h5> 
+<div class="mermaid">
+ 
+ </foreignobject>
+ </g>

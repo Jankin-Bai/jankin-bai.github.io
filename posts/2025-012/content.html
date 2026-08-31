@@ -1,0 +1,23 @@
+<!-- Post: 【uniapp】【Q&amp;A】 | ID: 2025-012 | Created: 2025-03-07 | Tags: tech | Source: CSDN sinat_36912383 -->
+
+<blockquote>本文复刻自 <a href="https://blog.csdn.net/sinat_36912383/article/details/126637623" target="_blank" rel="noopener">CSDN 博主 sinat_36912383</a> 的原创文章，原文发布于 2025-03-07。</blockquote>
+
+<h3>uniapp</h3> 
+<ul><li> <p>core-js依赖报错<br> <img src="https://i-blog.csdnimg.cn/blog_migrate/840f85b0a5cd144d1e78020e8af43578.jpeg" alt="在这里插入图片描述"></p> <pre><code class="prism language-bash"> npm install core-js@2
+</code></pre> <p>参考: <a href="https://blog.csdn.net/weixin_38312502/article/details/88843802">core-js/library/fn/get-iterator,core-js/library/fn/is-iterable等之类的依赖没有找到的错误</a></p> </li><li> <p>npm、cnpm、nrm的区别<br> 参考: <a href="https://blog.csdn.net/l1830473688/article/details/105548894">npm,cnpm,nrm之间的关系</a><br> nrm安装</p> <pre><code class="prism language-bash">npm install -g nrm
+</code></pre> <p>参考:<a href="https://blog.csdn.net/lijunliang2017/article/details/120846266">nrm安装与配置</a><br> 参考:<a href="https://www.jianshu.com/p/d7a7fafc86eb" rel="nofollow">删除node_modules重新安装的方法步骤</a></p> </li><li> <p>request:fail invalid url “undefindapi/你的请求资源地址”<br> <img src="https://i-blog.csdnimg.cn/blog_migrate/fa344459e7709fa1ee7615d81c6605a6.png" alt="在这里插入图片描述"><br> 检查你的远程链接拼接地址<img src="https://i-blog.csdnimg.cn/blog_migrate/43aef61bb6310e927b582952fa3909e4.png" alt="在这里插入图片描述"><br> 修改后：解析出地址</p> </li><li> <p>Status Code: 502 Bad Gateway</p> </li></ul> 
+<p><img src="https://i-blog.csdnimg.cn/blog_migrate/2eb1ebcb3efd0b352ebadacb3b714c0c.png" alt="在这里插入图片描述"></p> 
+<p>重启服务器ok<br> <img src="https://i-blog.csdnimg.cn/blog_migrate/2e86fc899d41cc0603b0e22d06b4e73f.png" alt="在这里插入图片描述"></p> 
+<ul><li> <p>工程配置文件pages.json文件有错误,请调整后再试,<img src="https://i-blog.csdnimg.cn/blog_migrate/7a2d3d88b033178066da03d50efd3397.png" alt="在这里插入图片描述"></p> </li><li> <p>微信小程序预览编译【？】<br> message：Error: 系统错误，错误码：800059,error: iconPath=, file not found [20220902 02:24:55][wx49930592beb64d39]<br> appid: wx49930592beb64d39<br> openid: o6zAJs4y2F7jlhfklN3YaYpKwBnY<br> ideVersion: 1.06.2208010<br> osType: win32-x64<br> time: 2022-09-02 02:25:10<br> <img src="https://i-blog.csdnimg.cn/blog_migrate/1e82cb671feac860167ee17e5f91f442.png" alt="在这里插入图片描述"></p> </li><li> <p>SQLSTATE[HY000] [2054] The server requested authentication method unknown to the client<br> <img src="https://i-blog.csdnimg.cn/blog_migrate/bfd5f80575f8da0a151ad69ed7aa10e6.png" alt="在这里插入图片描述"><img src="https://i-blog.csdnimg.cn/blog_migrate/a2d20c1f0d1237e919fedfae30585306.png" alt="在这里插入图片描述"></p> </li><li> <p>mysql问题<br> <img src="https://i-blog.csdnimg.cn/blog_migrate/53278377f300a27a98804fe4276394c6.png" alt="在这里插入图片描述"><br> <img src="https://i-blog.csdnimg.cn/blog_migrate/4ebaba324f96543bc35a352095690b87.png" alt="在这里插入图片描述"><br> <img src="https://i-blog.csdnimg.cn/blog_migrate/29c669bdb9faf222d6bf1381d78c9aa4.png" alt="在这里插入图片描述"><br> services.msc里面发现宝塔的mysql和本地mysql8都是开机自动启动<br> <img src="https://i-blog.csdnimg.cn/blog_migrate/21fd656bb2b91f36f01fcf04d5883f63.png" alt="在这里插入图片描述"></p> </li></ul> 
+<p>参考：<a href="https://blog.csdn.net/qq_46416934/article/details/124336435">MySQL启动失败——MySQL服务无法启动原因及解决办法 </a></p> 
+<h3><a href="https://sqlite.org/althttpd/doc/trunk/althttpd.md" rel="nofollow">Althttpd</a></h3> 
+<h4>用起来</h4> 
+<blockquote> 
+ <p>1.下载源码 <code>althttpd.c</code><br> 2.编译源码 <code>gcc -Os -o /usr/bin/althttpd althttpd.c</code><br> 3.新建目录 <code>~/www/default.website</code>，在目录中创建一个HTML文件<code>index.html</code><br> 5.运行命令 <code>althttpd -root ~/www/ -port 80 -user ftp</code><br> <a href="https://cloud.tencent.com/developer/article/1930896" rel="nofollow">from:Althttpd初体验</a><br> <img src="https://i-blog.csdnimg.cn/blog_migrate/75d0de172790fd76f491c950ed79c296.png" alt="在这里插入图片描述"></p> 
+</blockquote> 
+<h4>访问</h4> 
+<h5>523</h5> 
+<p><img src="https://i-blog.csdnimg.cn/blog_migrate/7c187876960659994d362d62ad1bbc7c.png" alt="在这里插入图片描述"></p> 
+<blockquote> 
+ <p>sudo althttpd -root ~/www/ -port 80 -user pi<br> ok 原因是没有该用户<br> <img src="https://i-blog.csdnimg.cn/blog_migrate/7b6755337340c5425e3257af1c8af1ab.png" alt="在这里插入图片描述"></p> 
+</blockquote>
