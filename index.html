@@ -1,1 +1,169 @@
-$(cat /home/user/.super_doubao/super-doubao-runtime/workspace/site_review/user_v301/jankinbai.top/index.html)
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Jankin's Timeline — 个人时间线博客，纵向时间线与横向标签视图，记录技术、作品、生活等多维度人生历程。">
+  <meta name="author" content="Jankin Bai">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Jankin's Timeline">
+  <meta property="og:description" content="一纵一横，记录思想与历程">
+  <meta property="og:url" content="https://jankinbai.top">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%238b6914'/%3E%3Cpath d='M16 6v20M10 10h12M10 16h12M10 22h8' stroke='%23fdfbf7' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E">
+  <title>Jankin's Timeline</title>
+  <script>
+    (function () {
+      try {
+        var theme = null;
+        var nameEQ = 'jankin-theme=';
+        var ca = document.cookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+          var c = ca[i].trim();
+          if (c.indexOf(nameEQ) === 0) {
+            theme = decodeURIComponent(c.substring(nameEQ.length));
+            break;
+          }
+        }
+        if (!theme) {
+          var saved = localStorage.getItem('jankin-theme');
+          if (saved) {
+            theme = saved;
+            var host = location.hostname;
+            var isLocal = host === 'localhost' || host === '127.0.0.1' || /^\d+\.\d+\.\d+\.\d+$/.test(host);
+            var domain = isLocal ? '' : ('; domain=.' + host.split('.').slice(-2).join('.'));
+            var d = new Date(); d.setTime(d.getTime() + 365 * 24 * 60 * 60 * 1000);
+            document.cookie = 'jankin-theme=' + encodeURIComponent(saved) + '; expires=' + d.toUTCString() + domain + '; path=/; SameSite=Lax';
+          }
+        }
+        theme = theme || 'mono';
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {}
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Serif+SC:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body class="page-home">
+  <a href="#main-content" class="skip-link">跳到主要内容</a>
+  <div class="site-grid">
+    <!-- 行1：页眉（跨3列，内部3格） -->
+    <header class="site-header-row" role="banner">
+      <div class="header-left">
+        <h1 class="site-title" id="site-title">Jankin's Timeline</h1>
+        <div class="header-meta">
+          <p class="site-subtitle" id="site-subtitle">一纵一横，记录思想与历程</p>
+          <div class="site-stats" id="stats" aria-live="polite"></div>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="theme-switcher" id="themeSwitcher">
+          <button class="theme-trigger" id="themeTrigger" type="button" aria-haspopup="listbox" aria-expanded="false" aria-label="切换网站主题">
+            <span class="theme-trigger-icon" id="themeTriggerIcon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            </span>
+            <span class="theme-current-name" id="themeCurrentName">终端极客</span>
+            <svg class="theme-trigger-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="theme-dropdown" id="themeDropdown" role="listbox" aria-label="选择网站主题" hidden></div>
+        </div>
+        <div class="search-box">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="search" id="search-input" placeholder="搜索标题、摘要或标签..." aria-label="搜索博文">
+          <button type="button" class="search-clear" id="search-clear" aria-label="清除搜索" hidden>&times;</button>
+        </div>
+      </div>
+    </header>
+    <!-- 行2：内容区 -->
+    <aside class="sidebar" aria-label="侧边栏">
+      <!-- 手机端侧栏折叠按钮 -->
+      <button class="sidebar-toggle-btn" type="button" aria-expanded="false" aria-controls="sidebar-content">
+        <span>导航与筛选</span>
+        <svg class="toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="sidebar-content" id="sidebar-content">
+      <div class="sidebar-slot" id="sidebar-slot" hidden></div>
+      <div class="widgets-container" id="widgets-top" hidden></div>
+      <div class="sidebar-section">
+        <div class="sidebar-section-header">
+          <h2 class="sidebar-title">标签筛选</h2>
+          <button class="sidebar-toggle" id="tag-toggle" type="button" aria-expanded="true" aria-label="折叠或展开标签列表">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+        </div>
+        <div class="dim-list" id="dimension-list" role="group" aria-label="标签列表"></div>
+      </div>
+      <div class="widgets-container" id="widgets-bottom" hidden></div>
+      </div><!-- /.sidebar-content -->
+    </aside>
+    <main class="main-area" id="main-content">
+      <!-- 手机端搜索框（桌面端隐藏） -->
+      <div class="mobile-search">
+        <div class="search-box">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="search" id="mobile-search-input" placeholder="搜索..." aria-label="搜索博文">
+        </div>
+      </div>
+      <div id="content-area" aria-live="polite">
+        <div class="loading-state" id="loading-state">
+          <div class="loading-spinner" aria-hidden="true"></div>
+          <p>正在加载时间线...</p>
+        </div>
+      </div>
+    </main>
+    <div class="right-spacer" aria-hidden="true"></div>
+    <!-- 行3：页脚（跨3列，内部3格） -->
+    <footer class="site-footer-row" role="contentinfo">
+      <div class="footer-cell footer-cell-c1">
+        <p>© 2026 Jankin Bai</p>
+        <p style="font-size:var(--fs-xs);color:var(--color-text-muted);margin-top:4px;">一纵一横，记录思想与历程</p>
+      </div>
+      <div class="footer-cell footer-cell-c2">
+        <nav aria-label="页脚导航">
+          <a href="index.html" style="margin:0 8px;">时间线</a>
+          <a href="index.html" style="margin:0 8px;">标签</a>
+          <a href="mailto:jankinbai@qq.com" style="margin:0 8px;">联系</a>
+        </nav>
+      </div>
+      <div class="footer-cell footer-cell-c3">
+        <p>静态站点 · 纯 HTML/CSS/JS</p>
+      </div>
+    </footer>
+  </div>
+  <button class="back-to-top" id="back-to-top" aria-label="回到顶部" hidden>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+  </button>
+  <script src="assets/js/ganzhi.js"></script>
+  <script src="assets/js/theme.js"></script>
+  <script src="assets/js/utils.js"></script>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/render.js"></script>
+  <script src="assets/js/app.js"></script>
+  <script>
+    (function() {
+      var headerRow = document.querySelector('.site-header-row');
+      if (!headerRow) return;
+      var ticking = false;
+      function updateHeaderHeight() {
+        var h = Math.min(headerRow.offsetHeight || 0, 400);
+        document.documentElement.style.setProperty('--header-height', h + 'px');
+      }
+      function update() {
+        var isCompact = window.scrollY > 80;
+        if (headerRow.classList.contains('compact') !== isCompact) {
+          headerRow.classList.toggle('compact', isCompact);
+          requestAnimationFrame(updateHeaderHeight);
+        }
+        ticking = false;
+      }
+      window.addEventListener('scroll', function() {
+        if (!ticking) { requestAnimationFrame(update); ticking = true; }
+      }, { passive: true });
+      window.addEventListener('resize', updateHeaderHeight);
+      update();
+      updateHeaderHeight();
+    })();
+  </script>
+</body>
+</html>
