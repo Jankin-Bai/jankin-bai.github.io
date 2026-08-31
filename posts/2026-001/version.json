@@ -1,0 +1,29 @@
+{
+  "version": "0.0.1",
+  "version_full": "1.0.0_20260831_192419_git9a20115",
+  "build_date": "20260831",
+  "build_time": "192419",
+  "git_hash": "9a20115",
+  "firmware_type": "release",
+  "board": "TK_PAD",
+  "file_name": "ble_app_uart_c_ota_v0.0.1_20260831.bin",
+  "file_size": 214320,
+  "load_addr": "0x00240000",
+  "bank_b_addr": "0x002c0000",
+  "bank_b_size": 524288,
+  "md5": "96ddbb3bd8a0808afe212c46139ed39e",
+  "sha256": "a6effedc0b50012f1265c1058d04e846c5870c4bbb593ef47d304deb2eee255e",
+  "crc32": "5c040d78",
+  "build_flags": "USE_BOARD_TK_PAD=1 FW_release=1",
+  "changelog": "",
+  "generated_at": "2026-08-31 19:25:06",
+  "image_info": {
+    "pattern": "0x4744",
+    "version_raw": "0x0001",
+    "version_decoded": "0.0.1",
+    "bin_size": 214272,
+    "checksum": "0x0145104f",
+    "load_addr": "0x00240000",
+    "comments": "ble_app_uart"
+  }
+}

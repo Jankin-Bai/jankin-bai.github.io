@@ -1,21 +1,14 @@
 {
   "id": "2026-001",
-  "title": "Markdown 写作完全指南（Demo 演示）",
-  "date": "2026-08-30T15:00:00",
-  "tags": ["tech", "works"],
-  "milestone": false,
-  "summary": "本文演示 Jankin's Timeline 博客支持的所有 Markdown 语法，包括标题、列表、表格、代码块、引用、KaTeX 数学公式、Mermaid 流程图、图片、链接等，是新建文章的参考模板。",
-  "theme": "default",
+  "title": "小T卡 GR5526 OTA 升级测试固件",
+  "date": "2026-08-31T20:00:00",
+  "tags": ["tech", "works", "milestone"],
+  "milestone": true,
+  "summary": "小T卡 GR5526 双区 OTA 升级测试固件 v0.0.1，包含完整升级流程、版本信息和校验和，用于远程升级验证。",
+  "theme": "mono",
   "image": "",
   "links": [
-    {
-      "text": "Markdown 官方教程",
-      "url": "https://www.markdownguide.org/"
-    },
-    {
-      "text": "KaTeX 支持的函数",
-      "url": "https://katex.org/docs/supported.html"
-    }
+    {"text": "GR5xx DFU 开发指南", "url": "https://www.goodix.com/zh/software_tool/gr5xx"}
   ],
   "format": "markdown"
 }

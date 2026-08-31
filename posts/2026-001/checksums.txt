@@ -1,0 +1,9 @@
+# XiaoT Card OTA Firmware Checksums
+# Generated: 2026-08-31 19:25:06
+# File: ble_app_uart_c_ota_v0.0.1_20260831.bin
+# Size: 214320 bytes
+# Version: 0.0.1
+
+MD5:    96ddbb3bd8a0808afe212c46139ed39e  ble_app_uart_c_ota_v0.0.1_20260831.bin
+SHA256: a6effedc0b50012f1265c1058d04e846c5870c4bbb593ef47d304deb2eee255e  ble_app_uart_c_ota_v0.0.1_20260831.bin
+CRC32:  5c040d78  ble_app_uart_c_ota_v0.0.1_20260831.bin
