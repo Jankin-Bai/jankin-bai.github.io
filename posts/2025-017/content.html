@@ -1,0 +1,375 @@
+<!-- Post: 【ESP32】问题汇总 更新中 | ID: 2025-017 | Created: 2025-06-21 | Tags: tech | Source: CSDN sinat_36912383 -->
+
+<blockquote>本文复刻自 <a href="https://blog.csdn.net/sinat_36912383/article/details/127860032" target="_blank" rel="noopener">CSDN 博主 sinat_36912383</a> 的原创文章，原文发布于 2025-06-21。</blockquote>
+
+<ul><li> <h3>【已解决待验证】Openocd debug</h3> </li></ul> 
+<p><img src="https://i-blog.csdnimg.cn/blog_migrate/d7363f2b230cb0bdd35d12826341163a.png" alt="Unable to start debugging.Unexpected GDB output from command"-interpreter-exec console"target remot:3333"".Remote communication error. Target disconnected.:Connection reset by peer"></p> 
+<ul><li> <h3>【已解决】关于usb转串口你永远可以相信<a href="https://zadig.akeo.ie/" rel="nofollow">Zadig</a></h3> </li><li> <p>无论PL2303还是其他</p> </li><li> <p><img src="https://i-blog.csdnimg.cn/blog_migrate/cc3382ce39e35235c7553356e1f3eaaa.png" alt="在这里插入图片描述"></p> </li><li> <p>唯一要注意的是不要找错usb设备，把键盘鼠标的usb驱动刷了，不然哭都不知道怎么哭</p> </li><li> <p><img src="https://i-blog.csdnimg.cn/blog_migrate/7c4bc914645901118c595b143a5edfb4.png" alt="在这里插入图片描述"></p> </li><li> <p><img src="https://i-blog.csdnimg.cn/blog_migrate/19a09a7875a8575b09d172c9d63f610d.png" alt="在这里插入图片描述"></p> </li><li> <h3>【已解决】openocd无法连接电脑</h3> </li></ul> 
+<p><img src="https://i-blog.csdnimg.cn/blog_migrate/c77d88dbc95cdf804560777ccab1898b.png" alt="openocd服务"></p> 
+<blockquote> 
+ <p>JTAG端口和GPIO冲突，修复后ok。</p> 
+</blockquote> 
+<ul><li> <h3><a href="https://www.jianshu.com/p/5a8f454d62a5" rel="nofollow">【转】Windows环境下用Jlink调试ESP32</a></h3> </li><li> <h3>【已解决】jlink连接问题</h3> </li></ul> 
+<p><img src="https://i-blog.csdnimg.cn/blog_migrate/5261ed0cddc67f442240b5711026fb8e.png" alt="在这里插入图片描述"></p> 
+<blockquote> 
+ <p>zadig-2.7.exe ->Option->List All Devices->select(Interface 0)->Replace Driver->OK</p> 
+</blockquote> 
+<ul><li> <h3>【未解决】-- Detecting C compiler ABI info - failed</h3> </li></ul> 
+<p><img src="https://i-blog.csdnimg.cn/blog_migrate/af4f462e49e0a39e73b181aa343df6b8.png" alt="在这里插入图片描述"></p> 
+<ul><li> <h3>【实践】Python环境配置</h3> 
+ <blockquote> 
+ <p><a href="https://blog.csdn.net/qq_33254766/article/details/116540977">靠谱的python环境配置</a></p> 
+ </blockquote> </li><li> <h3>【已解决】section <code>.dram0.bss' will not fit in region </code>dram0_0_seg’</h3> </li></ul> 
+<p><img src="https://i-blog.csdnimg.cn/blog_migrate/38d099de550747a0c31942589c18a15b.png" alt="在这里插入图片描述"></p> 
+<blockquote> 
+ <p>提示的问题是ram溢出了，manucofig文件配废了，用beyondcompare对比修复</p> 
+</blockquote> 
+<ul><li> <h3>【已解决】vscode启动openocd之后，按debug键后的问题 -> telnet</h3> </li></ul> 
+<p><img src="https://i-blog.csdnimg.cn/blog_migrate/ed3b6f019c6b69e554d7954db771a665.png" alt="在这里插入图片描述"></p> 
+<blockquote> 
+ <p>应该是电脑的telnet服务没开<br> 关于<code>telnet</code>测试 👇<br> <a href="https://www.telnet.org/" rel="nofollow">www.telnet.org</a> 👇</p> 
+</blockquote> 
+<pre><code class="prism language-cmd">telnet towel.blinkenlights.nl
+telnet freechess.org 5000
+telnet telehack.com
+telnet bbs.newsmth.net 
+telnet bbs.fudan.edu.cn
+</code></pre> 
+<hr> 
+<h3>【存疑】IRAM0 segment data does not fit</h3> 
+<blockquote> 
+ <p>"Does not fit"在这里的意思是指划分数据所采用的方法或模型不适合该数据集。也可以理解为数据无法被准确地归类或划分。<br> GPT说的，就是RAM不够了。。。可能吧</p> 
+</blockquote> 
+<h3><code>idf.py menuconfig</code></h3> 
+<p><a href="https://docs.espressif.com/projects/esp-idf/zh_CN/v4.4.4/esp32/api-reference/kconfig.html" rel="nofollow">【这里】</a></p> 
+<h3>vTaskList的使用</h3> 
+<blockquote> 
+ <p>Enable FreeRTOS trace facility<br> <code>Component config > FreeRTOS > Kernel > CONFIG_FREERTOS_USE_TRACE_FACILITY</code><br> Enable display of xCoreID in vTaskList<br> <code>Component config > FreeRTOS > Kernel > CONFIG_FREERTOS_USE_TRACE_FACILITY > CONFIG_FREERTOS_USE_STATS_FORMATTING_FUNCTIONS</code></p> 
+</blockquote> 
+<p>如下是使用了外部<code>MALLOC_CAP_SPIRAM</code>去打印了<code>vTaskList</code>和<code>vTaskGetRunTimeStats</code></p> 
+<pre><code class="prism language-c">#if (configUSE_STATS_FORMATTING_FUNCTIONS == 1) && (configUSE_TRACE_FACILITY == 1)
+ char *pbuffer = ((char *)heap_caps_malloc(1024 * 1, MALLOC_CAP_SPIRAM));
+ vTaskList(pbuffer);
+ printf("\r\n%s\r\n", pbuffer);
+ free(pbuffer);
+#endif
+#if (configGENERATE_RUN_TIME_STATS == 1) && (configSUPPORT_DYNAMIC_ALLOCATION == 1) && (configUSE_STATS_FORMATTING_FUNCTIONS == 1)
+ char *mypbuffer = ((char *)heap_caps_malloc(1024 * 1, MALLOC_CAP_SPIRAM));
+ vTaskGetRunTimeStats(mypbuffer);
+ printf("%s", mypbuffer);
+ free(mypbuffer);
+#endif
+</code></pre> 
+<ul><li> <h3>heap_caps_malloc与malloc</h3> </li></ul> 
+<blockquote> 
+ <p>ESP-IDF是一个基于ESP32和ESP8266的开发框架，它提供了一些内存管理函数，包括heap_caps_malloc和malloc。它们的主要区别在于：<br> 内存分配方式：malloc函数从默认的堆中分配内存，而heap_caps_malloc函数从可配置的堆中分配内存。可配置的堆是一块特定的内存区域，可以通过调用heap_caps_init函数来初始化。<br> 内存大小限制：malloc函数可以分配任意大小的内存块，但是heap_caps_malloc函数只能分配在配置的堆大小内的内存块。如果需要分配更大的内存块，则需要使用heap_caps_malloc_ext函数。<br> 内存对齐：heap_caps_malloc函数可以指定所需的内存对齐方式，而malloc只能保证4字节对齐。<br> 内存类型：heap_caps_malloc函数可以分配特定类型的内存，例如DMA、内核等类型的内存。<br> 使用heap_caps_malloc函数的优势在于，它可以更好地管理内存，提高系统的稳定性和可靠性。同时，它还可以提供更多的内存分配选项，例如对齐方式和内存类型等。但是，使用heap_caps_malloc函数也有一些条件：<br> 需要事先初始化可配置的堆。<br> 可配置的堆的大小是有限的，必须根据应用程序的需求进行合理的配置。<br> heap_caps_malloc函数的执行速度可能比malloc函数慢，因为它需要更多的内存管理操作。<br> 因此，在使用heap_caps_malloc函数之前，需要仔细考虑应用程序的需求和可用的内存资源，以确保选择正确的内存分配函数。</p> 
+</blockquote> 
+<ul><li> <h3>跑在外部ram的变量与任务</h3> </li><li> <h4>变量</h4> </li></ul> 
+<pre><code class="prism language-c">char *pbuffer = ((char *)heap_caps_malloc(1024 * 1, MALLOC_CAP_SPIRAM));
+</code></pre> 
+<ul><li> <h4>任务</h4> </li></ul> 
+<pre><code class="prism language-c">#define STACK_SIZE (3 * 1024)
+EXT_RAM_ATTR StackType_t external_static_stack[STACK_SIZE];
+StaticTask_t external_ram_task_TCB;
+xTaskCreateStatic(external_ram_task, "external_ram_task", STACK_SIZE, NULL, 3, external_static_stack, &external_ram_task_TCB)
+</code></pre> 
+<ul><li> <h3>【概念】链接文件相关</h3> </li><li> <h4>.ld文件</h4> 
+ <blockquote> 
+ <p><img src="https://i-blog.csdnimg.cn/blog_migrate/aa447494b0f643cb49926ef7dc99a9ed.png" alt="在这里插入图片描述"><br> <code>PROVIDE </code>是一个链接脚本的关键字，用于<code>指定特定的符号或变量在编译链接时应该放在哪个地址</code>。在链接脚本中， PROVIDE 的语法格式为：<br> <code>PROVIDE symbol_name = symbol_location</code>;<br> 其中 symbol_name 为符号或变量的名字，symbol_location 为该符号或变量的<code>地址</code>。使用<code> PROVIDE</code> 可以确保在链接时为<code>特定</code>的符号或变量分配正确的地址，从而实现可靠的链接。</p> 
+ </blockquote> </li><li> <h3>【实践】有意思的宏</h3> </li><li> <h4>条件宏</h4> </li></ul> 
+<blockquote> 
+ <p><code>#define APP_STREAM_LOG</code>和<code>#define APP_STREAM_LOG 1</code>都是预处理指令用来定义一个宏，但是它们的使用方式有所不同。<br> <code>#define APP_STREAM_LOG</code>是将<code>APP_STREAM_LOG</code>这个宏定义为一个<code>没有值</code>的宏，意味着在代码中每次出现<code>APP_STREAM_LOG</code>都会被替换为一个<code>空值</code>。这种方式通常用于宏的<code>开关</code>，可以通过<code>注释或者取消注释</code>这个#define语句来控制宏的<code>使用或者关闭</code>。<br> <code>#define APP_STREAM_LOG 1</code>则将<code>APP_STREAM_LOG</code>这个宏定义为一个<code>有值</code>的宏，其值为<code>1</code>。这种方式常用于开启或关闭编译时的<code>某些特性或功能</code>。如果在代码中需要使用这个宏，则<code>必须判断</code>它的值<code>是否为1</code>或者是否有定义。<br> <code>#if和#ifdef</code>是用来控制代码的编译条件指令，它们的使用方式如下：<br> <code>#if</code>的作用是当<code>括号内的表达式</code>求值为<code>真（非0）</code>的时候，编译器编译<code>#ifdef</code>和<code>#if</code>类似，它的作用是判断某个宏是否已经被定义。如果宏已经被定义，则编译括号内的代码。<br> 因此，当使用<code>#define APP_STREAM_LOG</code>时，可以通过<code>#ifdef APP_STREAM_LOG</code>和<code>#ifdef APP_STREAM_LOG 1</code>来判断宏是否<code>被定义</code>，可以使用<code>#if APP_STREAM_LOG</code>和<code>#if APP_STREAM_LOG == 1</code>来控制代码<code>是否需要被编译</code>。</p> 
+</blockquote> 
+<ul><li> <h4>ONCE（）</h4> </li></ul> 
+<pre><code class="prism language-c">#define ONCE_prv(fun, line) \
+ do \
+ { \
+ static int __once_flag##line = 0; \
+ if (!__once_flag##line) \
+ { \
+ __once_flag##line = 1; \
+ fun; \
+ } \
+ } while (0)
+#define ONCE_min(fun, line) ONCE_prv(fun, line)
+#define ONCE(fun) ONCE_min(fun, __LINE__)
+</code></pre> 
+<ul><li> <h4>[转载]宏函数间接层的意义：宏中宏</h4> 
+ <blockquote> 
+ <p><a href="https://qa.1r1g.com/sf/ask/2456144701/" rel="nofollow">在宏定义中使用__LINE__</a><br> 问题来源：<img src="https://i-blog.csdnimg.cn/blog_migrate/ea3550fd7778b3f17df8363e900dba87.jpeg#pic_center" alt="在这里插入图片描述"></p> 
+ </blockquote> </li><li> <h4>[转载]重载</h4> 
+ <blockquote> 
+ <p><a href="https://www.cnblogs.com/zhang-peng/p/13982819.html" rel="nofollow">使用宏实现函数重载</a></p> 
+ </blockquote> </li><li> <h4>[转载]命名空间</h4> 
+ <blockquote> 
+ <p><a href="https://blog.csdn.net/weixin_30575309/article/details/98709521">头文件实现命名空间</a></p> 
+ </blockquote> </li><li> <h4>[转载]反射</h4> 
+ <blockquote> 
+ <p><a href="https://www.cnblogs.com/zl-yang/p/9030058.html" rel="nofollow">C语言实现反射</a></p> 
+ </blockquote> </li><li> <h4>[转载]宏的奇技淫巧</h4> 
+ <blockquote> 
+ <p><a href="https://blog.csdn.net/lin_strong/article/details/102626503">宏配置</a></p> 
+ </blockquote> </li></ul> 
+<pre><code class="prism language-c">#include <assert.h>
+
+// 连接标识符(非字符串连接成非字符串，字符串连接成字符串)
+#define __JOIN(x,y) x##y
+
+// 将参数转换成字符(x长度小于5，否则会溢出)
+#define __CHAR(x) #@x
+
+// 将x变成字符串（如果x是宏也不展开）
+#define __S(x) #x
+
+// 将x变成T字符串（如果x是宏也不展开）
+#define __ST(x) _T(#x)
+
+// 将x变成字符串（如果x是宏，展开)
+#define _S(x) __S(x)
+
+// 将x变成字符串（如果x是宏，展开)
+#define _ST(x) __ST(x)
+
+// 将参数连接并转成字符串(遇宏则展开)
+#define _TO_STR(x, y) _S(x) "" _S(y)
+#define _TO_STRT(x, y) _T( _S(x) "" _S(y) )
+
+bool testStrMacro()
+{
+ int ab = 12;
+ assert(__JOIN(1, 2) == 12); // 常量连接组合
+ assert(__JOIN("a", "b") == "ab"); // 字符串连接
+ assert(__JOIN(a, b) == 12); // 变量组合连接
+
+ auto a = __CHAR(65);
+ assert(a == '65');
+ assert(__CHAR(中国) == '中国');
+ auto cc = __CHAR(PNG);
+ assert(__CHAR(PNG) == 0x504e47);// PNG 的 hex即是 0x504e47
+
+ // 直接转成字符串
+ assert(__S(65) == "65");
+ assert(__ST(65) == _T("65"));
+
+#define test a
+#define test_s "a" 
+ assert(__S(test) == "test"); // test是宏，但__S里有#，所以后续内容不展开
+ assert(__ST(test) == _T("test")); // test是宏，但__S里有#，所以后续内容不展开
+
+ // 宏展开转换成字符串
+ assert(_S(test) == "a");
+ assert(_ST(test) == _T("a"));
+ assert(_TO_STRT(test, 123) == _T("a123"));
+ assert(_TO_STR(test, 123) == "a123");
+
+ // 宏嵌套效果
+ auto b = _TO_STR(__S(test), 123);
+ assert(_TO_STR(__S(test), 123) == "\"test\"123");
+ auto c = _TO_STR(_S(test), 123);
+ assert(_TO_STR(_S(test), 123) == "\"a\"123"); //_S(test) 展开成了a
+ assert(_TO_STR(_S(test), _TO_STR(123, 456)) == "\"a\"\"123\" \"\" \"456\"");
+ return true;
+}
+</code></pre> 
+<ul><li> <h4>编译时间版本</h4> </li></ul> 
+<pre><code class="prism language-c">#define SYSTEM_VERSION "[INFO]-["SOFTWARE_VERSION" was compiled for "DEVICE" at "__TIME__" on " __DATE__".]"
+</code></pre> 
+<h4><strong>FILE__转__FILE NAME</strong></h4> 
+<p>在做一些日志输出的工作时，想要获取当前文件名，而不是冗长的文件路径。路径获取往往和各家os底层函数优化。C++/C标准中定义了一些预处理宏，可以帮助我们获取文件路径。我们希望能够在编译期而不是在运行期做这个事情，避免额外的性能消耗。同时希望有一些跨平台的解决方案。以下是一些思路:</p> 
+<h5>方法1：运行期去除前缀</h5> 
+<p><code>__FILE__</code> 可以在编译期获取绝对路径，<code>__BASE_NAME__</code>可以获取相对路径，但是不具有跨平台性。<br> 我们想通过编译期来解决这个问题，但是暂时未找到能支持的编译选项。似乎只能在运行期做路径切割。</p> 
+<p>通过<code>__FILE__</code>预处理期间获得路径。<br> 定义<code>inline</code>函数或者宏处理路径。<code>strchr</code>是一个有帮助的函数，即在<code>str</code>找到<code>ch</code>的指针。</p> 
+<pre><code class="prism language-c">#define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
+</code></pre> 
+<h5>方法2：编译器函数优化</h5> 
+<p>使用<code>__builtin_strrchr</code>替换<code>strchr</code>。<br> <code>GNU工具链</code>提供了一些常见的<code>编译器优化函数</code>，可以在<code>编译期进行函数调用</code>。这样就可以把路径切换转换到编译期处理。<br> 缺点是：需要特定的编译器支持，GNU需要检查下自己的编译器是否支持，或者查看GNU对应版本的文档。</p> 
+<pre><code class="prism language-c">#define __FILENAME__ (__builtin_strrchr(__FILE__, '/') ? __builtin_strrchr(__FILE__, '/') + 1 : __FILE__)
+</code></pre> 
+<h5>方法3：在构建脚本中处理</h5> 
+<p>在编译脚本中定义预处理宏<code>__FILENAME__</code>, 使用shell去除路径后的文件名，在编译期将文件名复制给<code>__FILENAME__</code>宏。</p> 
+<ul><li>使用cmake构建脚本</li></ul> 
+<pre><code class="prism language-cmake">set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D__FILENAME__='\"$(subst ${CMAKE_SOURCE_DIR}/,,$(abspath $<))\"'")
+</code></pre> 
+<pre><code class="prism language-makefile">set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D__FILENAME__='"$(notdir $<)"'")
+</code></pre> 
+<ul><li>在makefile中更改</li></ul> 
+<pre><code class="prism language-makefile">CXX_FLAGS+=-D__FILENAME__='\"$(subst $(SOURCE_PREFIX)/,,$(abspath $<))\"'"
+</code></pre> 
+<p>Tips：当定义<code>>FILENAME__</code>预处理器宏时，可能需要开启<code>-Wno-builtin-macro-redefined</code>编译选项。</p> 
+<pre><code class="prism language-makefile">set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-builtin-macro-redefined")
+
+</code></pre> 
+<p>参考：<a href="https://juejin.cn/post/6930235824197861390" rel="nofollow">路径去除前缀</a><br> <a href="https://blog.csdn.net/weixin_28987001/article/details/113089538">new file 的路径问题_cmake系列 - 解决__FILE__ 宏绝对路径的问题(相对路径)</a></p> 
+<h4>assert及print定位</h4> 
+<p>1.<a href="https://www.runoob.com/cprogramming/c-function-strrchr.html" rel="nofollow">char *strrchr(const char *str, int c)</a><br> 2.<a href="http://t.csdn.cn/i9dgJ" rel="nofollow">__FILE__显示全路径的问题</a> 另 <a href="http://t.csdn.cn/lIy2R" rel="nofollow">__FILE__去掉路径</a><br> 3.<a href="https://zhuanlan.zhihu.com/p/410584465" rel="nofollow">C语言 ##<strong>VA_ARGS</strong> - C语言零基础入门教程 - 猿说编程的文章 - 知乎</a></p> 
+<pre><code class="prism language-c">//espidf版本
+#define my_print(fmt, ...) do { \
+ ESP_LOGI(IOTG_TAG, "[%s:%s(%d)]" fmt , __FILE__, __FUNCTION__, __LINE__, ##__VA_ARGS__); \
+} while(0)
+
+//通用版本
+#include <string.h>
+#include <stdio.h> 
+#define __FILENAME__ (strrchr(__FILE__, '/') ? (strrchr(__FILE__, '/') + 1):__FILE__)
+#define my_print(fmt, ...) \
+ do \
+ { \
+ printf("[%s:%d]" fmt, __FILENAME__, __LINE__, ##__VA_ARGS__); \
+ } while (0)
+
+#define ASSERT(fun,arm) \
+do{unsigned int ASSERT_VALUE; if((ASSERT_VALUE=(unsigned int)fun) == (arm)){NULL;}else{MY_INFO("assert feild! %d",ASSERT_VALUE);assert(0);}} while(0)
+</code></pre> 
+<ul><li> <h4>多宏条件</h4> </li></ul> 
+<pre><code class="prism language-c"> #if (configUSE_STATS_FORMATTING_FUNCTIONS == 1) && (configUSE_TRACE_FACILITY == 1)
+ //char *pbuffer = (char *)calloc(4, 2048);
+ char *pbuffer = ((char *)heap_caps_malloc(1024 *8, MALLOC_CAP_SPIRAM));
+ assert(pbuffer!=NULL);
+ printf("--------------- heap:%u ---------------------\r\n", esp_get_free_heap_size());
+ vTaskList(pbuffer);
+ printf("%s", pbuffer);
+ printf("----------------------------------------------\r\n");
+ #endif
+ #if (configGENERATE_RUN_TIME_STATS == 1) && (configSUPPORT_DYNAMIC_ALLOCATION == 1) && (configUSE_STATS_FORMATTING_FUNCTIONS == 1)
+ //char *mypbuffer = (char *)calloc(4, 2048);
+ char *mypbuffer = ((char *)heap_caps_malloc(1024 *8, MALLOC_CAP_SPIRAM));
+ assert(mypbuffer!=NULL);
+ printf("--------------- heap:%u ---------------------\r\n", esp_get_free_heap_size());
+ vTaskGetRunTimeStats(mypbuffer);
+ printf("%s", mypbuffer);
+ printf("----------------------------------------------\r\n");
+ free(mypbuffer);
+ #endif
+</code></pre> 
+<ul><li> <h4><code> __attribute__</code></h4> </li></ul> 
+<blockquote> 
+ <p><a href="https://gcc.gnu.org/onlinedocs/gcc/Common-Variable-Attributes.html#Common-Variable-Attributes" rel="nofollow">公共变量属性</a><br> <a href="https://gcc.gnu.org/onlinedocs/gcc/Variable-Attributes.html" rel="nofollow">from GCC</a></p> 
+</blockquote> 
+<hr> 
+<ul><li> <h3>【实践】正则表达式</h3> </li><li> <h4>删除匹配行</h4> </li></ul> 
+<pre><code>^.*关键字.*\r?\n (不保留空行)
+^.*关键字.*$ (保留空行)
+</code></pre> 
+<ul><li> <h3>【实践】Windows</h3> </li><li> <h4>windows terminal</h4> </li><li> <h4>notepad++</h4> </li><li> <h5><code>#define</code> 转<code>enum</code> 正则</h5> </li></ul> 
+<pre><code class="prism language-c">查： #define\s+(EVENT_CODE_[A-Z0-9_]+)\s+(\d+)\s*//\s*(.+)
+typedef enum {
+替： \1 = \2, // \3
+} EVENT_CODE;
+</code></pre> 
+<blockquote> 
+ <p>上面的正则表达式的功能是，从定义宏的行中提取出相应的变量名和变量值，并将其转换为枚举定义的形式。<br> 具体来说，<br> 上面的正则表达式中的<code>\s+</code>表示一个或多个空格，<br> <code>EVENT_CODE_[A-Z0-9_]+</code>表示以<code>EVENT_CODE_</code>开头的大写字母，数字或下划线的字符串，<br> <code>\d+</code>表示一个或多个数字，<code>//</code>表示注释符号，<code>\s*</code>表示一个或多个空格，<code>.+</code>表示一个或多个任意字符。<br> 正则表达式中的<code>\1</code>，<code>\2</code>和<code>\3</code>表示提取到的变量名，变量值和注释文字，用来生成枚举定义的形式。</p> 
+</blockquote> 
+<hr> 
+<ul><li> <h3>【实践】Linux（Ubuntu）</h3> </li><li> <h4>【实践】环境变量配置文件加载优先级</h4> 
+ <blockquote> 
+ <p>环境变量配置文件<br> 在Ubuntu中 可以设置环境变量有4个 优先级从高到底<br> 1、<code>/etc/profile</code>:在登录时,操作系统定制用户环境时使用的第一个文件,此文件为系统的每个用户设置环境信息,当用户第一次登录时,该文件被执行。<br> 2、<code>/etc/environment</code>:在登录时操作系统使用的第二个文件,系统在读取你自己的profile前,设置环境文件的环境变量。<br> 3、<code>~/.bash_profile</code>:在登录时用到的第三个文件是.profile文件,每个用户都可使用该文件输入专用于自己使用的shell信息,当用户登录时,该 文件仅仅执行一次!默认情况下,他设置一些环境变量,执行用户的<code>.bashrc</code>文件。<code>/etc/bashrc</code>:为每一个运行bash shell的用户执行此文件.当bash shell被打开时,该文件被读取.<br> 4、<code>~/.bashrc</code>:该文件包含专用于你的bash shell的bash信息,当登录时以及每次打开新的shell时,该文件被读取。<br> 几个环境变量的优先级<br> 1>2>3>4<br> ————————————————<br> 版权声明：本文为CSDN博主「AndriaZhao」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。<br> <a href="https://blog.csdn.net/zhqshx/article/details/39182397">原文链接</a></p> 
+ </blockquote> </li><li> <h4>Permission denied的解决办法</h4> 
+ <blockquote> 
+ <p>遇到这种情况，是因为请求的文件或者文件夹没有权限导致服务器拒绝了请求。<br> 解决的办法：<br> $ sudo chmod -R 777 某一目录<br> Linux/Unix 的文件调用权限分为三级 : 文件拥有者、群组、其他。利用 chmod 可以藉以控制文件如何被他人所调用。<br> <a href="https://www.cnblogs.com/ggband/p/10665312.html" rel="nofollow">from</a></p> 
+ </blockquote> </li><li> <h4>【已解决】<code>Done E: Unable to locate package xx</code></h4> </li><li> <p><img src="https://i-blog.csdnimg.cn/blog_migrate/4a0992a13d1994af564167545cd6f4cc.png" alt="sudo apt-get update"></p> 
+ <blockquote> 
+ <p><code>sudo apt-get update</code>解决。<br> <code>原理</code>：每个LINUX的发行版，比如UBUNTU，都会维护一个自己的软件仓库，我们常用的几乎所有软件都在这里面。这里面的软件绝对安全，而且绝对的能正常安装。<br> 那我们要怎么安装呢？在Ubuntu下，我们维护一个源列表，源列表里面都是一些网址信息，这每一条网址就是一个源，这个地址指向的数据标识着这台源服务器上有哪些软件可以安装使用。<br> 源文件位置，查看修改:<code>sudo gedit /etc/apt/sources.list</code><br> 在这个文件里加入或者注释（加#）掉一些源后，保存。这时候，我们的源列表里指向的软件就会增加或减少一部分。<br> 接一下要做的就是：<br> <code>sudo apt-get update</code><br> 这个命令，会访问源列表里的每个网址，并读取软件列表的最新源，然后保存在本地电脑。我们在新立得软件包管理器里看到的软件列表，都是通过update命令更新的。<br> 只更新软件源为最新版，本地的软件是不会进行升级的，在终端下载软件是根据软件源的信息进行下载，所以软件源更新之后再安装软件就能安装源中的最新版本。<br> 执行结果里面：命中的就是更新成功的，忽略的就是不用更新的，错误的就是没有找不到<br> 索引文件和弱安全性摘要算法我也出现过，对应的文件删了，再次update的时候就不会出现这些了<br> <code>sudo apt-get upgrade</code><br> 这个命令，会把本地已安装的软件，与刚下载的软件列表里对应软件地址的软件进行对比，如果发现已安装的软件版本太低，就会提示你更新。如果你的软件都是最新版本，会提示：<br> 升级了 0 个软件包，新安装了 0 个软件包，要卸载 0 个软件包，有 0 个软件包未被升级。<br> 总而言之，<code>update</code>是<code>更新</code>软件列表源<code>地址</code>，<code>upgrade</code>是更新<code>升级软件</code>。<br> ————————————————<br> 版权声明：本文为CSDN博主「Felix-微信(Felixzfb)」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。<br> <a href="https://blog.csdn.net/u011318077/article/details/105161296">原文链接</a></p> 
+ </blockquote> </li></ul> 
+<hr> 
+<ul><li> <h3>工具</h3> </li><li> <p><a href="https://blog.csdn.net/sinat_36912383/article/details/148186256?sharetype=blogdetail&sharerId=148186256&sharerefer=PC&sharesource=sinat_36912383&spm=1011.2480.3001.8118">效率工具</a> 👈</p> </li><li> <h3>esp-idf入门</h3> </li></ul> 
+<pre><code class="prism language-bush">idf_env_activate.bat #加载环境 idf_cmd_init.bat
+idf.py create-project myproject #创建工程或者直接从\frameworks\esp-idf-vXXX\examples里面拷贝
+idf.py set-target esp32 #配置目标芯片
+idf.py menuconfig #工程配置工具 
+idf.py build #编译
+idf.py flash -p comx #从comx下载
+idf.py monitor -p comx #监控串口日志从comx
+</code></pre> 
+<ul><li> <h4>多版本并存</h4> </li></ul> 
+<p>核心是加载环境<code>idf_env_activate.bat</code> 或者<code>idf_cmd_init.bat</code>文件的改造。</p> 
+<pre><code class="prism language-cmd">REM 执行默认环境变量下的操作
+SET IDF_PYTHON=C:\Users\admin\Documents\Espressif511\python_env\idf5.1_py3.11_env\Scripts\python.exe
+SET IDF_PATH=C:\Users\admin\Documents\Espressif511\frameworks\esp-idf-v5.1.1
+SET IDF_GIT=C:\Users\admin\Documents\Espressif511\tools\idf-git\2.39.2\cmd\git.exe
+
+set PREFIX=%IDF_PYTHON% %IDF_PATH%
+</code></pre> 
+<ul><li> <h4>组件</h4> <a href="https://blog.csdn.net/flurry_rain/article/details/119361997">组件添加（arduino）</a><pre><code class="prism language-cmd"> idf.py add-dependency "espressif/arduino-esp32^3.0.0-alpha1"
+ idf.py add-dependency "espressif/mdns^1.2.1" 
+ idf.py add-dependency "espressif/mpu6050^1.2.0"
+</code></pre> <a href="https://components.espressif.com/components" rel="nofollow">组件搜索</a></li><li> <h3>【未解决】在jtag trace时的问题</h3> </li></ul> 
+<p><img src="https://i-blog.csdnimg.cn/blog_migrate/e53471e54308e42c4303c6246147a88f.png" alt="在这里插入图片描述"></p> 
+<pre><code class="prism language-c">Open On-Chip Debugger > esp32 sysview start file://pro-cpu.SVDat file://app-cpu.SVDat 0 -1 -1 
+Current target 'esp32.cpu1' was not examined! 
+Run command on target 'esp32.cpu0' 
+Total trace memory: 16384 bytes 
+Open file pro-cpu.SVDat 
+Invalid 'cmd_data->poll_period' arg! 
+App trace params: from 1 cores, size 4294967295 bytes, stop_tmo -1 s, poll period 0 ms, wait_rst 0, skip 0 bytes 
+Connect targets... 
+esp32.cpu0: DSR (80208013) indicates DIR instruction generated an exception! 
+esp32.cpu0: DSR (80208012) indicates DIR instruction generated an exception! 
+esp32.cpu0: DSR (80208012) indicates DIR instruction generated an exception! 
+esp32.cpu0: Target halted, PC=0x120034E5, debug_reason=00000000 
+Set GDB target to 'esp32.cpu0' 
+esp32.cpu0: DSR (80008012) indicates DIR instruction generated an exception! 
+esp32.cpu0: Failed writing 4 bytes at address 0x3ff5f064 
+Failed to write ESP32_TIMG0WDT_PROTECT (-4)! 
+esp32.cpu0: DSR (80008012) indicates DIR instruction generated an exception! 
+esp32.cpu0: DSR (80008012) indicates DIR instruction generated an exception! 
+esp32.cpu0: DSR (80008012) indicates DIR instruction generated an exception! 
+esp32.cpu0: Target halted, PC=0x120034E5, debug_reason=00000000 
+Set GDB target to 'esp32.cpu0' 
+esp32.cpu0: DSR (80008012) indicates DIR instruction generated an exception! 
+esp32.cpu0: DSR (80008012) indicates DIR instruction generated an exception! 
+esp32.cpu0: DSR (80008012) indicates DIR instruction generated an exception! 
+esp32.cpu0: Target halted, PC=0x120034E5, debug_reason=00000001 
+Failed to read break instruction! 
+esp32.cpu0: DSR (80008012) indicates DIR instruction generated an exception! 
+esp32.cpu0: Failed writing 4 bytes at address 0x3ff5f064 
+Failed to write ESP32_TIMG0WDT_PROTECT (-4)! 
+Polling target esp32.cpu0 failed, trying to reexamine 
+esp32.cpu0: DSR (80008012) indicates DIR instruction generated an exception! 
+esp32.cpu0: DSR (80008012) indicates DIR instruction generated an exception! 
+esp32.cpu0: DSR (80008012) indicates DIR instruction generated an exception! 
+esp32.cpu0: Target halted, PC=0x120034E5, debug_reason=00000001 
+Failed to read break instruction! 
+esp32.cpu0: DSR (80008012) indicates DIR instruction generated an exception! 
+esp32.cpu0: Failed writing 4 bytes at address 0x3ff5f064 
+Failed to write ESP32_TIMG0WDT_PROTECT (-4)! 
+Polling target esp32.cpu0 failed, trying to reexamine 
+esp32 sysview start file://pro-cpu.SVDat file://app-cpu.SVDat 0 -1 -1 
+Current target 'esp32.cpu1' was not examined! 
+遗失对主机的连接。 
+</code></pre> 
+<ul><li> <h3>【实践】性能优化</h3> </li><li> <h4>2-5-8原则</h4> 
+ <blockquote> 
+ <p>在性能优化中存在启动时间<code>2-5-8</code>原则：<br> 当用户在<code>0-2秒</code>之间得到响应时，会感觉系统的响应<code>很快</code><br> 当用户在<code>2-5秒</code>之间得到响应时，会感觉系统的响应速度<code>还可以</code><br> 当用户在<code>5-8秒</code>之间得到响应时，会感觉系统的响应速度<code>很慢</code>，但是还<code>可以接受</code><br> 而当用户在超过<code>8秒</code>后仍然无法得到响应时，会感觉系统<code>糟透了</code>，或者认为系统已经失去响应</p> 
+ </blockquote> </li><li> <h4>八秒定律</h4> 
+ <blockquote> 
+ <p>八秒定律是在互联网领域存在的一个定律，即指用户访问一个网站时，如果等待网页打开的时间超过了8秒，就有超过70%的用户放弃等待。</p> 
+ </blockquote> </li></ul> 
+<h3>ESP32系列</h3> 
+<h4>模组选型</h4> 
+<p><a href="https://www.espressif.com.cn/zh-hans/products/modules" rel="nofollow">模组选型</a><br> <a href="https://www.espressif.com.cn/zh-hans/support/documents/technical-documents" rel="nofollow">技术文档</a></p> 
+<table><thead><tr><th>类型</th><th>架构</th><th>模组</th></tr></thead><tbody><tr><td>ESP32-S2</td><td>32-bit MCU & 2.4 GHz Wi-Fi，<mark>Xtensa® 32位 LX7 单核</mark>处理器，时钟频率高达 240 MHz</td><td></td></tr><tr><td><a href="https://docs.espressif.com/projects/esp-idf/zh_CN/v5.1/esp32s3/get-started/index.html" rel="nofollow">ESP32-S3</a></td><td>32-bit MCU & 2.4 GHz Wi-Fi & Bluetooth 5 (LE) ，<mark>Xtensa® 32 位 LX7 双核</mark>处理器，主频高达 240 MHz</td><td></td></tr><tr><td>ESP32-C2</td><td>32-bit <mark>RISC-V</mark> MCU & 2.4 GHz Wi-Fi & Bluetooth 5 (LE) ，主频高达 120 MHz</td><td></td></tr><tr><td>ESP32-C3</td><td>32-bit <mark>RISC-V</mark> MCU & 2.4 GHz Wi-Fi & Bluetooth 5 (LE) ，主频高达 160 MHz</td><td></td></tr><tr><td><a href="https://docs.espressif.com/projects/esp-idf/zh_CN/v5.1/esp32c6/get-started/index.html" rel="nofollow">ESP32-C6</a></td><td>32-bit <mark>RISC-V</mark> MCU & 2.4 GHz Wi-Fi 6 & Bluetooth 5 (LE) & IEEE 802.15.4 主频高达 160 MHz</td><td></td></tr><tr><td>ESP32-H2</td><td>32-bit <mark>RISC-V</mark> MCU & Bluetooth 5 (LE) & IEEE 802.15.4 ，主频高达 96 MHz</td><td></td></tr><tr><td><a href="https://docs.espressif.com/projects/esp-idf/zh_CN/v5.1/esp32/get-started/index.html" rel="nofollow">ESP32模组</a></td><td>32-bit MCU & 2.4 GHz Wi-Fi & Bluetooth/Bluetooth LE，两个或一个可以单独控制的 <mark>Xtensa® 32-bit LX6</mark> 处理器，时钟频率可调，范围为 80 MHz 到 240 MHz</td><td></td></tr><tr><td>ESP8266 模组</td><td>32-bit MCU & 2.4 GHz Wi-Fi，<mark>Xtensa® 32-bit LX6 单核</mark>处理器，时钟频率高达 160 MHz</td><td></td></tr></tbody></table>
+<h4>供货</h4> 
+<p><img src="https://i-blog.csdnimg.cn/blog_migrate/6cbbe63bbacf983076b3b782fd467c07.png" alt="在这里插入图片描述"></p> 
+<h4>应用</h4> 
+<h5>【已验证】自动下载电路</h5> 
+<p><img src="https://i-blog.csdnimg.cn/blog_migrate/5bae267865bb09aa2c35ba00000f0fa7.png" alt="在这里插入图片描述"><br> esptool.py里下载相关的代码</p> 
+<pre><code class="prism language-python"> # issue reset-to-bootloader:
+ # RTS = either CH_PD/EN or nRESET (both active low = chip in reset
+ # DTR = GPIO0 (active low = boot to flasher)
+ #
+ # DTR & RTS are active low signals,
+ # ie True = pin @ 0V, False = pin @ VCC.
+ if mode != 'no_reset':
+ self._setDTR(False) # IO0=HIGH
+ 1) self._setRTS(True) # EN=LOW, chip in reset
+ time.sleep(0.1)
+ 2) self._setDTR(True) # IO0=LOW
+ 3) self._setRTS(False) # EN=HIGH, chip out of reset
+ time.sleep(0.05)
+ 4) self._setDTR(False) # IO0=HIGH, done
+</code></pre> 
+<p><img src="https://i-blog.csdnimg.cn/blog_migrate/409deefa426e4120241bba257489b119.png#pic_center" alt="在这里插入图片描述"></p> 
+<p><img src="https://i-blog.csdnimg.cn/blog_migrate/3540b59a77b1d19f5c46cd1a4530b646.jpeg#pic_center" alt="在这里插入图片描述"><br> <img src="https://i-blog.csdnimg.cn/blog_migrate/8f8784885b20e663586bfbdb1cff94ec.png" alt="在这里插入图片描述"><br> 参考：<br> <a href="https://datasheet.lcsc.com/lcsc/2101130932_WCH-Jiangsu-Qin-Heng-CH340N_C506813.pdf" rel="nofollow">ch340datasheet</a><br> <a href="https://www.muselab-tech.com/esp8266-esp32zi-dong-xia-zai-dian-lu-yuan-li-fen-xi/" rel="nofollow">esp32自动下载电路</a></p> 
+<p><img src="https://i-blog.csdnimg.cn/blog_migrate/3f12bf06b9a53411483394d3ee8d0069.png" alt="在这里插入图片描述"></p> 
+<p><img src="https://i-blog.csdnimg.cn/blog_migrate/6ccde2a447775c71dc52d0b7f083d191.jpeg#pic_center" alt="在这里插入图片描述"></p> 
+<p><a href="https://arduino.me/a/esp32" rel="nofollow">Arduino IDE安装esp32 SDK（Windows）2023.5.5更新</a></p>

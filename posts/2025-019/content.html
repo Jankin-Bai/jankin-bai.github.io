@@ -8,26 +8,26 @@
 <p>已知鸡和兔关在同一个笼子里，共有 <strong>35个头</strong> 和 <strong>94只脚</strong>。求鸡和兔各有多少只？</p> 
 <hr> 
 <h4>二、方程式解法（基础版）</h4> 
-<p><strong>符合认知规律</strong>：从最直观的数学语言入手，培养问题拆解能力。</p>
-<h5>步骤解析</h5>
+<p><strong>符合认知规律</strong>：从最直观的数学语言入手，培养问题拆解能力。</p> 
+<h5>步骤解析</h5> 
 <ol><li> <p><strong>定义变量</strong>：</p> 
  <ul><li>设鸡的数量为 <code class="math-inline"></code>，兔的数量为 <code class="math-inline"></code>。</li></ul> </li><li> <p><strong>列方程组</strong>：<br> <pre><code class="math-display">x+y=352x+4y=94​</code></pre></p> </li><li> <p><strong>解方程（代入法）</strong>：</p> 
  <ul><li>由 <code class="math-inline">y=35</code> 得 <code class="math-inline">35−y</code>。</li><li>代入 <code class="math-inline">4y=94</code>：<br> <pre><code class="math-display">y)+4y=94</code></pre></li><li>化简：<br> <pre><code class="math-display">2y=94⇒y=12</code></pre></li><li>回代得 <code class="math-inline">35−12=23</code>。</li></ul> </li></ol> 
 <p><strong>答案</strong>：鸡 23 只，兔 12 只。</p> 
 <hr> 
 <h4>三、线性代数解法（进阶版）</h4> 
-<p><strong>意义</strong>：将实际问题抽象为矩阵运算，为多维问题提供通用解法。</p>
-<h5>1. 方程组转化为矩阵形式</h5>
-<p>原方程组：<br> <pre><code class="math-display">x+y=352x+4y=94​</code></pre></p>
-<p>等价于矩阵方程：<br> <pre><code class="math-display">b，其中A=[12​14​],x=[xy​],b=[3594​].</code></pre></p>
-<h5>2. 矩阵求解（逆矩阵法）</h5>
-<p>解为：<br> <pre><code class="math-display">A−1b</code></pre></p>
-<p><strong>计算步骤</strong>：</p>
+<p><strong>意义</strong>：将实际问题抽象为矩阵运算，为多维问题提供通用解法。</p> 
+<h5>1. 方程组转化为矩阵形式</h5> 
+<p>原方程组：<br> <pre><code class="math-display">x+y=352x+4y=94​</code></pre></p> 
+<p>等价于矩阵方程：<br> <pre><code class="math-display">b，其中A=[12​14​],x=[xy​],b=[3594​].</code></pre></p> 
+<h5>2. 矩阵求解（逆矩阵法）</h5> 
+<p>解为：<br> <pre><code class="math-display">A−1b</code></pre></p> 
+<p><strong>计算步骤</strong>：</p> 
 <ol><li> <p><strong>求系数矩阵 <code class="math-inline"></code> 的行列式</strong>：<br> <pre><code class="math-display">(1)(4)−(1)(2)=2</code></pre></p> </li><li> <p><strong>求逆矩阵 <code class="math-inline"></code></strong>：<br> <pre><code class="math-display"></code></pre>=det(A)1​[4−2​−11​]=21​[4−2​−11​]</p> </li><li> <p><strong>矩阵乘法</strong>：<br> <pre><code class="math-display">xy​]=21​[4−2​−11​][3594​]=[24×35−1×94​2−2×35+1×94​​]=[2312​]</code></pre></p> </li></ol> 
 <p><strong>意义</strong>：通过矩阵运算揭示变量间的线性关系，适用于高维复杂问题。</p> 
 <hr> 
-<h4>四、Excel计算法</h4>
-<h5>操作步骤</h5>
+<h4>四、Excel计算法</h4> 
+<h5>操作步骤</h5> 
 <ol><li> <p><strong>输入数据</strong>：</p> 
  <ul><li> <p>在单元格 <code>A2:C3</code> 输入系数矩阵：</p> <pre><code>1 1
 2 4
