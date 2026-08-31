@@ -1,0 +1,139 @@
+<!-- Post: 小T卡 GR5526 OTA 升级测试固件 | ID: 2026-001 | Created: 2026-08-31 | Tags: tech, works, milestone -->
+
+<h3>开篇</h3>
+<p>本文携带小T卡 GR5526 的 OTA 升级测试固件，用于验证双区升级流程。固件采用 <strong>Background Dual-Bank（后台双区）</strong> 模式，Bank A 运行当前固件，Bank B 缓存新固件，bootloader 负责校验和切换。</p>
+
+<h3>固件信息</h3>
+<table>
+<tr><th>项目</th><th>值</th></tr>
+<tr><td>版本号</td><td>0.0.1</td></tr>
+<tr><td>编译日期</td><td>20260831</td></tr>
+<tr><td>编译时间</td><td>192419</td></tr>
+<tr><td>Git Commit</td><td>9a20115</td></tr>
+<tr><td>完整版本</td><td>0.0.1_20260831_192419_git9a20115</td></tr>
+<tr><td>固件类型</td><td>release</td></tr>
+<tr><td>板卡型号</td><td>TK_PAD</td></tr>
+<tr><td>Flash 布局</td><td>双区（Bank A @0x240000, Bank B @0x2C0000）</td></tr>
+<tr><td>Bootloader</td><td>@0x204000（UART DFU + 双区切换）</td></tr>
+</table>
+
+<h3>固件下载</h3>
+<p>点击下方按钮直接下载固件文件（与文章同目录）：</p>
+<p>
+  <a href="./ble_app_uart_c_ota_v0.0.1_20260831.bin" download style="display:inline-block;padding:12px 24px;background:#2d8cf0;color:#fff;text-decoration:none;border-radius:6px;font-weight:bold;">
+    📥 下载 OTA 固件 (209.3 KB)
+  </a>
+</p>
+<p>其他附件：</p>
+<ul>
+<li><a href="./version.json" download>version.json</a> — 版本元数据</li>
+<li><a href="./checksums.txt" download>checksums.txt</a> — MD5/SHA256/CRC32 校验和</li>
+</ul>
+
+<h3>校验和</h3>
+<p>升级前请校验固件完整性：</p>
+<pre><code>MD5:    96ddbb3bd8a0808afe212c46139ed39e
+SHA256: a6effedc0b50012f1265c1058d04e846c5870c4bbb593ef47d304deb2eee255e
+CRC32:  5c040d78</code></pre>
+
+<h3>升级流程</h3>
+
+<h4>第一步：准备固件</h4>
+<p>下载上方的 <code>ble_app_uart_c_ota_v0.0.1_20260831.bin</code>，上传到 HTTP 服务器，或放置在 Cat1 模组可访问的位置。</p>
+
+<h4>第二步：触发升级</h4>
+<p>通过 GR5526 CLI（RTT 或串口）输入升级命令：</p>
+<pre><code class="language-bash">upgrade start http://服务器IP/ble_app_uart_c_ota_v0.0.1_20260831.bin</code></pre>
+
+<h4>第三步：Cat1 下载固件</h4>
+<p>Cat1 模组收到升级指令后，通过 HTTP 下载固件到本地 Flash（LFS 文件系统），然后通过 UART 发送 <code>+DFU: DL size=&lt;n&gt;</code> 通知 GR5526。</p>
+
+<h4>第四步：GR5526 写入 Bank B</h4>
+<p>GR5526 进入 DFU 模式，通过 UART 接收 Cat1 转发的固件数据，写入 Bank B（@0x2C0000）。每帧数据校验通过后返回 ACK。</p>
+
+<h4>第五步：校验与切换</h4>
+<p>固件写入完成后，bootloader 校验 Bank B 固件的 Image Info（pattern=0x4744, checksum, load_addr），校验通过后复制 Bank B → Bank A，更新 APP Info，复位后运行新固件。</p>
+
+<h4>第六步：验证版本</h4>
+<p>升级完成后，通过 CLI 命令验证版本号：</p>
+<pre><code class="language-bash">version</code></pre>
+<p>预期输出版本号为 <code>0.0.1_20260831_192419</code>。</p>
+
+<h3>Flash 分区布局</h3>
+<pre><code>高地址 ─────────────────────────────────────────
+0x003FFFFF ── NVR / 用户数据 (768KB)
+0x00340000 ──
+0x0033FFFF ── Bank B (OTA 缓存区, 512KB)
+0x002C0000 ──
+0x002BFFFF ── Bank A (当前运行 App, 512KB)
+0x00240000 ──
+0x0023FFFF ── Bootloader (240KB)
+0x00204000 ──
+0x00203FFF ── SCA / APP / DFU Info (16KB)
+0x00200000 ── Flash 基址
+低地址 ─────────────────────────────────────────</code></pre>
+
+<h3>5 层防升挂校验</h3>
+<p>本固件生成时经过 5 层校验，防止升级变砖：</p>
+<table>
+<tr><th>层级</th><th>检查内容</th></tr>
+<tr><td>Layer 1</td><td>编译期 <code>_Static_assert</code>（地址越界/重叠/不对齐）</td></tr>
+<tr><td>Layer 2</td><td>Flash 布局一致性（Bank B 地址两端匹配）</td></tr>
+<tr><td>Layer 3</td><td>固件完整性（Image Info pattern/load_addr/size/4KB对齐）</td></tr>
+<tr><td>Layer 4</td><td>版本号递增（防止降级）</td></tr>
+<tr><td>Layer 5</td><td>MD5/SHA256/CRC32 校验和</td></tr>
+</table>
+
+<h3>故障排查</h3>
+
+<h4>升级失败：固件校验错误</h4>
+<ul>
+<li>检查固件是否完整（对比 MD5/SHA256）</li>
+<li>确认固件带有 Image Info 尾部（pattern=0x4744）</li>
+<li>确认 load_addr=0x00240000（Bank A 地址）</li>
+</ul>
+
+<h4>升级失败：Cat1 下载超时</h4>
+<ul>
+<li>检查 HTTP 服务器是否可访问</li>
+<li>检查 Cat1 模组网络信号（<code>at+CSQ</code>）</li>
+<li>确认固件大小不超过 Cat1 LFS 容量</li>
+</ul>
+
+<h4>升级后无法启动</h4>
+<ul>
+<li>通过 J-Link RTT 查看 bootloader 日志</li>
+<li>确认 APP Info 区域已更新</li>
+<li>必要时通过 <code>flash_dual_bank.py</code> 重新烧录 bootloader + App</li>
+</ul>
+
+<h4>回滚到旧版本</h4>
+<p>如果升级后固件异常，bootloader 会自动回滚到 Bank A 的旧固件（如果 Bank B 校验失败）。也可以通过 CLI 命令手动触发回滚：</p>
+<pre><code class="language-bash">upgrade rollback</code></pre>
+
+<h3>测试命令清单</h3>
+<pre><code class="language-bash"># 查看版本号
+version
+
+# 开始升级
+upgrade start http://服务器IP/固件.bin
+
+# 查看升级状态
+upgrade status
+
+# 取消升级
+upgrade cancel
+
+# 回滚到旧版本
+upgrade rollback
+
+# 查看 Flash 布局
+flash info</code></pre>
+
+<h3>结语</h3>
+<p>本文固件用于小T卡 GR5526 双区 OTA 升级测试。升级前请务必备份当前固件，并确认校验和匹配。升级过程中请勿断电，否则可能导致 bootloader 损坏。</p>
+
+<hr>
+<p><strong>生成工具</strong>：<code>build_ota_firmware.py</code>（5 层校验防升挂）<br>
+<strong>生成日期</strong>：2026-08-31<br>
+<strong>项目</strong>：小T卡 (XiaoT Card) GR5526 + Cat1 双模开发板</p>
