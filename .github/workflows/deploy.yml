@@ -15,6 +15,5 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd /d C:\wwwroot\jankinbai.top
-            git pull origin main
-            echo Deploy completed at %date% %time%
+            git -C C:\wwwroot\jankinbai.top pull origin main
+            git -C C:\wwwroot\jankinbai.top log -1 --oneline
