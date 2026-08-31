@@ -1,0 +1,81 @@
+{
+  "_comment": "标签元数据可选配置。未配置的标签会自动生成颜色（基于标签名hash）。写文章时只需在 meta.json 的 tags 数组中添加标签名即可自动发现。",
+  "tech": {
+    "name": "技术",
+    "nameEn": "Tech",
+    "icon": "💻",
+    "color": "#4A6FA5",
+    "colorLight": "#E8EEF7",
+    "colorDark": "#2C4A7A",
+    "bgGradient": "linear-gradient(135deg, #4A6FA5 0%, #6B8FC5 100%)",
+    "borderStyle": "2px solid #4A6FA5",
+    "cardBg": "#F8FAFD",
+    "description": "技术探索、编程笔记、嵌入式开发、前端实践",
+    "active": true
+  },
+  "works": {
+    "name": "作品",
+    "nameEn": "Works",
+    "icon": "🎨",
+    "color": "#C75B39",
+    "colorLight": "#FBEDE8",
+    "colorDark": "#8B3A1E",
+    "bgGradient": "linear-gradient(135deg, #C75B39 0%, #E07A55 100%)",
+    "borderStyle": "2px solid #C75B39",
+    "cardBg": "#FDF5F2",
+    "description": "创作作品、项目输出、设计成果",
+    "active": true
+  },
+  "life": {
+    "name": "生活",
+    "nameEn": "Life",
+    "icon": "🌿",
+    "color": "#5A9E6F",
+    "colorLight": "#EAF4ED",
+    "colorDark": "#3A6E4A",
+    "bgGradient": "linear-gradient(135deg, #5A9E6F 0%, #7ABF8F 100%)",
+    "borderStyle": "2px solid #5A9E6F",
+    "cardBg": "#F5FAF7",
+    "description": "生活记录、心情感悟、人生思考",
+    "active": true
+  },
+  "books": {
+    "name": "书籍",
+    "nameEn": "Books",
+    "icon": "📚",
+    "color": "#8B6914",
+    "colorLight": "#F5F0E0",
+    "colorDark": "#5C4508",
+    "bgGradient": "linear-gradient(135deg, #8B6914 0%, #B08A3A 100%)",
+    "borderStyle": "2px solid #8B6914",
+    "cardBg": "#FBF8F0",
+    "description": "阅读记录、读书笔记、书籍拆解",
+    "active": true
+  },
+  "emotions": {
+    "name": "心情",
+    "nameEn": "Emotions",
+    "icon": "💭",
+    "color": "#8B5A9E",
+    "colorLight": "#F2EBF5",
+    "colorDark": "#5C3A6E",
+    "bgGradient": "linear-gradient(135deg, #8B5A9E 0%, #A878BC 100%)",
+    "borderStyle": "2px solid #8B5A9E",
+    "cardBg": "#FAF6FC",
+    "description": "心情记录、情感感悟、梦境记录",
+    "active": true
+  },
+  "thoughts": {
+    "name": "思考",
+    "nameEn": "Thoughts",
+    "icon": "🧠",
+    "color": "#2C7A7B",
+    "colorLight": "#E0F2F2",
+    "colorDark": "#1A4A4B",
+    "bgGradient": "linear-gradient(135deg, #2C7A7B 0%, #4A9A9B 100%)",
+    "borderStyle": "2px solid #2C7A7B",
+    "cardBg": "#F0F8F8",
+    "description": "深度思考、哲学思辨、认知升级",
+    "active": true
+  }
+}

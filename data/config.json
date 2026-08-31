@@ -7,14 +7,11 @@
     "description": "个人时间线博客，记录书籍、作品、心情、技术文档等多维度人生历程"
   },
   "timeline": {
-    "defaultView": "timeline",
     "startYear": 2015,
     "endYear": "now",
     "density": "comfortable",
-    "showMilestoneOnly": false,
-    "groupBy": "year",
-    "milestoneMarker": "★",
-    "_note_defaultEra": "已废弃：日期默认同时显示公元+干支"
+    "groupBy": "month",
+    "milestoneMarker": "★"
   },
   "dimensions": [
     {
@@ -112,10 +109,7 @@
     "cardRadius": "4px",
     "transitionSpeed": "250ms",
     "darkMode": false,
-    "showSearch": true,
-    "showEraSwitcher": true,
-    "showViewSwitcher": true,
-    "showDimensionLegend": true
+    "showSearch": true
   },
   "ganzhi": {
     "showYear": true,
@@ -130,7 +124,7 @@
     "startYear": 2015,
     "batchSize": 20,
     "maxEmptyBatches": 2,
-    "cacheTTL": 300000
+    "cacheTTL": 3600000
   },
   "sidebarSlot": {
     "enabled": false,
