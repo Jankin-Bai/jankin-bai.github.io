@@ -3,23 +3,196 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>404 - 页面不存在 | Jankin's Timeline</title>
+  <meta name="robots" content="noindex, follow">
+  <title>404 - 页面未找到 | Jankin's Timeline</title>
+  <!-- 防闪烁 -->
+  <script>
+    (function () {
+      try {
+        var theme = null;
+        var nameEQ = 'jankin-theme=';
+        var ca = document.cookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+          var c = ca[i].trim();
+          if (c.indexOf(nameEQ) === 0) {
+            theme = decodeURIComponent(c.substring(nameEQ.length));
+            break;
+          }
+        }
+        if (!theme) {
+          var saved = localStorage.getItem('jankin-theme');
+          if (saved) {
+            theme = saved;
+            var host = location.hostname;
+            var isLocal = host === 'localhost' || host === '127.0.0.1' || /^\d+\.\d+\.\d+\.\d+$/.test(host);
+            var domain = isLocal ? '' : ('; domain=.' + host.split('.').slice(-2).join('.'));
+            var d = new Date(); d.setTime(d.getTime() + 365 * 24 * 60 * 60 * 1000);
+            document.cookie = 'jankin-theme=' + encodeURIComponent(saved) + '; expires=' + d.toUTCString() + domain + '; path=/; SameSite=Lax';
+          }
+        }
+        theme = theme || 'mono';
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {}
+    })();
+  </script>
   <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Serif+SC:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
-    .error-container { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 2rem; }
-    .error-code { font-size: 6rem; font-weight: 700; color: var(--color-primary); margin: 0; line-height: 1; }
-    .error-message { font-size: 1.5rem; color: var(--color-text); margin: 1rem 0; }
-    .error-description { color: var(--color-text-secondary); margin-bottom: 2rem; max-width: 400px; }
-    .error-back { display: inline-block; padding: 0.75rem 2rem; background: var(--color-primary); color: #fff; text-decoration: none; border-radius: var(--border-radius); transition: opacity 0.2s; }
-    .error-back:hover { opacity: 0.9; }
+    /* 404 页面专属：内容区居中，无侧栏 [frontend: Cover 原语] */
+    .error-page {
+      min-height: calc(100vh - 200px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: var(--sp-8) var(--sp-6);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .error-code {
+      font-family: var(--font-family-serif);
+      font-size: clamp(5rem, 20vw, 10rem);
+      font-weight: 700;
+      line-height: 1;
+      color: var(--color-primary);
+      margin-bottom: var(--sp-4);
+      letter-spacing: -0.02em;
+    }
+    .error-title {
+      font-family: var(--font-family-serif);
+      font-size: clamp(1.2rem, 4vw, 1.6rem);
+      font-weight: 600;
+      color: var(--color-text);
+      margin-bottom: var(--sp-3);
+    }
+    .error-message {
+      font-size: var(--fs-base);
+      color: var(--color-text-secondary);
+      line-height: 1.8;
+      max-width: 480px;
+      margin-bottom: var(--sp-7);
+    }
+    .error-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--sp-3);
+      justify-content: center;
+    }
+    .error-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sp-2);
+      padding: var(--sp-3) var(--sp-6);
+      font-size: var(--fs-base);
+      font-weight: 500;
+      border-radius: var(--border-radius);
+      text-decoration: none;
+      transition: all var(--transition);
+      cursor: pointer;
+      border: 1px solid transparent;
+    }
+    .error-btn-primary {
+      background: var(--color-primary);
+      color: var(--color-surface);
+    }
+    .error-btn-primary:hover {
+      background: var(--color-primary-dark);
+      text-decoration: none;
+      transform: translateY(-1px);
+      box-shadow: var(--card-shadow-hover);
+    }
+    .error-btn-secondary {
+      background: transparent;
+      color: var(--color-text-secondary);
+      border-color: var(--color-border);
+    }
+    .error-btn-secondary:hover {
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+      text-decoration: none;
+    }
+    .error-footer {
+      margin-top: var(--sp-10);
+      font-size: var(--fs-xs);
+      color: var(--color-text-muted);
+      font-family: var(--font-family-mono);
+    }
+    /* 404 页隐藏视图切换和里程碑，只保留主题切换和搜索 */
+    .page-404 .toolbar-group.view-group,
+    .page-404 .checkbox-label {
+      display: none !important;
+    }
+    .page-404 .toolbar {
+      grid-template-columns: 1fr auto;
+    }
+    .page-404 .search-box { grid-column: 1; }
+    .page-404 .theme-toolbar-group { grid-column: 2; }
+    @media (prefers-reduced-motion: reduce) {
+      .error-btn-primary, .error-btn-secondary { transition: none; }
+      .error-btn-primary:hover { transform: none; }
+    }
   </style>
 </head>
-<body>
-  <div class="error-container">
-    <h1 class="error-code">404</h1>
-    <p class="error-message">页面不存在</p>
-    <p class="error-description">抱歉，您访问的页面不存在或已被移除。请检查网址是否正确，或返回首页继续浏览。</p>
-    <a href="index.html" class="error-back">返回首页</a>
+<!-- 统一模板：page-404 类控制错误页特有显示决策 -->
+<body class="page-home page-404">
+  <a href="#main-content" class="skip-link">跳到主要内容</a>
+  <div class="site-grid">
+    <header class="site-header-row" role="banner">
+      <div class="header-left">
+        <h1 class="site-title">Jankin's Timeline</h1>
+        <p class="site-subtitle">一纵一横，记录思想与历程</p>
+      </div>
+      <div class="header-right">
+        <div class="theme-switcher" id="themeSwitcher">
+          <button class="theme-trigger" id="themeTrigger" type="button" aria-haspopup="listbox" aria-expanded="false" aria-label="切换网站主题">
+            <span class="theme-trigger-icon" id="themeTriggerIcon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            </span>
+            <span class="theme-current-name" id="themeCurrentName">终端极客</span>
+            <svg class="theme-trigger-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="theme-dropdown" id="themeDropdown" role="listbox" aria-label="选择网站主题" hidden></div>
+        </div>
+      </div>
+    </header>
+    <aside class="sidebar" aria-hidden="true" style="visibility:hidden;"></aside>
+    <main class="main-area error-page" id="main-content" role="main">
+      <div class="error-code" aria-hidden="true">404</div>
+      <h1 class="error-title">页面走丢了</h1>
+      <p class="error-message">你访问的页面不存在，可能已被移动、删除，或者链接有误。<br>时间线仍在继续，不妨回到首页看看其他内容。</p>
+      <div class="error-actions">
+        <a href="index.html" class="error-btn error-btn-primary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          返回时间线首页
+        </a>
+        <button type="button" class="error-btn error-btn-secondary" onclick="history.back()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+          返回上一页
+        </button>
+      </div>
+    </main>
+    <div class="right-spacer" aria-hidden="true"></div>
+    <footer class="site-footer-row" role="contentinfo">
+      <div class="footer-cell footer-cell-c1"><p>© 2026 Jankin Bai</p></div>
+      <div class="footer-cell footer-cell-c2"><nav aria-label="页脚导航"><a href="index.html" style="margin:0 8px;">时间线</a><a href="mailto:jankinbai@qq.com" style="margin:0 8px;">联系</a></nav></div>
+      <div class="footer-cell footer-cell-c3"><p>静态站点</p></div>
+    </footer>
   </div>
+  <script src="assets/js/theme.js"></script>
+  <script>
+    (function() {
+      var headerRow = document.querySelector('.site-header-row');
+      if (!headerRow) return;
+      function updateHeaderHeight() {
+        var h = Math.min(headerRow.offsetHeight || 0, 400);
+        document.documentElement.style.setProperty('--header-height', h + 'px');
+      }
+      window.addEventListener('resize', updateHeaderHeight);
+      updateHeaderHeight();
+    })();
+  </script>
 </body>
 </html>
