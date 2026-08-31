@@ -1,1 +1,226 @@
-$(cat /home/user/.super_doubao/super-doubao-runtime/workspace/site_review/user_v301/jankinbai.top/post.html)
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="博文详情 - Jankin's Timeline 个人时间线博客">
+  <meta name="author" content="Jankin Bai">
+  <meta property="og:type" content="article">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%238b6914'/%3E%3Cpath d='M16 6v20M10 10h12M10 16h12M10 22h8' stroke='%23fdfbf7' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E">
+  <title>博文 | Jankin's Timeline</title>
+  <script>
+    (function () {
+      try {
+        var theme = null;
+        var nameEQ = 'jankin-theme=';
+        var ca = document.cookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+          var c = ca[i].trim();
+          if (c.indexOf(nameEQ) === 0) { theme = decodeURIComponent(c.substring(nameEQ.length)); break; }
+        }
+        if (!theme) {
+          var saved = localStorage.getItem('jankin-theme');
+          if (saved) {
+            theme = saved;
+            var host = location.hostname;
+            var isLocal = host === 'localhost' || host === '127.0.0.1' || /^\d+\.\d+\.\d+\.\d+$/.test(host);
+            var domain = isLocal ? '' : ('; domain=.' + host.split('.').slice(-2).join('.'));
+            var d = new Date(); d.setTime(d.getTime() + 365 * 24 * 60 * 60 * 1000);
+            document.cookie = 'jankin-theme=' + encodeURIComponent(saved) + '; expires=' + d.toUTCString() + domain + '; path=/; SameSite=Lax';
+          }
+        }
+        theme = theme || 'mono';
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {}
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Serif+SC:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body class="page-post post-page">
+  <a href="#post-article" class="skip-link">跳到文章内容</a>
+  <!-- 阅读标题栏：滚动时替代完整页眉，42px 文章标题条 [hci: 阅读姿态, 消除头重脚轻] -->
+  <div class="reading-header" id="readingHeader" aria-hidden="true">
+    <div class="reading-header-inner">
+      <a href="index.html" class="reading-header-back" aria-label="返回时间线">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      </a>
+      <span class="reading-header-title" id="readingHeaderTitle"></span>
+    </div>
+  </div>
+  <div class="site-grid">
+    <!-- 行1：页眉（跨3列，内部3格） -->
+    <header class="site-header-row" role="banner">
+      <div class="header-left">
+        <h1 class="site-title">Jankin's Timeline</h1>
+        <nav class="post-breadcrumb" aria-label="面包屑导航">
+          <a href="index.html">← 返回时间线</a>
+        </nav>
+      </div>
+      <div class="header-right">
+        <div class="theme-switcher" id="themeSwitcher">
+          <button class="theme-trigger" id="themeTrigger" type="button" aria-haspopup="listbox" aria-expanded="false" aria-label="切换网站主题">
+            <span class="theme-trigger-icon" id="themeTriggerIcon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            </span>
+            <span class="theme-current-name" id="themeCurrentName">终端极客</span>
+            <svg class="theme-trigger-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="theme-dropdown" id="themeDropdown" role="listbox" aria-label="选择网站主题" hidden></div>
+        </div>
+        <div class="search-box">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="search" id="search-input" placeholder="搜索标题、摘要或标签..." aria-label="搜索博文">
+          <button type="button" class="search-clear" id="search-clear" aria-label="清除搜索" hidden>&times;</button>
+        </div>
+      </div>
+    </header>
+    <!-- 行2：内容区 -->
+    <!-- B1: 左侧栏（TOC → 标签 → 相关文章 → 操作/广告） -->
+    <aside class="post-sidebar" aria-label="文章侧边栏">
+      <!-- 手机端侧栏折叠按钮 -->
+      <button class="sidebar-toggle-btn" type="button" aria-expanded="false" aria-controls="post-sidebar-content">
+        <span>文章导航</span>
+        <svg class="toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="sidebar-content" id="post-sidebar-content">
+      <div class="widgets-container" id="widgets-top" hidden></div>
+      <!-- 1. 文章目录 TOC -->
+      <div class="post-sidebar-section">
+        <h3 class="post-sidebar-title">文章目录</h3>
+        <nav class="post-toc" id="post-toc" aria-label="文章目录导航">
+          <p class="post-toc-empty">正在生成目录...</p>
+        </nav>
+      </div>
+      <!-- 2. 标签 -->
+      <div class="post-sidebar-section">
+        <h3 class="post-sidebar-title">标签</h3>
+        <div class="post-tag-nav" id="post-tag-nav"></div>
+      </div>
+      <!-- 3. 相关文章（占位，post.js 可扩展） -->
+      <div class="post-sidebar-section" id="related-posts-section" hidden>
+        <h3 class="post-sidebar-title">相关文章</h3>
+        <div class="post-related-list" id="post-related-list"></div>
+      </div>
+      <!-- 4. 操作/广告 -->
+      <div class="post-sidebar-section">
+        <h3 class="post-sidebar-title">操作</h3>
+        <a href="index.html" class="post-action-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          时间线首页
+        </a>
+        <button type="button" class="post-action-btn" id="copy-link-btn" aria-label="复制文章链接">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+          <span id="copy-link-text">复制链接</span>
+        </button>
+        <button type="button" class="post-action-btn" id="print-btn" aria-label="打印文章">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          打印文章
+        </button>
+      </div>
+      <div class="widgets-container" id="widgets-bottom" hidden></div>
+      </div><!-- /.sidebar-content -->
+    </aside>
+    <!-- B2: 文章正文 -->
+    <article class="post-article" id="post-article">
+      <!-- 手机端搜索框 -->
+      <div class="mobile-search">
+        <div class="search-box">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="search" id="mobile-search-input" placeholder="搜索..." aria-label="搜索博文">
+        </div>
+      </div>
+      <header class="post-header">
+        <div class="post-meta" id="post-date"></div>
+        <h1 class="post-title" id="post-title"></h1>
+        <div class="post-tags" id="post-tags"></div>
+        <p class="post-summary" id="post-summary"></p>
+      </header>
+      <div class="post-image" id="post-image"></div>
+      <div class="post-content" id="post-content"></div>
+      <div class="post-links" id="post-links"></div>
+      <!-- 正文末尾：上一篇/下一篇导航 [决策3: 正文末尾放导航] -->
+      <nav class="post-nav" id="post-nav" aria-label="文章导航"></nav>
+    </article>
+    <!-- B3: 右侧留空 -->
+    <div class="right-spacer" aria-hidden="true"></div>
+    <!-- 行3：统一页脚（跨3列，内部3格） -->
+    <footer class="site-footer-row" role="contentinfo">
+      <div class="footer-cell footer-cell-c1">
+        <p>© 2026 Jankin Bai</p>
+        <p style="font-size:var(--fs-xs);color:var(--color-text-muted);margin-top:4px;">一纵一横，记录思想与历程</p>
+      </div>
+      <div class="footer-cell footer-cell-c2">
+        <nav aria-label="页脚导航">
+          <a href="index.html" style="margin:0 8px;">时间线</a>
+          <a href="index.html" style="margin:0 8px;">标签</a>
+          <a href="mailto:jankinbai@qq.com" style="margin:0 8px;">联系</a>
+        </nav>
+      </div>
+      <div class="footer-cell footer-cell-c3">
+        <p>静态站点 · 纯 HTML/CSS/JS</p>
+      </div>
+    </footer>
+  </div>
+  <!-- 手机端 TOC 浮动按钮 -->
+  <button class="toc-fab" type="button" id="tocFab" aria-label="打开文章目录" hidden>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22" aria-hidden="true"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+  </button>
+  <!-- TOC 模态框 -->
+  <div class="toc-modal" id="tocModal" role="dialog" aria-modal="true" aria-label="文章目录" hidden>
+    <div class="toc-modal-content">
+      <button class="toc-modal-close" type="button" id="tocModalClose" aria-label="关闭目录">&times;</button>
+      <h3 style="margin-bottom:var(--sp-4);font-size:var(--fs-lg);">文章目录</h3>
+      <div id="tocModalList"></div>
+    </div>
+  </div>
+  <script src="assets/js/ganzhi.js"></script>
+  <script src="assets/js/theme.js"></script>
+  <script src="assets/js/utils.js"></script>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/post.js"></script>
+  <!-- 阅读模式：滚动>180px 时页眉全隐藏，显示42px标题条 [决策4C] -->
+  <script>
+    (function() {
+      var headerRow = document.querySelector('.site-header-row');
+      var readingHeader = document.getElementById('readingHeader');
+      var readingHeaderTitle = document.getElementById('readingHeaderTitle');
+      var postTitle = document.getElementById('post-title');
+      var ticking = false;
+      function syncTitle() {
+        if (postTitle && readingHeaderTitle) {
+          readingHeaderTitle.textContent = postTitle.textContent || '';
+        }
+      }
+      setTimeout(syncTitle, 300);
+      var observer = new MutationObserver(syncTitle);
+      if (postTitle) observer.observe(postTitle, { childList: true, characterData: true, subtree: true });
+      function updateHeaderHeight() {
+        if (headerRow) {
+          var h = Math.min(headerRow.offsetHeight || 0, 400);
+          document.documentElement.style.setProperty('--header-height', h + 'px');
+        }
+      }
+      function update() {
+        // 滞后（hysteresis）：进入阅读模式阈值高，退出阈值低，避免来回闪烁 [hci: 防止误触发]
+        var isReading = document.body.classList.contains('reading-mode');
+        var threshold = isReading ? 150 : 320;  // 已在阅读模式则150px退出，否则320px进入
+        var shouldBeReading = window.scrollY > threshold;
+        if (isReading !== shouldBeReading) {
+          document.body.classList.toggle('reading-mode', shouldBeReading);
+          requestAnimationFrame(updateHeaderHeight);
+        }
+        ticking = false;
+      }
+      window.addEventListener('scroll', function() {
+        if (!ticking) { requestAnimationFrame(update); ticking = true; }
+      }, { passive: true });
+      window.addEventListener('resize', updateHeaderHeight);
+      update();
+      updateHeaderHeight();
+    })();
+  </script>
+</body>
+</html>
