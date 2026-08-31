@@ -41,6 +41,7 @@
 </head>
 <body class="page-post post-page">
   <a href="#post-article" class="skip-link">跳到文章内容</a>
+
   <!-- 阅读标题栏：滚动时替代完整页眉，42px 文章标题条 [hci: 阅读姿态, 消除头重脚轻] -->
   <div class="reading-header" id="readingHeader" aria-hidden="true">
     <div class="reading-header-inner">
@@ -50,6 +51,7 @@
       <span class="reading-header-title" id="readingHeaderTitle"></span>
     </div>
   </div>
+
   <div class="site-grid">
     <!-- 行1：页眉（跨3列，内部3格） -->
     <header class="site-header-row" role="banner">
@@ -77,6 +79,7 @@
         </div>
       </div>
     </header>
+
     <!-- 行2：内容区 -->
     <!-- B1: 左侧栏（TOC → 标签 → 相关文章 → 操作/广告） -->
     <aside class="post-sidebar" aria-label="文章侧边栏">
@@ -123,6 +126,7 @@
       <div class="widgets-container" id="widgets-bottom" hidden></div>
       </div><!-- /.sidebar-content -->
     </aside>
+
     <!-- B2: 文章正文 -->
     <article class="post-article" id="post-article">
       <!-- 手机端搜索框 -->
@@ -144,8 +148,10 @@
       <!-- 正文末尾：上一篇/下一篇导航 [决策3: 正文末尾放导航] -->
       <nav class="post-nav" id="post-nav" aria-label="文章导航"></nav>
     </article>
+
     <!-- B3: 右侧留空 -->
     <div class="right-spacer" aria-hidden="true"></div>
+
     <!-- 行3：统一页脚（跨3列，内部3格） -->
     <footer class="site-footer-row" role="contentinfo">
       <div class="footer-cell footer-cell-c1">
@@ -164,6 +170,7 @@
       </div>
     </footer>
   </div>
+
   <!-- 手机端 TOC 浮动按钮 -->
   <button class="toc-fab" type="button" id="tocFab" aria-label="打开文章目录" hidden>
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22" aria-hidden="true"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
@@ -176,6 +183,7 @@
       <div id="tocModalList"></div>
     </div>
   </div>
+
   <script src="assets/js/ganzhi.js"></script>
   <script src="assets/js/theme.js"></script>
   <script src="assets/js/utils.js"></script>

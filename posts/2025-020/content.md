@@ -210,6 +210,7 @@
  
 
 ![在这里插入图片描述](https://i-blog.csdnimg.cn/blog_migrate/91b46ce7915c5cca54fff2d0c5099c0d.png)
+
  
 
 ```
@@ -222,47 +223,48 @@
  
 
 ![在这里插入图片描述](https://i-blog.csdnimg.cn/blog_migrate/fe64d2079b8a7ae350c390e9f1836de8.png)
- 
 
+ 
 #### GitLens
  
 
 ![在这里插入图片描述](https://i-blog.csdnimg.cn/blog_migrate/3e0e5bb3093a8f7e232f5e4d5d9a6b9e.png)
 
 ![在这里插入图片描述](https://i-blog.csdnimg.cn/blog_migrate/16eb134afb326814c99db635caeb7f35.png)
- 
 
+ 
 #### GNU Linker Map files
  
 
 ![在这里插入图片描述](https://i-blog.csdnimg.cn/blog_migrate/6697ebad9bd9f3aa76dc3bbaa710c3a3.png)
- 
 
+ 
 #### Hex Editor
  
 
 ![在这里插入图片描述](https://i-blog.csdnimg.cn/blog_migrate/dc2925f8ea8f69672d5c0af10691f378.png)
- 
 
+ 
 #### LinkerScript
  
 
 ![在这里插入图片描述](https://i-blog.csdnimg.cn/blog_migrate/bb3f821c8ac6e71240eabea0c50fff90.png)
- 
 
+ 
 #### highlight words
  
 
 ![在这里插入图片描述](https://i-blog.csdnimg.cn/blog_migrate/2fd21279c2c2f5e29509a1d609e90b3e.png)
- 
 
+ 
 ![在这里插入图片描述](https://i-blog.csdnimg.cn/blog_migrate/948250cf157142e5e4c22c70d2287978.png)
- 
 
+ 
 #### Bookmarks
  
 
 ![在这里插入图片描述](https://i-blog.csdnimg.cn/direct/2593499045284e349096935fb193e926.png)
+
  
 
  
@@ -270,6 +272,7 @@
 可以对代码行进行标记，对标记的行进行跳转
  
 ![在这里插入图片描述](https://i-blog.csdnimg.cn/direct/a2637d9d1005436cb281a8e5badbe71e.png)
+
  
 
 #### Blockman
@@ -319,13 +322,14 @@
  依次展开 HKEY_CLASSES_ROOT\Directory\shell\cmd\command,添加cmd-command，修改默认值
  
 ![在这里插入图片描述](https://i-blog.csdnimg.cn/direct/e6d427c6ca1840cbb754dbff2ff0f517.png)
- 
+
  
 #### 2.脚本方式添加
  
  
 ##### 基础版
  
+
  
 添加CMD到右键菜单脚本
  准备context-batch.bat、运行to_Right_Click_menu.reg
@@ -346,9 +350,11 @@ Windows Registry Editor Version 5.00
  
 ##### 层级式
  
+
  
- 
+
 ![在这里插入图片描述](https://i-blog.csdnimg.cn/direct/dfba92ff98064e35895e822942932494.png)
+
  
 ```
  #########################
@@ -362,26 +368,26 @@ Windows Registry Editor Version 5.00
  "ExtendedSubCommandsKey"="Directory\\ContextMenus\\CmdShell"
  "Icon"="C:\\Windows\\System32\\cmd.exe"
  "MUIVerb"="&CMD"
- 
+
  [HKEY_CLASSES_ROOT\Directory\ContextMenus\CmdShell]
- 
+
  [HKEY_CLASSES_ROOT\Directory\ContextMenus\CmdShell\shell]
- 
+
  [HKEY_CLASSES_ROOT\Directory\ContextMenus\CmdShell\shell\opencmd]
  "Icon"="C:\\Windows\\System32\\cmd.exe"
  "MUIVerb"="Open &Here"
- 
+
  [HKEY_CLASSES_ROOT\Directory\ContextMenus\CmdShell\shell\opencmd\command]
  @="cmd.exe /s /k pushd "%V""
- 
+
  [HKEY_CLASSES_ROOT\Directory\ContextMenus\CmdShell\shell\runas]
  "HasLUAShield"=""
  "Icon"="C:\\Windows\\System32\\cmd.exe"
  "MUIVerb"="Open here as &Administrator"
- 
+
  [HKEY_CLASSES_ROOT\Directory\ContextMenus\CmdShell\shell\runas\command]
  @="cmd.exe /s /k pushd "%V""
- 
+
  [HKEY_CLASSES_ROOT\Drive\shell\CmdShell]
  "ExtendedSubCommandsKey"="Directory\\ContextMenus\\CmdShell"
  "Icon"="C:\\Windows\\System32\\cmd.exe"
@@ -415,6 +421,7 @@ powershell -WindowStyle Hidden "start cmd \"/k cd /d %w\" -v runAs"
 
 ```
  
+
  
 参考：[Which special variables are available when writing a shell command for a context menu](https://stackoverflow.com/questions/49404561/hotkey-to-open-cmd-with-administration-rights-in-current-folder-from-explorer)
  - 
@@ -485,9 +492,10 @@ grep -oP '\w+\s+\**\K\w+(?=\s*\()' 头文件路径 | xargs -I {} sh -c 'echo -n 
 
 该命令组合实现以下功能：
  
+
 > 
 **提取头文件中的所有函数名，并统计它们在指定路径中被调用的次数，最后按调用次数升序排序。**
- 
+
  
 
 ---
@@ -495,6 +503,7 @@ grep -oP '\w+\s+\**\K\w+(?=\s*\()' 头文件路径 | xargs -I {} sh -c 'echo -n 
 
 #### 🧩 完整命令结构
  
+
 ```
 grep -oP '\\w+\\s+\\**\\K\\w+(?=\\s*\\()' 头文件路径 \\
 | xargs -I {} sh -c 'echo -n "{}: "; grep -Rw {} 目标路径 | wc -l' \\
@@ -534,6 +543,7 @@ xargs -I {} sh -c 'echo -n "{}: "; grep -Rw {} 目标路径 | wc -l'
 
 ##### >sort 排序
  
+
 ```
 | sort -t: -k2,2n
 
@@ -550,7 +560,7 @@ xargs -I {} sh -c 'echo -n "{}: "; grep -Rw {} 目标路径 | wc -l'
 #### 常用参数
  
 编号命令语法功能说明示例1`grep "关键词" 文件`基本搜索`grep "error" log.txt`2`grep -i "关键词" 文件`忽略大小写`grep -i "warning" log.txt`3`grep -n "关键词" 文件`显示行号`grep -n "TODO" main.c`4`grep -r "关键词" 目录`递归查找`grep -r "config" ./etc`5`grep -v "关键词" 文件`排除匹配内容`grep -v "DEBUG" log.txt`6`grep -E "正则表达式" 文件`使用扩展正则`grep -E "warn|error" log.txt`7`grep -l "关键词" 文件*`列出匹配文件名`grep -l "main" *.c`8`grep -L "关键词" 文件*`列出不含关键词的文件`grep -L "main" *.c`9`grep -c "关键词" 文件`统计匹配行数`grep -c "error" log.txt`10`grep --color=auto "关键词" 文件`高亮匹配内容`grep --color=auto "failed" log.txt`11`grep -w "关键词" 文件`精确匹配整个单词`grep -w "init" code.c`12`grep -A N "关键词" 文件`匹配行及后N行`grep -A 3 "error" log.txt`13`grep -B N "关键词" 文件`匹配行及前N行`grep -B 2 "failed" log.txt`14`grep -C N "关键词" 文件`匹配行及前后N行`grep -C 2 "404" access.log`15`grep "^关键词" 文件`匹配以关键词开头的行`grep "^ERROR" log.txt`16`grep "关键词$" 文件`匹配以关键词结尾的行`grep "done$" job.log`17`ps aux |grep "关键词"`查找进程名`ps aux | grep nginx`18`dmesg | grep -i "usb"`查找内核日志`dmesg | grep -i usb`19`grep -e "关键词1" -e "关键词2"`多关键词匹配`grep -e "err" -e "fail" log.txt`20`cat 文件 | grep "关键词"`管道组合使用`cat log.txt | grep "timeout"`
- 
+
  
  
 
@@ -593,11 +603,13 @@ awk '{print NR, NF, $1, $NF}' data.txt
 
 #### 二、执行流程（3阶段）
  
+
  
  
 
 ##### 示例：
  
+
 ```
 awk 'BEGIN{print "Start"} {print $1} END{print "Done"}' data.txt
 
@@ -610,7 +622,7 @@ awk 'BEGIN{print "Start"} {print $1} END{print "Done"}' data.txt
 - 输出 `Start`
 - 对每行执行 `{print $1}`
 - 全部处理完后输出 `Done`
- 
+
  
 
 ---
@@ -618,45 +630,58 @@ awk 'BEGIN{print "Start"} {print $1} END{print "Done"}' data.txt
 
 #### 三、awk 的底层逻辑
  
+
 ##### 1. 输入分割：
  
+
 默认按空格（或 TAB）分割行成字段，可用 `-F` 指定其他分隔符：
  
+
 ```
 awk -F ":" '{print $1}' /etc/passwd
 
 ```
  
+
 ##### 2. 模式匹配：
  
+
 每一行先与 `模式` 匹配，匹配成功才执行 `{动作}`：
  
+
 ```
 awk '$3 > 80 {print $1, $3}' scores.txt
 
 ```
  
+
 ##### 3. 模式为空时默认匹配所有行：
  
+
 ```
 awk '{print $1}' file.txt
 
 ```
  
+
 等价于：
  
+
 ```
 awk '1 {print $1}' file.txt
 
 ```
  
+
 ##### 4. 内置函数丰富：
  
+
 - `length()`：字符串长度
 - `gsub("a", "b")`：替换
 - `tolower()` / `toupper()`：大小写转换
 - `substr()`：子串
 - `match()`：正则匹配位置
+
  
 
 ---
@@ -684,6 +709,7 @@ awk '1 {print $1}' file.txt
 
 ---
  
+
  
  
 
@@ -693,6 +719,7 @@ awk '1 {print $1}' file.txt
 - 🧪 调试时先不要加 `-i`，确保输出正确后再修改原文件。
 - 🧵 多个 `-e` 可组合使用，也可写入脚本文件中批处理。
 - 💡 可结合 `find`/`xargs` 批量处理多个文件。
+
  
 
 ---
@@ -720,10 +747,12 @@ awk '1 {print $1}' file.txt
 
 #### 一、xargs 的核心作用
  
+
 > 
 **将标准输入转为命令参数**，解决命令行参数数量限制问题。
+
  
- 
+
 通常与 `find`、`echo`、`cat` 等命令搭配，用于批量执行操作。
  
 
@@ -732,6 +761,7 @@ awk '1 {print $1}' file.txt
 
 #### 二、xargs 的执行模型
  
+
  
  
 
@@ -742,17 +772,21 @@ awk '1 {print $1}' file.txt
 - **按照空格（或指定分隔符）将输入切分为参数**
 - **每次提取 `-n` 个参数拼接到目标命令后**
 - **执行命令，重复直到耗尽输入**
+
  
- 
+
 例如：
  
+
 ```
 echo "a b c d" | xargs -n 2 echo
 
 ```
  
+
 执行过程等价于：
  
+
 ```
 echo a b
 echo c d
@@ -772,20 +806,25 @@ echo c d
 
 #### 四、系统限制的解决方案
  
+
 ##### 传统 shell 的问题：
  
+
 ```
 rm file1 file2 ... file9999999 # 参数列表过长，"Argument list too long"
 
 ```
  
+
 ##### xargs 的解决：
  
+
 ```
 find . -name "*.log" | xargs rm
 
 ```
  
+
 xargs 会自动**分批传参**，避开系统参数限制（如 ARG_MAX）。
  
 
@@ -798,6 +837,7 @@ xargs 会自动**分批传参**，避开系统参数限制（如 ARG_MAX）。
 
 示例：
  
+
 ```
 find . -type f -print0 | xargs -0 rm -f # 安全删除
 cat files.txt | xargs -I {} cp {} {}.bak # 批量备份
@@ -821,8 +861,9 @@ cat files.txt | xargs -I {} cp {} {}.bak # 批量备份
 - 官方文档：[https://man7.org/linux/man-pages/man1/xargs.1.html](https://man7.org/linux/man-pages/man1/xargs.1.html)
 - ARG_MAX 限制解释：[https://unix.stackexchange.com/a/120642](https://unix.stackexchange.com/a/120642)
 - xargs vs. for vs. while：[https://unix.stackexchange.com/questions/103920](https://unix.stackexchange.com/questions/103920)
+
  
- 
+
 ### Regex Basics
  
 
@@ -835,10 +876,13 @@ cat files.txt | xargs -I {} cp {} {}.bak # 批量备份
 
 #### 正则表达式执行逻辑流程图（Mermaid）
  
+
  
  
+
 ### Mermaid Flowchart
  
+
 #### Mermaid `flowchart` 语法速查表
  
 语法结构说明示例`st=>start: 文本`定义一个开始节点`st=>start: 开始``e=>end: 文本`定义一个结束节点`e=>end: 结束``op=>operation: 文本`定义一个操作节点`op=>operation: 处理数据``cond=>condition: 条件?`定义条件判断节点`cond=>condition: 是否继续？``st->op`节点之间的连接箭头从开始节点连接到操作节点`cond(yes)->op`条件判断的“是”路径条件成立时走的路径`cond(no)->e`条件判断的“否”路径条件不成立时跳转到结束
@@ -848,6 +892,7 @@ cat files.txt | xargs -I {} cp {} {}.bak # 批量备份
 
 #### 通用结构示例（最小流程模板）
  
+
 ```
 ```mermaid
 flowchat
@@ -883,6 +928,7 @@ cond(no)->op
 
 #### 推荐结构套模板
  
+
 ```
 ```mermaid
 flowchat

@@ -9,6 +9,7 @@ const Ganzhi = (() => {
   const TIANGAN = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
   const DIZHI = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
   const ZODIAC = ['鼠','牛','虎','兔','龙','蛇','马','羊','猴','鸡','狗','猪'];
+
   // 五虎遁：年干推正月月干
   const WUHU = {
     '甲':'丙','己':'丙',
@@ -17,6 +18,7 @@ const Ganzhi = (() => {
     '丁':'壬','壬':'壬',
     '戊':'甲','癸':'甲'
   };
+
   // 五鼠遁：日干推子时时干
   const WUSHU = {
     '甲':'甲','己':'甲',
@@ -25,6 +27,7 @@ const Ganzhi = (() => {
     '丁':'庚','壬':'庚',
     '戊':'壬','癸':'壬'
   };
+
   /**
    * 年干支
    * 修复：0-based索引用 (year-4)，公元4年=甲子年(idx=0)
@@ -40,6 +43,7 @@ const Ganzhi = (() => {
       short: TIANGAN[idx % 10] + DIZHI[idx % 12]
     };
   }
+
   /**
    * 月干支
    * @param {string} yearGan - 年干（甲乙丙丁...）
@@ -58,6 +62,7 @@ const Ganzhi = (() => {
       short: TIANGAN[ganIdx] + DIZHI[zhiIdx]
     };
   }
+
   /**
    * 日干支
    * 基准：2000年1月1日 = 戊午日（60甲子序=54）
@@ -75,6 +80,7 @@ const Ganzhi = (() => {
       short: TIANGAN[idx % 10] + DIZHI[idx % 12]
     };
   }
+
   /**
    * 时干支
    * @param {string} dayGan - 日干
@@ -94,6 +100,7 @@ const Ganzhi = (() => {
       short: TIANGAN[ganIdx] + DIZHI[shiIdx]
     };
   }
+
   /**
    * 公历转近似干支月（含节气日修正）
    * 节气日为近似值，每年实际差1-2天
@@ -104,6 +111,7 @@ const Ganzhi = (() => {
     const day = date.getDate();
     // 各月节气日（近似）：1月小寒6号，2月立春4号，3月惊蛰6号...
     const jieqiDay = [0, 6, 4, 6, 5, 6, 6, 7, 8, 8, 8, 7, 7];
+
     let gzMonth; // 干支月对应的公历月
     if (day < jieqiDay[month]) {
       gzMonth = month - 1; // 节气前，还是上一个月
@@ -111,10 +119,12 @@ const Ganzhi = (() => {
       gzMonth = month;
     }
     if (gzMonth <= 0) gzMonth += 12;
+
     // 公历月 → 干支月序号(1=寅月)
     // 公历2月(立春后)=寅月(1)，公历1月(小寒后)=丑月(12)
     return ((gzMonth - 2 + 12) % 12) + 1;
   }
+
   /**
    * 完整干支日期
    */
@@ -126,12 +136,14 @@ const Ganzhi = (() => {
     const monthGZ = getMonthGanzhi(yearGZ.gan, lunarMonth);
     const dayGZ = getDayGanzhi(date);
     const hourGZ = getHourGanzhi(dayGZ.gan, date.getHours());
+
     let result = '';
     if (config.showYear !== false) result += yearGZ.full;
     if (config.showMonth !== false) result += monthGZ.full;
     if (config.showDay !== false) result += dayGZ.full;
     if (config.showHour) result += hourGZ.full;
     if (config.showZodiac) result += `（${yearGZ.zodiac}年）`;
+
     return {
       year: yearGZ,
       month: monthGZ,
@@ -143,11 +155,13 @@ const Ganzhi = (() => {
       short: `${yearGZ.short}年${monthGZ.short}月${dayGZ.short}日`
     };
   }
+
   return {
     TIANGAN, DIZHI, ZODIAC,
     getYearGanzhi, getMonthGanzhi, getDayGanzhi, getHourGanzhi,
     getFullGanzhi, getApproxLunarMonth
   };
 })();
+
 // 浏览器全局
 if (typeof window !== 'undefined') window.Ganzhi = Ganzhi;
