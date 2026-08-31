@@ -3,6 +3,10 @@
  * 从 data/themes.json 读取主题配置，动态注入 CSS 变量
  * 右上角下拉式切换，localStorage 持久化
  *
+ * 修复：
+ *   - 太阳/月亮图标：亮色系太阳，暗色系月亮 [hci: 意符清晰]
+ *   - 触发器图标随当前主题类型动态变化
+ *
  * 暴露全局对象 ThemeManager：
  *   init()              初始化主题切换器
  *   apply(key)          应用指定主题
@@ -13,13 +17,20 @@
  */
 (function () {
   'use strict';
-
   var STORAGE_KEY = 'jankin-theme';
   var DEFAULT_THEME = 'mono';
   var CONFIG_URL = 'data/themes.json';
   var themes = {};
   var currentKey = DEFAULT_THEME;
   var initialized = false;
+
+  /* ---------- 太阳/月亮 SVG 图标（亮色系太阳，暗色系月亮） ---------- */
+  var ICON_SUN = '<svg class="theme-option-type-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
+  var ICON_MOON = '<svg class="theme-option-type-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+  function getTypeIcon(themeKey) {
+    var t = themes[themeKey];
+    return (t && t.type === 'dark') ? ICON_MOON : ICON_SUN;
+  }
 
   /* ---------- Cookie 工具（跨子域共享主题） ---------- */
   function getCookieDomain() {
@@ -33,7 +44,6 @@
     }
     return '';
   }
-
   function setCookie(name, value, days) {
     var expires = '';
     if (days) {
@@ -45,7 +55,6 @@
     var domainStr = domain ? '; domain=' + domain : '';
     document.cookie = name + '=' + encodeURIComponent(value) + expires + domainStr + '; path=/; SameSite=Lax';
   }
-
   function getCookie(name) {
     var nameEQ = name + '=';
     var ca = document.cookie.split(';');
@@ -64,7 +73,8 @@
       switcher: document.getElementById('themeSwitcher'),
       trigger:  document.getElementById('themeTrigger'),
       dropdown: document.getElementById('themeDropdown'),
-      nameEl:   document.getElementById('themeCurrentName')
+      nameEl:   document.getElementById('themeCurrentName'),
+      iconEl:   document.getElementById('themeTriggerIcon')
     };
   }
 
@@ -81,9 +91,11 @@
         applyTheme(readStorage());
       })
       .catch(function () {
+        // 加载失败时的兜底主题（终端极客 mono）
         themes = {
           mono: {
             name: '终端极客',
+            type: 'dark',
             preview: { bg: '#0d1117', accent: '#58a6ff' },
             vars: {
               '--color-bg': '#0d1117',
@@ -130,6 +142,8 @@
       btn.setAttribute('role', 'option');
       btn.setAttribute('aria-selected', 'false');
       btn.tabIndex = -1;
+      // 太阳/月亮类型图标（亮色系太阳，暗色系月亮）
+      btn.innerHTML = getTypeIcon(key);
       var dot = document.createElement('span');
       dot.className = 'theme-option-dot';
       var bg = t.preview ? t.preview.bg : '#ffffff';
@@ -161,23 +175,30 @@
     if (!themes[key]) key = DEFAULT_THEME;
     var t = themes[key];
     var root = document.documentElement;
+    // 把主题的所有变量写到 <html> 的 inline style 上
     Object.keys(t.vars).forEach(function (varName) {
       root.style.setProperty(varName, t.vars[varName]);
     });
     root.setAttribute('data-theme', key);
     var els = getEls();
     if (els.nameEl) els.nameEl.textContent = t.name;
+    // 修复：触发器图标随当前主题类型变化（太阳/月亮）
+    if (els.iconEl) {
+      els.iconEl.innerHTML = getTypeIcon(key);
+    }
     if (els.trigger) els.trigger.setAttribute('title', '当前主题：' + t.name + '（点击切换）');
     var opts = document.querySelectorAll('.theme-option');
     opts.forEach(function (opt) {
       var selected = opt.dataset.theme === key;
       opt.setAttribute('aria-selected', selected ? 'true' : 'false');
     });
+    // 写入 cookie（跨子域共享），同时兼容旧 localStorage 以便过渡
     try {
       setCookie(STORAGE_KEY, key, 365);
       localStorage.setItem(STORAGE_KEY, key);
     } catch (e) {}
     currentKey = key;
+    // 派发主题变更事件，方便其他模块响应
     document.dispatchEvent(new CustomEvent('theme-changed', {
       detail: { theme: key, name: t.name }
     }));
@@ -195,7 +216,7 @@
     }
   }
 
-  /* ---------- 键盘导航 ---------- */
+  /* ---------- 键盘导航：上下箭头在选项间移动 ---------- */
   function handleKeydown(e) {
     var els = getEls();
     if (!els.dropdown || els.dropdown.hidden) return;
@@ -249,13 +270,16 @@
         setDropdown(e.dropdown ? e.dropdown.hidden : false);
       });
     }
+    // 点击外部关闭
     document.addEventListener('click', function (e) {
       var el = getEls();
       if (el.switcher && !el.switcher.contains(e.target)) {
         setDropdown(false);
       }
     });
+    // 键盘导航
     document.addEventListener('keydown', handleKeydown);
+    // 加载主题配置
     loadThemes();
   }
 
@@ -268,7 +292,6 @@
       container.style.display = 'none';
     }
   }
-
   function renderPanel(containerId) {
     var container = document.getElementById(containerId);
     if (container) {
