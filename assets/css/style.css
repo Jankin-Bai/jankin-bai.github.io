@@ -538,7 +538,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   .sidebar, .post-sidebar { grid-column: 1; grid-row: auto; position: static; max-height: none; border-right: none; border-bottom: 1px solid var(--color-border); padding: var(--sp-6) var(--sp-5); }
   .main-area, .post-article { grid-column: 1; grid-row: auto; padding: 0 var(--sp-5) var(--sp-6); }
   .right-spacer { display: none; }
-  .site-footer-row { grid-template-columns: 1fr; }
+  .site-footer-row { grid-template-columns: 1fr; grid-row: auto; }
   .footer-cell-c1, .footer-cell-c2 { border-right: none; border-bottom: 1px solid var(--color-border-light); }
   .footer-cell-c2, .footer-cell-c3 { text-align: left; }
 }
