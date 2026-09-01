@@ -1,0 +1,15 @@
+{
+  "id": "2026-003",
+  "title": "一图读懂 TinyML 全书：4个项目、8大主题、475页的学习路径",
+  "date": "2026-09-01T11:00:00",
+  "tags": ["books", "tech"],
+  "milestone": false,
+  "summary": "洋葱阅读法第二层：用Mermaid流程图和速查表，帮你建立TinyML全书的知识地图——三大板块、四个项目难度递进、21章一句话总结、两条学习路径、精读略读指南。",
+  "theme": "mono",
+  "image": "",
+  "links": [
+    {"text": "上一篇：TinyML入门", "url": "./?id=2026-002"},
+    {"text": "本书配套代码", "url": "https://tinymlbook.com/supplemental"}
+  ],
+  "format": "markdown"
+}
