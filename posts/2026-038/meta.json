@@ -1,0 +1,12 @@
+{
+  "id": "2026-038",
+  "title": "【DSP系列】DSP的8大核心主题：从信号噪声到z变换的学习路线",
+  "date": "2026-09-02T23:00:00",
+  "tags": ["tech", "books"],
+  "milestone": false,
+  "summary": "深度阅读导引：提取DSP Guide的8大核心主题（信号噪声/线性系统卷积/傅里叶变换DFT-FFT/FIR滤波器/IIR滤波器/音频图像应用/数据压缩神经网络/DSP芯片与复数技术），用Mermaid图展示主题间依赖关系，每个主题详解学什么、为什么重要、解决什么问题，给出清晰的学习顺序建议。",
+  "theme": "mono",
+  "image": "",
+  "links": [],
+  "format": "markdown"
+}
