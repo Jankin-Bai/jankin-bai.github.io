@@ -1,0 +1,15 @@
+{
+  "id": "2026-005",
+  "title": "TinyML的技术本质：为什么1mW是改变世界的魔法数字？",
+  "date": "2026-09-01T13:00:00",
+  "tags": ["books", "tech"],
+  "milestone": false,
+  "summary": "6个核心主题之1：深入拆解TinyML的技术本质——1mW阈值的物理意义与电池续航计算、功耗三个数量级差距、为什么本地计算比无线传输更省电、DSP/MCU/CPU的区别与级联设计、TinyML的能力边界、全系统思维。",
+  "theme": "mono",
+  "image": "",
+  "links": [
+    {"text": "第3篇：深度阅读导引", "url": "./?id=2026-004"},
+    {"text": "第1篇：TinyML入门", "url": "./?id=2026-002"}
+  ],
+  "format": "markdown"
+}
