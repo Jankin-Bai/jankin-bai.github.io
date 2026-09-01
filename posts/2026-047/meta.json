@@ -1,0 +1,12 @@
+{
+  "id": "2026-047",
+  "title": "【DSP系列】DSP在电子工程知识体系中的位置：与模电/嵌入式/通信/AI的横向对比",
+  "date": "2026-09-03T03:30:00",
+  "tags": ["tech", "books"],
+  "milestone": false,
+  "summary": "主题阅读篇：把DSP放到整个电子工程知识体系中横向对比。讲解电子工程知识体系全景图、DSP与模拟电路（ADC/DAC桥梁、模拟vs数字滤波）、DSP与嵌入式系统（MCU+DSP融合、Cortex-M4）、DSP与通信工程（调制解调、信道编码）、DSP与AI（神经网络的DSP本质、边缘AI）、DSP与控制/测量/医学的关系，以及学习路径建议。",
+  "theme": "mono",
+  "image": "",
+  "links": [],
+  "format": "markdown"
+}
