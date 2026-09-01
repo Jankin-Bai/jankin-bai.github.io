@@ -400,6 +400,16 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   transition: all var(--transition); box-shadow: var(--card-shadow);
 }
 .timeline-card:hover { box-shadow: var(--card-shadow-hover); transform: translateX(4px); }
+/* 深色主题修复：卡片背景使用主题表面色，忽略标签浅色 --dim-bg，避免白字浅底对比度不足 */
+[data-theme="dark"] .timeline-card,
+[data-theme="mono"] .timeline-card {
+  background: var(--color-surface) !important;
+  border-color: var(--color-border) !important;
+}
+[data-theme="dark"] .timeline-card:hover,
+[data-theme="mono"] .timeline-card:hover {
+  border-color: var(--color-primary) !important;
+}
 /* 修复：hover 时标题变为主色 + 下划线，明确传达可点击 [RUI: Make it obvious what's clickable] */
 .timeline-card:hover .card-title { color: var(--link-color); }
 .timeline-card:hover .card-read-more { text-decoration: underline; }
