@@ -7,14 +7,97 @@
 <style>
   
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
+  #post-content {
     font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
-    background: var(--color-bg, #fafafa);
-    color: var(--color-text, #222);
     line-height: 1.8;
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 40px 20px;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  #post-content * {
+    box-sizing: border-box;
+    max-width: 100%;
+  }
+  #post-content table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  #post-content .canvas-container {
+    padding: 15px;
+    margin: 20px 0;
+  }
+  #post-content .canvas-container canvas {
+    width: 100%;
+    height: auto;
+  }
+  #post-content .controls {
+    gap: 10px;
+  }
+  #post-content .controls button {
+    padding: 10px 16px;
+    font-size: 0.9em;
+  }
+  #post-content .controls label {
+    font-size: 0.9em;
+  }
+  #post-content .controls select,
+  #post-content .controls input[type="range"] {
+    max-width: 100%;
+  }
+  #post-content .step-indicator {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  #post-content .step-badge {
+    font-size: 0.8em;
+    padding: 4px 8px;
+  }
+  #post-content .paper-header {
+    padding: 20px 0;
+    margin-bottom: 25px;
+  }
+  #post-content .paper-header h1 {
+    font-size: 1.6em;
+  }
+  #post-content .paper-header .subtitle {
+    font-size: 1em;
+  }
+  #post-content h2 {
+    font-size: 1.3em;
+    margin: 35px 0 15px;
+  }
+  #post-content h3 {
+    font-size: 1.1em;
+    margin: 25px 0 12px;
+  }
+  #post-content .formula {
+    font-size: 1em;
+    padding: 12px;
+    overflow-x: auto;
+  }
+  #post-content .conclusion {
+    padding: 20px;
+    margin: 30px 0;
+  }
+  #post-content .references {
+    font-size: 0.85em;
+  }
+  @media (min-width: 768px) {
+    #post-content {
+      padding: 0 10px;
+    }
+    #post-content .canvas-container {
+      padding: 20px;
+    }
+    #post-content .paper-header h1 {
+      font-size: 2em;
+    }
+    #post-content h2 {
+      font-size: 1.5em;
+    }
   }
   .paper-header {
     text-align: center;
@@ -199,11 +282,7 @@
     padding-left: 15px;
     margin: 15px 0;
   }
-  @media (max-width: 600px) {
-    body { padding: 20px 15px; }
-    .paper-header h1 { font-size: 1.5em; }
-    .controls { flex-direction: column; }
-  }
+
 </style>
 </head>
 <body>
