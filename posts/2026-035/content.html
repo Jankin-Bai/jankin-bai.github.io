@@ -1,0 +1,344 @@
+<!-- Post: 开源教材英雄谱：9位教授与他们的免费电子工程巨著 | ID: 2026-035 | Created: 2026-09-01 | Tags: tech, books | Format: html -->
+
+<h3>为什么要找开源教材？</h3>
+
+<p>一本标准的电子工程教材动辄 100-200 美元，一套射频/微波系列教材下来可能花掉一个学生半个月的生活费。但有这样一群教授——他们在大学里教了几十年书，把毕生的讲义和经验整理成完整的教材体系，然后以 <strong>Creative Commons 开源许可</strong> 免费发布到网上，任何人都可以下载 PDF、打印、甚至修改重混。</p>
+
+<p>这篇文章是一次 <strong>OSINT（开源情报）调研</strong> 的成果。以 Mohawk Valley Community College 的荣誉退休教授 <strong>James M. Fiore</strong> 为基准画像（社区学院教授、独立出版、CC 开源许可、免费 PDF + 低价打印、配套实验手册），我在电子电路、无线电、射频、信号处理四大领域找到了 <strong>9 位核心作者、40+ 本/卷出版物</strong>。所有书籍都可以免费获取，大部分采用 Creative Commons 许可。</p>
+
+<p>调研方法：多引擎搜索 + 官方网站深度抓取 + 交叉验证，信源 35+。</p>
+
+<hr>
+
+<h3>基准画像：James M. Fiore</h3>
+
+<p>在开始之前，先明确我们要找的"同类画像"是什么样的。</p>
+
+<table>
+<tr><th style="width:25%">维度</th><th>Fiore 教授的特征</th></tr>
+<tr><td>机构类型</td><td>社区学院（Community College）/ 应用技术类院校</td></tr>
+<tr><td>职称</td><td>教授（含荣誉退休 Professor Emeritus）</td></tr>
+<tr><td>出版模式</td><td>独立出版 / 大学出版，非传统商业教材出版商</td></tr>
+<tr><td>许可协议</td><td>Creative Commons 开源许可（CC BY-NC-SA 3.0）</td></tr>
+<tr><td>获取方式</td><td>免费 PDF 下载 + 低价打印版（Amazon POD）</td></tr>
+<tr><td>配套资源</td><td>实验手册、练习册、教学视频、习题解答</td></tr>
+<tr><td>领域</td><td>电气工程技术（电路、半导体、运放、嵌入式）</td></tr>
+</table>
+
+<p>Fiore 教授教龄 40+ 年，自创 <strong>17 本出版物</strong>（8 本教材 + 7 本实验手册 + 2 本练习册），涵盖 DC/AC 电路分析、半导体器件、运算放大器与线性 IC、嵌入式控制器 C&amp;Arduino、声音科学等。配套 YouTube 频道"Electronics with Professor Fiore"有 24.2K 订阅、208 万+ 观看。</p>
+
+<p>⚠️ 重要限制：Fiore 教授明确声明<strong>未经书面同意不得将书籍和视频用于 AI 训练</strong>。</p>
+
+<p>📚 <a href="https://www2.mvcc.edu/users/faculty/jfiore/freebooks.html" target="_blank" rel="noopener">Fiore 教授免费书籍官方下载页</a> ｜ <a href="https://www2.mvcc.edu/users/faculty/jfiore/index.cfm" target="_blank" rel="noopener">个人主页</a> ｜ <a href="https://www.youtube.com/@ElectronicswithProfessorFiore" target="_blank" rel="noopener">YouTube 频道</a></p>
+
+<hr>
+
+<h3>一、电子电路领域</h3>
+
+<h4>1. Tony R. Kuphaldt — 开源电子教材的先驱</h4>
+
+<p><img src="https://aka.doubaocdn.com/s/Vv97TWA5aR" alt="Lessons in Electric Circuits 书籍封面" style="max-width:280px; float:right; margin:0 0 12px 16px; border-radius:6px;"></p>
+
+<p><strong>机构：</strong>Bellingham Technical College（美国华盛顿州）<br>
+<strong>领域：</strong>电子电路（DC/AC/半导体/数字）<br>
+<strong>许可：</strong>Design Science License（原始）/ CC BY-NC-SA（LibreTexts 版）<br>
+<strong>标签：</strong><span style="background:#d1fae5;color:#065f46;padding:2px 8px;border-radius:4px;font-size:12px;">开源先驱</span></p>
+
+<p>Kuphaldt 是开源电子教材领域的<strong>先驱人物</strong>。他从 2000 年开始创作 <em>Lessons in Electric Circuits</em> 系列，最初使用 Design Science License 发布，后被 LibreTexts 平台以 CC BY-NC-SA 许可重新格式化和持续更新。该系列是互联网上最著名、被引用最广泛的免费电子工程教材，合计 <strong>2553 页</strong>。</p>
+
+<p>作者自述创作动机："从小学和高中老师那里获得了免费的电子学指导，希望将这份礼物传递下去。"</p>
+
+<p><strong>六卷清单：</strong></p>
+<ul>
+<li><strong>Vol I — DC（直流）</strong>：基础电路概念、欧姆定律、基尔霍夫定律、网络定理</li>
+<li><strong>Vol II — AC（交流）</strong>：交流电路、相量、谐振、滤波器</li>
+<li><strong>Vol III — Semiconductors（半导体）</strong>：二极管、BJT、FET、放大器、运算放大器</li>
+<li><strong>Vol IV — Digital（数字电路）</strong>：数制、逻辑门、组合/时序逻辑、ADC/DAC</li>
+<li><strong>Vol V — Reference（参考手册）</strong>：常用公式、元件参数、数据手册速查</li>
+<li><strong>Vol VI — Experiments（实验）</strong>：配套实验指导</li>
+</ul>
+
+<p>📚 <a href="https://www.allaboutcircuits.com/textbook/" target="_blank" rel="noopener">All About Circuits 官方在线教材</a> ｜ <a href="https://www.circuitbread.com/textbooks/lessons-in-electric-circuits-volume-i-dc" target="_blank" rel="noopener">CircuitBread 在线版</a> ｜ <a href="https://ibiblio.org/kuphaldt/electricCircuits/" target="_blank" rel="noopener">原始托管站 ibiblio.org</a> ｜ <a href="https://eng.libretexts.org/Bookshelves/Electrical_Engineering" target="_blank" rel="noopener">LibreTexts 工程书架</a></p>
+
+<div style="clear:both;"></div>
+
+<h4>2. Daryl Janzen — 电磁学与电路的结合</h4>
+
+<p><strong>机构：</strong>University of Saskatchewan（加拿大萨斯喀彻温大学）<br>
+<strong>领域：</strong>电磁学 / 电路<br>
+<strong>许可：</strong>CC BY 4.0（最宽松的开源许可，允许商业使用和修改）</p>
+
+<p><strong>代表著作：</strong><em>Introduction to Electricity, Magnetism, and Circuits</em>（电磁学与电路导论），14 章，面向远程教育，将物理概念与工程应用结合。</p>
+
+<p>📚 <a href="https://openlibrary-repo.ecampusontario.ca/jspui/bitstream/123456789/579/3/Introduction-to-Electricity-Magnetism-and-Circuits-1536847996.html" target="_blank" rel="noopener">eCampusOntario 开放图书馆</a> ｜ <a href="https://www.saskoer.ca/oerdiscipline/chapter/electrical-engineering/" target="_blank" rel="noopener">Saskatchewan OER 电气工程列表</a></p>
+
+<h4>3. Dr. Don Johnson — 一学期的电气工程基础</h4>
+
+<p><strong>机构：</strong>Rice University / CircuitBread 平台<br>
+<strong>领域：</strong>电气工程基础<br>
+<strong>许可：</strong>开源（CircuitBread 平台托管）</p>
+
+<p><strong>代表著作：</strong><em>Fundamentals of Electrical Engineering One</em>（电气工程基础），一学期课程教材，全彩图表、章末习题、视频链接，教师可复制章节改编。Dr. Don Johnson 也参与了 Richard Baraniuk 的 Signals and Systems 合集创作。</p>
+
+<p>📚 <a href="https://www.circuitbread.com/" target="_blank" rel="noopener">CircuitBread 平台</a></p>
+
+<hr>
+
+<h3>二、射频 / 微波 / 无线电领域</h3>
+
+<h4>4. Michael Steer — 五卷本微波与射频设计巨著</h4>
+
+<p><img src="https://aka.doubaocdn.com/s/KMRNZu96mr" alt="Michael Steer 教授在 NC State 获奖照片" style="max-width:320px; float:right; margin:0 0 12px 16px; border-radius:6px;"></p>
+
+<p><strong>机构：</strong>NC State University（北卡罗来纳州立大学）<br>
+<strong>领域：</strong>射频 / 微波设计<br>
+<strong>许可：</strong>CC BY（Creative Commons Attribution，允许商业使用）<br>
+<strong>标签：</strong><span style="background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:4px;font-size:12px;">5卷巨著</span></p>
+
+<p>Michael Steer 是 NC State University 的教授，射频/微波设计领域的权威。他的 <em>Microwave and RF Design</em> 五卷系列是该领域<strong>最全面的开源教材</strong>，采用"systems first"（系统优先）的教学方法。该系列由 North Carolina State University 出版，UNC Press 发行低价平装版，同时作为开放获取电子书<strong>免费提供</strong>。被评价为"质量媲美付费教材"。</p>
+
+<p>2018 年，Michael Steer 获得 NC State 最高教师荣誉——Alexander Quarles Holladay Medal for Excellence。</p>
+
+<p><strong>五卷清单：</strong></p>
+<ul>
+<li><strong>Vol 1: Radio Systems（无线电系统）</strong>：射频系统概览、频谱、调制、收发机架构，31 个 worked examples</li>
+<li><strong>Vol 2: Transmission Lines（传输线）</strong>：传输线理论、Smith 圆图、阻抗匹配</li>
+<li><strong>Vol 3: Networks（网络）</strong>：S 参数、微波网络、滤波器设计基础</li>
+<li><strong>Vol 4: Modules（模块）</strong>：微波模块级设计、微带技术，59 个 worked examples</li>
+<li><strong>Vol 5: Amplifiers and Oscillators（放大器与振荡器）</strong>：射频功率放大器、低噪声放大器、振荡器设计</li>
+</ul>
+
+<p>另有 <strong>Fundamentals of Microwave and RF Design</strong>（合订精简版），从五卷系列提炼的本科教材，适合一学期微波工程课程。</p>
+
+<p><strong>配套资源：</strong>PowerPoint 幻灯片、习题解答（向作者申请）、YouTube 案例研究视频。普渡大学 edX 课程采用为教材。</p>
+
+<p>📚 <a href="https://repository.lib.ncsu.edu/handle/1840.20/36776" target="_blank" rel="noopener">NC State University Libraries 知识库（免费下载）</a> ｜ <a href="https://www.iancleary.me/blog/how-to-learn-rf-engineering" target="_blank" rel="noopener">射频工程学习路线推荐（含 Steer 系列）</a></p>
+
+<div style="clear:both;"></div>
+
+<h4>5. Steven W. Ellingson — 从剑桥大学出版社转开源的无线电工程</h4>
+
+<p><img src="https://aka.doubaocdn.com/s/Acs6NGZVtv" alt="Radio Systems Engineering 书籍封面" style="max-width:260px; float:right; margin:0 0 12px 16px; border-radius:6px;"></p>
+
+<p><strong>机构：</strong>Virginia Tech（弗吉尼亚理工大学），副教授<br>
+<strong>领域：</strong>无线电系统 / 工程电磁学<br>
+<strong>许可：</strong>CC BY-NC 4.0（Radio Systems）/ CC BY-SA 4.0（Electromagnetics）<br>
+<strong>标签：</strong><span style="background:#ede9fe;color:#6b21a8;padding:2px 8px;border-radius:4px;font-size:12px;">Open Electromagnetics Project</span></p>
+
+<p>Steven W. Ellingson 是 Virginia Tech 的副教授，研究方向为无线通信、无线电科学、射频仪器。他于 <strong>2017 年在 Virginia Tech 创立了 Open Electromagnetics Project</strong>（开放电磁学项目），目标是为本科工程电磁学课程创造零成本、开源许可的教材。</p>
+
+<p>最值得称道的是他的 <em>Radio Systems Engineering</em>——这本书最初由 <strong>Cambridge University Press</strong>（剑桥大学出版社）2016 年出版，后经协商转为 <strong>CC BY-NC 4.0 开源许可</strong>，由 Virginia Tech Publishing 2024 年重新发行（Revised First Edition，529 页）。从顶级商业出版社转为开源，这在教材界非常罕见。</p>
+
+<p><strong>出版物清单：</strong></p>
+<ul>
+<li><strong>Radio Systems Engineering（Revised First Edition）</strong>：529 页，CC BY-NC 4.0，ISBN 978-1-957213-76-7，使用系统框架介绍无线电系统的性能、分析与设计</li>
+<li><strong>Electromagnetics, Volume 1</strong>：CC BY-SA 4.0，电磁学基础，含 LaTeX 源文件</li>
+<li><strong>Electromagnetics, Volume 2</strong>：216 页，CC BY-SA 4.0，磁力、Biot-Savart 定律、波导、微带、天线</li>
+<li><strong>Solutions to Problems in Electromagnetics, Vol. 2</strong>：习题解答手册</li>
+</ul>
+
+<p><strong>配套资源：</strong>习题集、解答手册、LaTeX 源文件、图表幻灯片、Amazon 平装版、屏幕阅读器友好版。</p>
+
+<p>📚 <a href="https://vtechworks.lib.vt.edu/handle/10919/114634" target="_blank" rel="noopener">Virginia Tech Publishing - Radio Systems Engineering（免费下载）</a> ｜ <a href="https://guides.lib.vt.edu/oer/grantees" target="_blank" rel="noopener">Virginia Tech 开放教育项目展示</a> ｜ <a href="https://eng.libretexts.org/Bookshelves/Electrical_Engineering/Electro-Optics/Book%3A_Electromagnetics_II" target="_blank" rel="noopener">LibreTexts - Electromagnetics II 在线版</a> ｜ <a href="https://www.cambridge.org/highereducation/books/radio-systems-engineering/34AE8B14E151093992ABB6D2F27889C3" target="_blank" rel="noopener">Cambridge University Press 原始商业版</a></p>
+
+<div style="clear:both;"></div>
+
+<hr>
+
+<h3>三、信号处理领域</h3>
+
+<h4>6. Steven W. Smith, Ph.D. — 最经典的免费 DSP 教材</h4>
+
+<p><img src="https://aka.doubaocdn.com/s/pbHmtv01yi" alt="Digital Signal Processing 书籍封面" style="max-width:260px; float:right; margin:0 0 12px 16px; border-radius:6px;"></p>
+
+<p><strong>机构：</strong>California Technical Publishing（独立出版）<br>
+<strong>领域：</strong>数字信号处理（DSP）<br>
+<strong>许可：</strong>作者保留版权，但允许在 dspguide.com 和 analog.com <strong>免费在线阅读和下载</strong><br>
+<strong>标签：</strong><span style="background:#d1fae5;color:#065f46;padding:2px 8px;border-radius:4px;font-size:12px;">经典免费教材</span></p>
+
+<p>Steven W. Smith 博士的 <em>The Scientist and Engineer's Guide to Digital Signal Processing</em> 是互联网上<strong>最著名的免费 DSP 教材</strong>。该书以低数学门槛、实用性强著称，1997-1999 年出版，640-650 页。<strong>Analog Devices（ADI）官方网站</strong>提供全书免费下载（ZIP 格式和分章下载）。</p>
+
+<p>Hacker News 社区高评分（2007 年）："没有 DSP 基础也能实现音频系统"——有读者表示"仅靠这本书就实现了 VoIP 降噪滤波器和 MP3 重复检测引擎"。</p>
+
+<p><strong>内容结构：</strong>基础（Foundations）→ 数字滤波器（Digital Filters）→ 应用（Applications）→ 复杂技术（Complex Techniques）</p>
+
+<p>另有商业版 <em>Digital Signal Processing: A Practical Guide for Engineers and Scientists</em>（Elsevier/Newnes 出版，中文版由人民邮电出版社出版，书名《实用数字信号处理：从原理到应用》）。</p>
+
+<p>📚 <a href="https://www.analog.com/en/resources/technical-books/scientist_engineers_guide.html" target="_blank" rel="noopener">Analog Devices 官方免费下载（全书 ZIP + 分章）</a> ｜ <a href="http://www.dspguide.com/" target="_blank" rel="noopener">官方网站 dspguide.com</a> ｜ <a href="https://news.ycombinator.com/item?id=66848" target="_blank" rel="noopener">Hacker News 讨论</a></p>
+
+<div style="clear:both;"></div>
+
+<h4>7. Michael D. Adams — 严谨学术派的信号与系统</h4>
+
+<p><strong>机构：</strong>University of Victoria（加拿大维多利亚大学）<br>
+<strong>领域：</strong>信号与系统<br>
+<strong>许可：</strong>开放获取（Open Access）</p>
+
+<p><strong>代表著作：</strong><em>Signals and Systems</em>（Edition 4.0，2022 年 1 月），xliv + 690 页，ISBN 978-0-9879197-7-9（PDF）。覆盖连续时间和离散时间信号与系统。</p>
+
+<p>作者用该书教授多门本科信号与系统课程，学生反馈"极其正面"。</p>
+
+<p><strong>配套资源：</strong>解答手册（Solutions Manual）、Git 仓库、讲座幻灯片。</p>
+
+<p>📚 <a href="https://www.ece.uvic.ca/~frodo/sigsysbook/" target="_blank" rel="noopener">教材官网（免费 PDF 下载）</a> ｜ <a href="https://mdadams.github.io/signal-processing-educational-resources/latest/" target="_blank" rel="noopener">Signal Processing Educational Resources（Git 仓库）</a></p>
+
+<h4>8. Richard G. Baraniuk — OpenStax 创始人，开放教育运动先驱</h4>
+
+<p><img src="https://aka.doubaocdn.com/s/UJ66Jj4hhM" alt="Richard Baraniuk 教授肖像" style="max-width:220px; float:right; margin:0 0 12px 16px; border-radius:6px;"></p>
+
+<p><strong>机构：</strong>Rice University（莱斯大学），C. Sidney Burrus Professor of Electrical and Computer Engineering<br>
+<strong>领域：</strong>信号与系统 / 压缩感知<br>
+<strong>许可：</strong>CC BY 3.0（最宽松的开源许可）<br>
+<strong>标签：</strong><span style="background:#ede9fe;color:#6b21a8;padding:2px 8px;border-radius:4px;font-size:12px;">OpenStax 创始人</span></p>
+
+<p>Richard G. Baraniuk 不仅是一位教授，更是<strong>开放教育运动的先驱</strong>。他于 1999 年创立了 <strong>Connexions</strong>（后更名为 <strong>OpenStax</strong>），这是全球最大的开源教材平台之一。截至 2024-25 学年，OpenStax 已为学生节省超过 <strong>30 亿美元</strong>教材费用，出版 42+ 本大学和高中教材。</p>
+
+<p>2022 年当选美国国家工程院（NAE）院士。</p>
+
+<p><strong>代表著作：</strong><em>Signals and Systems</em>（Baraniuk et al.），375 页，CC BY 3.0，Rice University / Connexions。这是一个<strong>多作者合集</strong>，由 Richard Baraniuk 主编，Thanos Antoulas、C. Sidney Burrus、Don Johnson、Justin Romberg 等 20+ 位贡献者参与。模块化内容，教师可自由组合、修改、重混。从数字通信到信号压缩和滤波全覆盖。</p>
+
+<p>📚 <a href="https://openstax.org/" target="_blank" rel="noopener">OpenStax 官网（免费开源教材平台）</a> ｜ <a href="https://eng.libretexts.org/Bookshelves/Electrical_Engineering/Signal_Processing_and_Modeling/Signals_and_Systems_(Baraniuk_et_al.)" target="_blank" rel="noopener">LibreTexts - Signals and Systems 在线版</a> ｜ <a href="https://richb.rice.edu/biography/" target="_blank" rel="noopener">Richard Baraniuk 个人传记</a> ｜ <a href="https://news.rice.edu/news/2025/openstax-surpasses-3b-student-savings-grows-beyond-textbooks" target="_blank" rel="noopener">OpenStax 节省学生超 30 亿美元（2025）</a></p>
+
+<div style="clear:both;"></div>
+
+<hr>
+
+<h3>四、横向对比总表</h3>
+
+<table>
+<tr>
+<th>作者</th>
+<th>机构</th>
+<th>领域</th>
+<th>出版物规模</th>
+<th>开源许可</th>
+<th>获取渠道</th>
+</tr>
+<tr>
+<td><strong>Tony Kuphaldt</strong></td>
+<td>Bellingham Technical College</td>
+<td>电子电路</td>
+<td>6卷 / 2553页</td>
+<td>DSL / CC BY-NC-SA</td>
+<td>AllAboutCircuits, LibreTexts, CircuitBread</td>
+</tr>
+<tr>
+<td><strong>James Fiore</strong></td>
+<td>Mohawk Valley CC</td>
+<td>电子电路</td>
+<td>17本（教材+实验+练习）</td>
+<td>CC BY-NC-SA 3.0</td>
+<td>MVCC官网, LibreTexts, Amazon</td>
+</tr>
+<tr>
+<td><strong>Daryl Janzen</strong></td>
+<td>U. Saskatchewan</td>
+<td>电磁/电路</td>
+<td>1本 / 14章</td>
+<td>CC BY 4.0</td>
+<td>eCampusOntario, USask DSpace</td>
+</tr>
+<tr>
+<td><strong>Don Johnson</strong></td>
+<td>Rice U. / CircuitBread</td>
+<td>电气工程基础</td>
+<td>1本</td>
+<td>开源</td>
+<td>CircuitBread</td>
+</tr>
+<tr>
+<td><strong>Michael Steer</strong></td>
+<td>NC State U.</td>
+<td>射频/微波</td>
+<td>5卷 + 合订本</td>
+<td>CC BY</td>
+<td>NC State Libraries, UNC Press, Amazon</td>
+</tr>
+<tr>
+<td><strong>Steven Ellingson</strong></td>
+<td>Virginia Tech</td>
+<td>无线电/电磁</td>
+<td>3本 + 解答手册</td>
+<td>CC BY-NC / CC BY-SA</td>
+<td>VT Publishing, LibreTexts, Amazon</td>
+</tr>
+<tr>
+<td><strong>Steven Smith</strong></td>
+<td>独立出版</td>
+<td>数字信号处理</td>
+<td>1本 / 640页</td>
+<td>免费下载（保留版权）</td>
+<td>dspguide.com, analog.com</td>
+</tr>
+<tr>
+<td><strong>Michael Adams</strong></td>
+<td>U. Victoria</td>
+<td>信号与系统</td>
+<td>1本 / 690页</td>
+<td>开放获取</td>
+<td>ece.uvic.ca, GitHub</td>
+</tr>
+<tr>
+<td><strong>Richard Baraniuk</strong></td>
+<td>Rice U.</td>
+<td>信号与系统</td>
+<td>1本（合集）/ 375页</td>
+<td>CC BY 3.0</td>
+<td>OpenStax/Connexions, LibreTexts</td>
+</tr>
+</table>
+
+<hr>
+
+<h3>五、按需求速选指南</h3>
+
+<table>
+<tr><th style="width:32%">你的需求</th><th>推荐作者 / 教材</th></tr>
+<tr><td>电子电路入门到进阶（最全面）</td><td><strong>Tony Kuphaldt</strong> — Lessons in Electric Circuits（6卷，从 DC 到数字电路全覆盖）</td></tr>
+<tr><td>社区学院风格 + 配套实验手册</td><td><strong>James Fiore</strong> — 17 本体系，教材+实验+练习册三位一体</td></tr>
+<tr><td>射频/微波系统设计</td><td><strong>Michael Steer</strong> — Microwave and RF Design（5卷，CC BY，最全面的开源射频教材）</td></tr>
+<tr><td>无线电系统工程</td><td><strong>Steven Ellingson</strong> — Radio Systems Engineering（从剑桥大学出版社转开源）</td></tr>
+<tr><td>工程电磁学（两学期序列）</td><td><strong>Steven Ellingson</strong> — Electromagnetics Vol 1 &amp; 2（CC BY-SA，含 LaTeX 源）</td></tr>
+<tr><td>数字信号处理（低数学门槛）</td><td><strong>Steven Smith</strong> — The Scientist and Engineer's Guide to DSP（经典免费教材，ADI 官方提供）</td></tr>
+<tr><td>信号与系统（严谨学术）</td><td><strong>Michael Adams</strong> — Signals and Systems（690 页，含解答手册和 Git 仓库）</td></tr>
+<tr><td>信号与系统（模块化可改编）</td><td><strong>Richard Baraniuk et al.</strong> — Signals and Systems（OpenStax，CC BY，多作者合集）</td></tr>
+<tr><td>电磁学与电路结合（远程教育）</td><td><strong>Daryl Janzen</strong> — Introduction to Electricity, Magnetism, and Circuits（CC BY 4.0）</td></tr>
+<tr><td>电气工程基础（一学期）</td><td><strong>Don Johnson</strong> — Fundamentals of Electrical Engineering One（CircuitBread 在线）</td></tr>
+</table>
+
+<hr>
+
+<h3>六、开源教材聚合平台</h3>
+
+<p>除了各位作者的个人网站，以下平台聚合了大量开源工程教材，可以作为发现更多资源的入口：</p>
+
+<ul>
+<li><strong><a href="https://libretexts.org/" target="_blank" rel="noopener">LibreTexts</a></strong> — 最大的开源教材平台之一，工程书架收录 Kuphaldt、Fiore、Ellingson、Baraniuk 等，提供在线阅读和 PDF 导出</li>
+<li><strong><a href="https://openstax.org/" target="_blank" rel="noopener">OpenStax / Connexions</a></strong> — Rice University 创立（Baraniuk），全球最大开源教材平台，42+ 本教材</li>
+<li><strong><a href="https://www.allaboutcircuits.com/textbook/" target="_blank" rel="noopener">All About Circuits</a></strong> — Kuphaldt 教材官方托管平台，电子工程教程+教材+论坛</li>
+<li><strong><a href="https://www.circuitbread.com/" target="_blank" rel="noopener">CircuitBread</a></strong> — 集成开源教材、教程、视频、交互式方程参考、计算器</li>
+<li><strong><a href="https://www.oercommons.org/" target="_blank" rel="noopener">OER Commons</a></strong> — 开放教育资源聚合平台，可按学科、教育水平筛选</li>
+<li><strong><a href="https://open.umn.edu/" target="_blank" rel="noopener">Open Textbook Library</a></strong> — 明尼苏达大学维护的开源教材图书馆</li>
+<li><strong><a href="https://repository.lib.ncsu.edu/" target="_blank" rel="noopener">NC State Open Education</a></strong> — Michael Steer 的 Microwave and RF Design 系列官方下载点</li>
+<li><strong><a href="https://vtechworks.lib.vt.edu/" target="_blank" rel="noopener">Virginia Tech Publishing</a></strong> — Ellingson 的 Radio Systems Engineering 和 Electromagnetics 系列</li>
+</ul>
+
+<hr>
+
+<h3>七、关于 ARRL Handbook 的说明</h3>
+
+<p>调研中还发现了 <strong>ARRL Handbook for Radio Communications</strong>（美国无线电中继联盟手册，每年更新，2023 年第 100 版，1280 页）——这是业余无线电和射频工程领域的百科全书式参考书，覆盖射频技术、DSP、SDR、天线、传输线等。但它<strong>不属于完全开源教材</strong>——购买纸质版附赠可搜索的电子版，内容受版权保护。因此未纳入核心作者清单。</p>
+
+<p>类似地，<em>Experimental Methods in RF Design</em>（Wes Hayward, Rick Campbell, Bob Larkin 著，ARRL Radio Amateur's Library 系列）也是射频设计的经典参考书，但非开源。</p>
+
+<hr>
+
+<h3>结语</h3>
+
+<p>这 9 位教授代表了一种令人敬佩的精神：他们花了几十年时间在课堂上打磨教学内容，然后把成果免费分享给全世界。从 Kuphaldt 2000 年开始的六卷电路教材，到 Steer 的五卷微波设计，到 Ellingson 从剑桥大学出版社转开源的无线电工程，再到 Baraniuk 创立 OpenStax 改变整个教材出版行业——他们用实际行动证明了<strong>知识不应该被昂贵的教科书锁在付费墙后面</strong>。</p>
+
+<p>如果你正在学习电子工程、射频、无线电或信号处理，希望这份清单能帮你省下买教材的钱，把钱花在更值得的地方——比如一块开发板、一台示波器、或者一杯深夜学习时的咖啡。</p>
+
+<p>所有链接均指向作者官方网站或权威托管平台，可直接免费下载 PDF。使用前请确认各书籍的具体许可条款。</p>
+
+<p style="color:#666; font-size:13px; margin-top:20px;">— 本文由 OSINT（开源情报）方法生成，所有信息均来自公开可访问来源，信源 35+。调研日期：2026-09-01。</p>
