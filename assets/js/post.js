@@ -202,7 +202,8 @@
       );
 
     } else {
-      content = await DataLoader.getPostContent(postId);
+      const htmlRes = await fetch(`posts/${postId}/content.html?t=${Date.now()}`);
+      content = await htmlRes.text();
     }
 
     $('post-content').innerHTML = content;
@@ -216,6 +217,14 @@
         if (oldSc.src) { newSc.src = oldSc.src; } else { newSc.textContent = oldSc.textContent; }
         Array.from(oldSc.attributes).forEach(a => { if (a.name !== 'src') newSc.setAttribute(a.name, a.value); });
         oldSc.parentNode.replaceChild(newSc, oldSc);
+      });
+      // 重新创建style标签，确保CSS变量正确继承页面主题（innerHTML插入的style中部分CSS变量继承异常）
+      const oldStyles = pc.querySelectorAll('style');
+      oldStyles.forEach(oldSt => {
+        const newSt = document.createElement('style');
+        newSt.textContent = oldSt.textContent;
+        Array.from(oldSt.attributes).forEach(a => newSt.setAttribute(a.name, a.value));
+        oldSt.parentNode.replaceChild(newSt, oldSt);
       });
     }
 

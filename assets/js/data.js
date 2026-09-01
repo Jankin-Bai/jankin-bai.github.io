@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 数据加载模块（纯前端自动发现版 v2）
  *
  * 核心设计：纯约定式自动发现，不依赖任何 index.json
@@ -200,7 +200,7 @@ const DataLoader = (() => {
    */
   async function getPostContent(postId, format) {
     const contentFile = format === 'markdown' ? 'content.md' : 'content.html';
-    const res = await fetch(`posts/${postId}/${contentFile}`);
+    const res = await fetch(`posts/${postId}/${contentFile}?t=${Date.now()}`);
     if (!res.ok) throw new Error(`内容加载失败: ${postId}/${contentFile} (HTTP ${res.status})`);
     return res.text();
   }
