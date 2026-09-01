@@ -1,0 +1,15 @@
+{
+  "id": "2026-011",
+  "title": "TinyML在边缘AI生态中的位置：与CMSIS-NN、microTVM、NNoM、云边协同的横向对比",
+  "date": "2026-09-01T19:00:00",
+  "tags": ["books", "tech"],
+  "milestone": false,
+  "summary": "洋葱阅读法第四层：主题阅读。跳出《TinyML》书本，横向对比边缘AI生态六大框架(TFLM/CMSIS-NN/microTVM/NNoM/uTensor/Edge Impulse)，分析四种设计哲学(解释执行/编译生成/算子库/云端平台)，讨论端侧vs云端vs云边协同架构，给出框架选择决策树。",
+  "theme": "mono",
+  "image": "",
+  "links": [
+    {"text": "第9篇：调试方法论", "url": "./?id=2026-010"},
+    {"text": "第8篇：三大优化维度", "url": "./?id=2026-009"}
+  ],
+  "format": "markdown"
+}
