@@ -1,0 +1,12 @@
+{
+  "id": "2026-049",
+  "title": "【卷积系列】卷积的直觉：从池塘涟漪到工程应用",
+  "date": "2026-09-01T15:00:00",
+  "tags": ["tech", "works"],
+  "milestone": false,
+  "summary": "用池塘扔石子的故事从直觉出发推导出卷积原理，配合6个交互式Canvas动画，展示图像模糊、音频混响和RGB形状识别等工程应用。",
+  "theme": "mono",
+  "image": "",
+  "links": [],
+  "format": "markdown"
+}

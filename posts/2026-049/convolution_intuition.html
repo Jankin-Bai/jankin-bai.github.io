@@ -1,0 +1,1824 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>卷积的直觉：从池塘涟漪到工程应用</title>
+<style>
+  :root {
+    --bg: #fafafa;
+    --text: #222;
+    --accent: #2563eb;
+    --accent-light: #dbeafe;
+    --secondary: #059669;
+    --warn: #d97706;
+    --code-bg: #f0f0f0;
+    --border: #e5e5e5;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 20px;
+  }
+  .paper-header {
+    text-align: center;
+    border-bottom: 3px double var(--border);
+    padding-bottom: 30px;
+    margin-bottom: 40px;
+  }
+  .paper-header h1 {
+    font-size: 2em;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+  .paper-header .subtitle {
+    font-size: 1.1em;
+    color: #666;
+    margin-bottom: 20px;
+  }
+  .paper-header .meta {
+    font-size: 0.9em;
+    color: #888;
+  }
+  .abstract {
+    background: var(--accent-light);
+    border-left: 4px solid var(--accent);
+    padding: 20px 25px;
+    margin-bottom: 40px;
+    border-radius: 0 8px 8px 0;
+  }
+  .abstract h3 { color: var(--accent); margin-bottom: 10px; }
+  h2 {
+    font-size: 1.5em;
+    color: var(--accent);
+    margin: 50px 0 20px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--accent-light);
+  }
+  h3 {
+    font-size: 1.2em;
+    color: var(--secondary);
+    margin: 30px 0 15px;
+  }
+  p { margin-bottom: 15px; }
+  .formula {
+    text-align: center;
+    font-size: 1.2em;
+    background: var(--code-bg);
+    padding: 15px;
+    margin: 20px 0;
+    border-radius: 8px;
+    overflow-x: auto;
+  }
+  .highlight {
+    background: #fef3c7;
+    padding: 2px 6px;
+    border-radius: 3px;
+  }
+  .insight-box {
+    background: #ecfdf5;
+    border-left: 4px solid var(--secondary);
+    padding: 15px 20px;
+    margin: 20px 0;
+    border-radius: 0 8px 8px 0;
+  }
+  .insight-box .label {
+    font-weight: bold;
+    color: var(--secondary);
+    margin-bottom: 5px;
+  }
+  .canvas-container {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin: 25px 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  .canvas-container canvas {
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+    border-radius: 8px;
+  }
+  .canvas-title {
+    text-align: center;
+    font-weight: bold;
+    color: var(--accent);
+    margin-bottom: 15px;
+    font-size: 1.1em;
+  }
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 15px;
+    align-items: center;
+  }
+  .controls button {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 6px;
+    background: var(--accent);
+    color: white;
+    cursor: pointer;
+    font-size: 0.95em;
+    transition: background 0.2s;
+  }
+  .controls button:hover { background: #1d4ed8; }
+  .controls button.secondary { background: var(--secondary); }
+  .controls button.secondary:hover { background: #047857; }
+  .controls button.warn { background: var(--warn); }
+  .controls label {
+    font-size: 0.9em;
+    color: #555;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .controls input[type="range"] { width: 120px; }
+  .step-indicator {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 15px 0;
+    flex-wrap: wrap;
+  }
+  .step-badge {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    background: #e5e5e5;
+    color: #666;
+    transition: all 0.3s;
+  }
+  .step-badge.active {
+    background: var(--accent);
+    color: white;
+    transform: scale(1.05);
+  }
+  .step-badge.done {
+    background: var(--secondary);
+    color: white;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 0.95em;
+  }
+  th, td {
+    border: 1px solid var(--border);
+    padding: 10px 12px;
+    text-align: center;
+  }
+  th {
+    background: var(--accent-light);
+    color: var(--accent);
+    font-weight: 600;
+  }
+  tr:nth-child(even) { background: #f9f9f9; }
+  .conclusion {
+    background: linear-gradient(135deg, var(--accent-light), #ecfdf5);
+    padding: 30px;
+    border-radius: 12px;
+    margin: 40px 0;
+  }
+  .conclusion h2 { border: none; margin-top: 0; }
+  .references {
+    font-size: 0.9em;
+    color: #666;
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+  }
+  .references ol { padding-left: 20px; }
+  .references li { margin-bottom: 8px; }
+  .story-text {
+    font-size: 1.05em;
+    color: #444;
+    font-style: italic;
+    border-left: 3px solid var(--warn);
+    padding-left: 15px;
+    margin: 15px 0;
+  }
+  @media (max-width: 600px) {
+    body { padding: 20px 15px; }
+    .paper-header h1 { font-size: 1.5em; }
+    .controls { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<div class="paper-header">
+  <h1>卷积的直觉</h1>
+  <div class="subtitle">从池塘涟漪到工程应用 —— 一篇交互式动画论文</div>
+  <div class="meta">基于 Steven W. Smith《The Scientist and Engineer's Guide to DSP》第 6 章 · 交互式动画版</div>
+</div>
+
+<div class="abstract">
+  <h3>摘要</h3>
+  <p>卷积（Convolution）是数字信号处理中最重要的运算，但"翻转—滑动—相乘—累加"的机械步骤常常让初学者困惑。本文从一个最朴素的场景——<strong>往池塘里扔石子</strong>——出发，只用直觉一步步推导出卷积公式，揭示"翻转"的物理本质是"时间的单向流动"。随后通过交互式动画展示卷积的四个步骤，并对应到两个真实工程案例：<strong>图像模糊</strong>和<strong>音频混响</strong>。读者无需记忆公式，只需跟着动画操作，即可建立对卷积的深层直觉。</p>
+</div>
+
+<!-- ==================== 第一章 ==================== -->
+<h2>一、池塘边的问题</h2>
+
+<div class="story-text">
+  想象你站在一个平静的池塘边。你手里有一把石子。你开始一颗接一颗地往水里扔。每扔一颗，水面就会荡起一圈涟漪，慢慢扩散，慢慢消失。<br><br>
+  问题来了：<strong>在某个特定的时刻，水面的总波纹有多大？</strong>
+</div>
+
+<p>这个看似简单的问题，就是卷积的全部秘密。让我们从最简单的情况开始，一步步增加复杂度。</p>
+
+<div class="insight-box">
+  <div class="label">核心映射</div>
+  <p>池塘 = <strong>系统（System）</strong> · 扔石子 = <strong>输入信号（Input）</strong> · 水面波纹 = <strong>输出信号（Output）</strong></p>
+</div>
+
+<!-- ==================== 第二章 ==================== -->
+<h2>二、一颗石子的涟漪：冲激响应</h2>
+
+<p>先只扔<strong>一颗</strong>石子，然后仔细观察水面。假设石子在第 0 秒落入水中，我们记录每个时刻的波纹大小：</p>
+
+<table>
+  <tr><th>时刻</th><td>0秒</td><td>1秒</td><td>2秒</td><td>3秒</td><td>4秒</td></tr>
+  <tr><th>波纹大小</th><td>10</td><td>6</td><td>3</td><td>1</td><td>0</td></tr>
+</table>
+
+<p>这串数字 <code>[10, 6, 3, 1, 0]</code>，就是池塘对"一颗石子"的反应。在信号处理中，它有一个正式的名字：<span class="highlight">冲激响应（Impulse Response）</span>，通常用 h[n] 表示。</p>
+
+<p>你不需要记住这个术语。就叫它"<strong>池塘的性格</strong>"好了——每个池塘的性格不一样：有的池塘涟漪持续很久（深水池），有的很快就平静（浅水池）。</p>
+
+<div class="canvas-container">
+  <div class="canvas-title">动画 1：一颗石子的涟漪（点击"扔石子"观察冲激响应）</div>
+  <canvas id="pond1" width="700" height="300"></canvas>
+  <div class="controls">
+    <button onclick="dropStone1()">扔一颗石子</button>
+    <button class="secondary" onclick="resetPond1()">重置</button>
+    <label>涟漪持续时间: <input type="range" id="decay1" min="20" max="80" value="45"></label>
+  </div>
+</div>
+
+<div class="insight-box">
+  <div class="label">直觉要点 1</div>
+  <p>冲激响应 h[n] 描述的是：<strong>系统对"一个极短的输入"会做出怎样的、持续多久的反应。</strong>知道了这个，我们就能预测系统对任何输入的反应。</p>
+</div>
+
+<!-- ==================== 第三章 ==================== -->
+<h2>三、两颗石子的叠加：线性与叠加原理</h2>
+
+<p>现在扔<strong>两颗</strong>石子：第 0 秒扔一颗，第 2 秒再扔一颗。问：第 3 秒时，水面的总波纹有多大？</p>
+
+<p>答案很自然：<strong>把两颗石子各自的贡献加起来。</strong></p>
+
+<table>
+  <tr><th>哪颗石子</th><th>何时扔入</th><th>到第3秒过去了多久</th><th>用性格的第几个值</th><th>波纹大小</th></tr>
+  <tr><td>第一颗</td><td>第0秒</td><td>3秒</td><td>h[3] = 1</td><td>1</td></tr>
+  <tr><td>第二颗</td><td>第2秒</td><td>1秒</td><td>h[1] = 6</td><td>6</td></tr>
+  <tr><th colspan="4">总波纹</th><th>1 + 6 = 7</th></tr>
+</table>
+
+<p>这个"总效果 = 各部分效果之和"的性质，就是<span class="highlight">叠加原理（Superposition）</span>。满足叠加原理的系统叫<span class="highlight">线性系统（Linear System）</span>。</p>
+
+<div class="story-text">
+  为什么可以直接相加？因为水波是线性的——两圈涟漪相遇时，它们只是互相穿过，不会互相吞噬或融合。你听到的两个人同时说话的声音，也是两个人声音的直接相加。这就是我们生活的世界中大多数物理系统的基本性质。
+</div>
+
+<div class="canvas-container">
+  <div class="canvas-title">动画 2：两颗石子的叠加（观察两圈涟漪如何相加）</div>
+  <canvas id="pond2" width="700" height="300"></canvas>
+  <div class="controls">
+    <button onclick="dropStone2(0)">第0秒扔第一颗</button>
+    <button onclick="dropStone2(2)">第2秒扔第二颗</button>
+    <button class="warn" onclick="autoDrop2()">自动演示</button>
+    <button class="secondary" onclick="resetPond2()">重置</button>
+  </div>
+</div>
+
+<!-- ==================== 第四章 ==================== -->
+<h2>四、连续扔石子：卷积公式的自然推导</h2>
+
+<p>现在升级：你<strong>每秒都扔一颗</strong>石子，大小不一样。设第 k 秒扔的石子大小为 x[k]，池塘的性格为 h[n]。</p>
+
+<p>问：<strong>第 n 秒时，总波纹有多大？</strong></p>
+
+<h3>4.1 每颗石子的贡献</h3>
+
+<p>对于第 k 秒扔入的石子：</p>
+<ul>
+  <li>到第 n 秒，已经过去了 <code>n - k</code> 秒</li>
+  <li>所以它的涟漪大小 = 池塘性格的第 <code>n-k</code> 个值 = h[n-k]</li>
+  <li>如果石子大小是 x[k]，则贡献 = <code>x[k] × h[n-k]</code></li>
+</ul>
+
+<h3>4.2 把所有贡献加起来</h3>
+
+<p>第 n 秒的总波纹 = 所有石子的贡献之和：</p>
+
+<div class="formula">
+  y[n] = x[0]·h[n] + x[1]·h[n-1] + x[2]·h[n-2] + … = Σ<sub>k</sub> x[k]·h[n-k]
+</div>
+
+<p><strong>这就是卷积公式！</strong></p>
+
+<p>我们没有"定义"卷积，也没有"记住"翻转滑动相乘累加。我们只是从"池塘里扔石子"这个最朴素的场景出发，自然地推导出了这个公式。</p>
+
+<div class="insight-box">
+  <div class="label">直觉要点 2：为什么是 n-k？</div>
+  <p>因为时间是单向流动的。第 k 秒扔的石子，到第 n 秒时已经过去了 (n-k) 秒，所以要用冲激响应中"已经过去了 (n-k) 秒"的那个值。<strong>越久远的过去，对应冲激响应越靠后的部分。</strong></p>
+</div>
+
+<div class="canvas-container">
+  <div class="canvas-title">动画 3：连续扔石子与卷积输出（调节输入信号，观察输出如何由卷积产生）</div>
+  <canvas id="pond3" width="700" height="380"></canvas>
+  <div class="controls">
+    <button onclick="startAnim3()">开始/暂停</button>
+    <button class="secondary" onclick="resetAnim3()">重置</button>
+    <label>速度: <input type="range" id="speed3" min="1" max="5" value="2"></label>
+  </div>
+</div>
+
+<!-- ==================== 第五章 ==================== -->
+<h2>五、卷积四步可视化：翻转、滑动、相乘、累加</h2>
+
+<p>教材上常说卷积有四步：<strong>翻转 → 滑动 → 相乘 → 累加</strong>。但这四步到底在干什么？让我们用动画一步步看。</p>
+
+<p>核心秘密是：公式里的 <code>h[n-k]</code>，在几何上看起来就是"把 h 翻转后再滑动到位置 n"。但<strong>翻转不是本质，只是一个视觉效果</strong>——本质是"过去的输入对应冲激响应靠后的部分"。</p>
+
+<div class="canvas-container">
+  <div class="canvas-title">动画 4：卷积四步逐步演示（点击"下一步"观察每个步骤）</div>
+  <div class="step-indicator" id="stepBadges">
+    <span class="step-badge" id="badge0">输入信号 x</span>
+    <span class="step-badge" id="badge1">冲激响应 h</span>
+    <span class="step-badge" id="badge2">① 翻转 h</span>
+    <span class="step-badge" id="badge3">② 滑动到 n</span>
+    <span class="step-badge" id="badge4">③ 逐点相乘</span>
+    <span class="step-badge" id="badge5">④ 累加得 y[n]</span>
+  </div>
+  <canvas id="convSteps" width="700" height="400"></canvas>
+  <div class="controls">
+    <button onclick="prevStep()">上一步</button>
+    <button onclick="nextStep()">下一步</button>
+    <button class="warn" onclick="autoPlaySteps()">自动播放</button>
+    <button class="secondary" onclick="resetSteps()">重置</button>
+    <label>当前输出位置 n: <input type="range" id="nSlider" min="0" max="6" value="0" oninput="onNChange()"></label>
+  </div>
+</div>
+
+<div class="insight-box">
+  <div class="label">直觉要点 3：翻转的物理意义</div>
+  <p>当计算 y[n] 时，我们要把 h "翻转"过来，让 h[0] 对齐到 x[n]（最近的输入），h[1] 对齐到 x[n-1]（前一个输入），h[2] 对齐到 x[n-2]（更早的输入）……<strong>这正是"越近的过去对应冲激响应越靠前的部分"的几何表达。</strong>翻转不是人为规定，而是时间单向流动的自然结果。</p>
+</div>
+
+<!-- ==================== 第六章 ==================== -->
+<h2>六、工程实例一：图像模糊</h2>
+
+<p>卷积最直观的工程应用之一是<strong>图像处理</strong>。让我们看看"池塘扔石子"的直觉如何对应到图像模糊。</p>
+
+<h3>6.1 对应关系</h3>
+
+<table>
+  <tr><th>池塘模型</th><th>图像模型</th><th>说明</th></tr>
+  <tr><td>池塘</td><td>图像</td><td>系统</td></tr>
+  <tr><td>石子</td><td>像素</td><td>输入的基本单元</td></tr>
+  <tr><td>涟漪扩散</td><td>像素影响周围</td><td>一个亮像素会"扩散"到周围像素</td></tr>
+  <tr><td>池塘性格 h[n]</td><td>卷积核（Kernel）</td><td>3×3 或 5×5 的小矩阵</td></tr>
+  <tr><td>总波纹 y[n]</td><td>模糊后的图像</td><td>输出</td></tr>
+</table>
+
+<h3>6.2 均值模糊核</h3>
+
+<p>最简单的模糊核是 3×3 均值核，每个值都是 1/9：</p>
+
+<div class="formula">
+  Kernel = ⅑ × [<br>
+  &nbsp;&nbsp;1 1 1<br>
+  &nbsp;&nbsp;1 1 1<br>
+  &nbsp;&nbsp;1 1 1<br>
+  ]
+</div>
+
+<p>它的意思是：输出图像的每个像素 = 输入图像中以该像素为中心的 3×3 区域内 9 个像素的平均值。这就像"每个石子的涟漪会均匀扩散到周围 8 个位置"。</p>
+
+<div class="canvas-container">
+  <div class="canvas-title">动画 5：图像卷积全过程（卷积核滑动 + 逐像素详细运算）</div>
+  <div class="controls">
+    <button onclick="startImgConv()">开始/暂停滑动</button>
+    <button onclick="stepPixel()">单步移动</button>
+    <button class="secondary" onclick="resetImgConv()">重置</button>
+    <button class="warn" onclick="applyBlur()">一键应用卷积</button>
+    <button class="warn" onclick="startBoxSelect()" style="background:#7c3aed;">✋ 手动框选模板</button>
+    <label>卷积核: 
+      <select id="kernelSize" onchange="changeKernel()">
+        <option value="identity">恒等（不变）</option>
+        <option value="box3">3×3 均值模糊</option>
+        <option value="box5">5×5 均值模糊</option>
+        <option value="gaussian3">3×3 高斯模糊</option>
+        <option value="gaussian5">5×5 高斯模糊</option>
+        <option value="sharpen">锐化</option>
+        <option value="edge_laplacian">边缘检测（拉普拉斯）</option>
+        <option value="edge_sobelx">边缘检测（Sobel X）</option>
+        <option value="edge_sobely">边缘检测（Sobel Y）</option>
+        <option value="emboss">浮雕</option>
+        <option value="motion">运动模糊</option>
+        <option value="match_text">🔍 识别文字（模板匹配）</option>
+        <option value="match_circle">🔍 识别圆形（模板匹配）</option>
+        <option value="match_square">🔍 识别方形（模板匹配）</option>
+        <option value="match_triangle">🔍 识别三角形（模板匹配）</option>
+        <option value="custom">✋ 手动框选的模板</option>
+      </select>
+    </label>
+  </div>
+  <canvas id="imgConv" width="700" height="660"></canvas>
+</div>
+
+<h3>6.3 其他常见卷积核</h3>
+
+<table>
+  <tr><th>卷积核类型</th><th>核的值（3×3）</th><th>效果</th><th>池塘类比</th></tr>
+  <tr><td>均值模糊</td><td>全 1/9</td><td>图像变模糊</td><td>涟漪均匀扩散</td></tr>
+  <tr><td>高斯模糊</td><td>中心大周围小</td><td>更自然的模糊</td><td>中心涟漪强，远处弱</td></tr>
+  <tr><td>锐化</td><td>中心 9，周围 -1</td><td>图像变清晰</td><td>中心加强，周围抵消</td></tr>
+  <tr><td>边缘检测</td><td>中心 0，上下 -1，其他 0</td><td>只剩物体轮廓</td><td>只保留"变化剧烈"的位置</td></tr>
+</table>
+
+<!-- ==================== 第七章 ==================== -->
+<h2>七、工程实例二：音频混响</h2>
+
+<p>音频混响是卷积最贴近"池塘扔石子"的应用。你在浴室里唱歌，声音会变得浑厚有空间感——这就是你的声音和"浴室的冲激响应"做卷积的结果。</p>
+
+<div class="story-text">
+  你拍一下手（冲激输入），浴室会发出"嗡……"的回声（冲激响应 h[n]）。有了这个回声记录，你就能计算出任何声音在这个浴室里听起来是什么样——歌声、说话声、乐器声，都可以通过和 h[n] 卷积得到。这就是电影后期制作中"添加环境音效"的基本原理。
+</div>
+
+<h3>7.1 对应关系</h3>
+
+<table>
+  <tr><th>池塘模型</th><th>音频模型</th><th>说明</th></tr>
+  <tr><td>池塘</td><td>房间（浴室/音乐厅）</td><td>系统</td></tr>
+  <tr><td>扔石子</td><td>发声（唱歌/说话）</td><td>输入信号 x[n]</td></tr>
+  <tr><td>池塘性格 h[n]</td><td>房间冲激响应（RIR）</td><td>拍一下手录到的回声</td></tr>
+  <tr><td>总波纹 y[n]</td><td>带混响的声音</td><td>输出 = x * h</td></tr>
+</table>
+
+<h3>7.2 不同房间的冲激响应</h3>
+
+<table>
+  <tr><th>房间类型</th><th>冲激响应特点</th><th>听觉效果</th></tr>
+  <tr><td>浴室（瓷砖墙）</td><td>反射强，持续中等</td><td>声音浑厚，唱歌好听</td></tr>
+  <tr><td>音乐厅</td><td>反射丰富，持续长（混响时间 2-3 秒）</td><td>声音饱满有空间感</td></tr>
+  <tr><td>消音室</td><td>几乎无反射，持续极短</td><td>声音干涩，像在户外</td></tr>
+  <tr><td>走廊</td><td>反射有规律，产生回声</td><td>声音有"嗡嗡"的共振</td></tr>
+</table>
+
+<div class="canvas-container">
+  <div class="canvas-title">动画 6：音频混响直觉（点击发声，观察声音如何与房间冲激响应卷积）</div>
+  <canvas id="audioConv" width="700" height="350"></canvas>
+  <div class="controls">
+    <button onclick="playClap()">拍一下手（冲激）</button>
+    <button onclick="playVoice()">说一句话（连续输入）</button>
+    <button class="secondary" onclick="resetAudio()">重置</button>
+    <label>房间类型: 
+      <select id="roomType" onchange="changeRoom()">
+        <option value="bathroom">浴室</option>
+        <option value="hall">音乐厅</option>
+        <option value="anechoic">消音室</option>
+      </select>
+    </label>
+  </div>
+</div>
+
+<!-- ==================== 结论 ==================== -->
+<div class="conclusion">
+  <h2>八、结论</h2>
+
+  <p>通过"池塘扔石子"的故事，我们从直觉出发推导出了卷积的全部本质：</p>
+
+  <ol style="margin-left: 20px; margin-bottom: 20px;">
+    <li><strong>冲激响应是系统的"性格"</strong>——它描述系统对一个极短输入会做出怎样的、持续多久的反应。</li>
+    <li><strong>叠加原理是线性系统的基本性质</strong>——多个输入的总效果等于各自效果的直接相加。</li>
+    <li><strong>卷积公式自然涌现</strong>——y[n] = Σ x[k]·h[n-k]，其中 n-k 的物理意义是"第 k 秒的输入到第 n 秒已经过去了多久"。</li>
+    <li><strong>"翻转"不是人为规定</strong>——它是"时间单向流动"的几何表达：越久远的输入对应冲激响应越靠后的部分。</li>
+    <li><strong>卷积无处不在</strong>——图像模糊/锐化/边缘检测、音频混响/降噪、通信信道均衡、神经网络卷积层，本质都是同一个运算。</li>
+  </ol>
+
+  <div class="insight-box" style="background: white;">
+    <div class="label">一句话记住卷积</div>
+    <p style="font-size: 1.1em; font-weight: bold; color: var(--accent);">
+      卷积就是：把输入拆成一个个"点"，每个点经过系统后产生一段"反应"，把所有点的反应按时间对齐后加起来，就是输出。
+    </p>
+  </div>
+</div>
+
+<!-- ==================== 参考文献 ==================== -->
+<div class="references">
+  <h3 style="color: #666; border: none;">参考文献</h3>
+  <ol>
+    <li>Steven W. Smith, <em>The Scientist and Engineer's Guide to Digital Signal Processing</em>, Second Edition, 1999, Chapter 6 (Convolution), California Technical Publishing. ISBN: 0-9660176-7-6. 免费在线: www.DSPguide.com</li>
+    <li>Steven W. Smith, <em>同上</em>, Chapter 5 (Linear Systems), 冲激响应与叠加原理的系统阐述.</li>
+    <li>Alan V. Oppenheim, Ronald W. Schafer, <em>Discrete-Time Signal Processing</em>, 3rd Edition, Pearson, 2009. 卷积与线性时不变系统的经典教材.</li>
+    <li>The faces of Convolution: from the Fourier theory to algebraic signal processing, arXiv:2307.07926, 2023. 卷积的历史发展综述.</li>
+  </ol>
+</div>
+
+<script>
+// ==================== 工具函数 ====================
+function lerp(a, b, t) { return a + (b - a) * t; }
+function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
+
+// ==================== 动画1：一颗石子的涟漪 ====================
+const pond1 = document.getElementById('pond1');
+const ctx1 = pond1.getContext('2d');
+let pond1State = { ripples: [], time: 0, running: false };
+
+function drawPondBase(ctx, w, h) {
+  const grad = ctx.createLinearGradient(0, 0, 0, h);
+  grad.addColorStop(0, '#bfdbfe');
+  grad.addColorStop(1, '#60a5fa');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, w, h);
+}
+
+function dropStone1() {
+  const decay = parseInt(document.getElementById('decay1').value);
+  pond1State.ripples.push({ x: 350, y: 150, radius: 0, maxRadius: 200, decay: decay / 1000, alpha: 1 });
+  if (!pond1State.running) { pond1State.running = true; animatePond1(); }
+}
+
+function animatePond1() {
+  const w = pond1.width, h = pond1.height;
+  drawPondBase(ctx1, w, h);
+  pond1State.ripples.forEach(r => {
+    r.radius += 2;
+    r.alpha = Math.max(0, 1 - r.radius / r.maxRadius);
+    ctx1.beginPath();
+    ctx1.arc(r.x, r.y, r.radius, 0, Math.PI * 2);
+    ctx1.strokeStyle = `rgba(255,255,255,${r.alpha})`;
+    ctx1.lineWidth = 3;
+    ctx1.stroke();
+  });
+  pond1State.ripples = pond1State.ripples.filter(r => r.alpha > 0.01);
+  // 画冲激响应图
+  ctx1.fillStyle = 'rgba(255,255,255,0.9)';
+  ctx1.fillRect(10, 10, 180, 60);
+  ctx1.fillStyle = '#333';
+  ctx1.font = '12px sans-serif';
+  ctx1.fillText('冲激响应 h[n] (涟漪大小随时间)', 15, 28);
+  const h_vals = [10, 6, 3, 1, 0];
+  const maxH = Math.max(...h_vals);
+  h_vals.forEach((v, i) => {
+    const bh = (v / maxH) * 25;
+    ctx1.fillStyle = '#2563eb';
+    ctx1.fillRect(20 + i * 32, 60 - bh, 20, bh);
+    ctx1.fillStyle = '#333';
+    ctx1.fillText(v, 24 + i * 32, 55 - bh);
+  });
+  if (pond1State.ripples.length > 0) requestAnimationFrame(animatePond1);
+  else pond1State.running = false;
+}
+
+function resetPond1() { pond1State.ripples = []; pond1State.running = false; drawPondBase(ctx1, pond1.width, pond1.height); }
+resetPond1();
+
+// ==================== 动画2：两颗石子的叠加 ====================
+const pond2 = document.getElementById('pond2');
+const ctx2 = pond2.getContext('2d');
+let pond2State = { ripples: [], stones: [], time: 0, autoTimer: null };
+
+function dropStone2(time) {
+  pond2State.stones.push({ time: time, x: time === 0 ? 250 : 450, y: 150 });
+  pond2State.ripples.push({ x: time === 0 ? 250 : 450, y: 150, radius: 0, maxRadius: 180, alpha: 1, color: time === 0 ? '#ef4444' : '#3b82f6', label: time === 0 ? '第一颗' : '第二颗' });
+  if (!pond2State.autoTimer) animatePond2();
+}
+
+function animatePond2() {
+  const w = pond2.width, h = pond2.height;
+  drawPondBase(ctx2, w, h);
+  pond2State.ripples.forEach(r => {
+    r.radius += 1.5;
+    r.alpha = Math.max(0, 1 - r.radius / r.maxRadius);
+    ctx2.beginPath();
+    ctx2.arc(r.x, r.y, r.radius, 0, Math.PI * 2);
+    ctx2.strokeStyle = r.color.replace(')', `,${r.alpha})`).replace('rgb', 'rgba');
+    ctx2.lineWidth = 2.5;
+    ctx2.stroke();
+  });
+  // 标注
+  ctx2.fillStyle = '#ef4444';
+  ctx2.font = 'bold 14px sans-serif';
+  ctx2.fillText('● 第一颗 (第0秒)', 20, 30);
+  ctx2.fillStyle = '#3b82f6';
+  ctx2.fillText('● 第二颗 (第2秒)', 20, 52);
+  ctx2.fillStyle = '#333';
+  ctx2.font = '13px sans-serif';
+  ctx2.fillText('两圈涟漪相遇时，水面高度 = 两个涟漪的高度之和（叠加原理）', 20, h - 20);
+  pond2State.ripples = pond2State.ripples.filter(r => r.alpha > 0.01);
+  if (pond2State.ripples.length > 0 || pond2State.stones.length > 0) {
+    pond2State.autoTimer = requestAnimationFrame(animatePond2);
+  } else {
+    pond2State.autoTimer = null;
+  }
+}
+
+function autoDrop2() {
+  resetPond2();
+  setTimeout(() => dropStone2(0), 300);
+  setTimeout(() => dropStone2(2), 1500);
+}
+
+function resetPond2() {
+  if (pond2State.autoTimer) cancelAnimationFrame(pond2State.autoTimer);
+  pond2State = { ripples: [], stones: [], time: 0, autoTimer: null };
+  drawPondBase(ctx2, pond2.width, pond2.height);
+}
+resetPond2();
+
+// ==================== 动画3：连续扔石子与卷积输出 ====================
+const pond3 = document.getElementById('pond3');
+const ctx3 = pond3.getContext('2d');
+let anim3State = { running: false, time: 0, input: [], output: [], h: [10, 6, 3, 1, 0], raf: null };
+
+function drawSignal(ctx, data, x, y, w, h, color, label, maxVal) {
+  maxVal = maxVal || Math.max(...data, 1);
+  ctx.fillStyle = 'white';
+  ctx.fillRect(x, y, w, h);
+  ctx.strokeStyle = '#ddd';
+  ctx.strokeRect(x, y, w, h);
+  ctx.fillStyle = '#333';
+  ctx.font = '12px sans-serif';
+  ctx.fillText(label, x + 8, y + 18);
+  const barW = (w - 40) / data.length;
+  data.forEach((v, i) => {
+    const bh = (v / maxVal) * (h - 40);
+    ctx.fillStyle = color;
+    ctx.fillRect(x + 25 + i * barW, y + h - 20 - bh, barW * 0.7, bh);
+  });
+}
+
+function animatePond3() {
+  const w = pond3.width, h = pond3.height;
+  const speed = parseInt(document.getElementById('speed3').value);
+  anim3State.time += 0.02 * speed;
+  const t = Math.floor(anim3State.time);
+  // 生成输入：随机石子大小
+  if (t < 12 && t >= anim3State.input.length) {
+    anim3State.input.push(Math.random() > 0.3 ? Math.floor(Math.random() * 8) + 2 : 0);
+  }
+  // 计算输出：卷积
+  if (t < 20) {
+    let y = 0;
+    for (let k = 0; k < anim3State.input.length; k++) {
+      const hi = t - k;
+      if (hi >= 0 && hi < anim3State.h.length) {
+        y += anim3State.input[k] * anim3State.h[hi];
+      }
+    }
+    anim3State.output[t] = y / 10;
+  }
+  // 绘制
+  ctx3.fillStyle = '#fafafa';
+  ctx3.fillRect(0, 0, w, h);
+  drawSignal(ctx3, anim3State.input, 20, 20, 660, 100, '#2563eb', '输入信号 x[n] (石子大小)', 10);
+  drawSignal(ctx3, anim3State.h, 20, 140, 320, 100, '#059669', '冲激响应 h[n] (池塘性格)', 10);
+  drawSignal(ctx3, anim3State.output, 360, 140, 320, 100, '#d97706', '输出信号 y[n] = x * h (总波纹)', 15);
+  // 公式
+  ctx3.fillStyle = '#333';
+  ctx3.font = '14px monospace';
+  ctx3.fillText(`y[${t}] = Σ x[k]·h[${t}-k] = ${(anim3State.output[t] || 0).toFixed(1)}`, 20, h - 20);
+  if (anim3State.running && t < 20) {
+    anim3State.raf = requestAnimationFrame(animatePond3);
+  } else {
+    anim3State.running = false;
+  }
+}
+
+function startAnim3() {
+  if (anim3State.running) { anim3State.running = false; if (anim3State.raf) cancelAnimationFrame(anim3State.raf); }
+  else { anim3State.running = true; animatePond3(); }
+}
+
+function resetAnim3() {
+  if (anim3State.raf) cancelAnimationFrame(anim3State.raf);
+  anim3State = { running: false, time: 0, input: [], output: [], h: [10, 6, 3, 1, 0], raf: null };
+  ctx3.fillStyle = '#fafafa'; ctx3.fillRect(0, 0, pond3.width, pond3.height);
+}
+resetAnim3();
+
+// ==================== 动画4：卷积四步 ====================
+const convSteps = document.getElementById('convSteps');
+const ctx4 = convSteps.getContext('2d');
+let stepState = { step: 0, n: 0, x: [3, 1, 4, 1, 5], h: [2, 0, 1], autoPlaying: false, autoTimer: null };
+
+function drawStem(ctx, data, x, y, w, h, color, label, highlightIdx) {
+  ctx.fillStyle = 'white';
+  ctx.fillRect(x, y, w, h);
+  ctx.strokeStyle = '#ddd';
+  ctx.strokeRect(x, y, w, h);
+  ctx.fillStyle = '#333';
+  ctx.font = 'bold 13px sans-serif';
+  ctx.fillText(label, x + 10, y + 22);
+  const maxVal = Math.max(...data.map(Math.abs), 1);
+  const centerY = y + h / 2 + 10;
+  ctx.strokeStyle = '#aaa';
+  ctx.beginPath(); ctx.moveTo(x + 30, centerY); ctx.lineTo(x + w - 10, centerY); ctx.stroke();
+  const spacing = (w - 50) / data.length;
+  data.forEach((v, i) => {
+    const px = x + 35 + i * spacing;
+    const barH = (Math.abs(v) / maxVal) * (h / 2 - 25);
+    ctx.fillStyle = (highlightIdx === i) ? '#ef4444' : color;
+    if (v >= 0) ctx.fillRect(px - 4, centerY - barH, 8, barH);
+    else ctx.fillRect(px - 4, centerY, 8, barH);
+    ctx.fillStyle = '#333';
+    ctx.font = '11px sans-serif';
+    ctx.fillText(v, px - 5, v >= 0 ? centerY - barH - 5 : centerY + barH + 14);
+    ctx.fillText(i, px - 3, centerY + 18);
+  });
+}
+
+function drawConvStep() {
+  const w = convSteps.width, h = convSteps.height;
+  ctx4.fillStyle = '#fafafa'; ctx4.fillRect(0, 0, w, h);
+  const s = stepState.step;
+  const n = stepState.n;
+  // 更新badge
+  for (let i = 0; i < 6; i++) {
+    const badge = document.getElementById('badge' + i);
+    badge.className = 'step-badge' + (i < s ? ' done' : (i === s ? ' active' : ''));
+  }
+  // 画输入x
+  drawStem(ctx4, stepState.x, 20, 15, 660, 80, '#2563eb', '输入信号 x[n]', s >= 3 ? n : -1);
+  // 画h或翻转h
+  if (s < 2) {
+    drawStem(ctx4, stepState.h, 20, 110, 320, 80, '#059669', '冲激响应 h[k]');
+  } else {
+    const hFlipped = [...stepState.h].reverse();
+    drawStem(ctx4, hFlipped, 20, 110, 320, 80, '#d97706', '① 翻转后的 h[-k]');
+  }
+  // 画滑动后的h[n-k]
+  if (s >= 3) {
+    const hShifted = [];
+    for (let i = 0; i < stepState.x.length; i++) {
+      const hi = n - i;
+      hShifted.push((hi >= 0 && hi < stepState.h.length) ? stepState.h[hi] : 0);
+    }
+    drawStem(ctx4, hShifted, 360, 110, 320, 80, '#d97706', `② 滑动到 n=${n}: h[${n}-k]`);
+  }
+  // 画相乘
+  if (s >= 4) {
+    const product = [];
+    for (let i = 0; i < stepState.x.length; i++) {
+      const hi = n - i;
+      product.push((hi >= 0 && hi < stepState.h.length) ? stepState.x[i] * stepState.h[hi] : 0);
+    }
+    drawStem(ctx4, product, 20, 210, 660, 80, '#8b5cf6', `③ 逐点相乘 x[k]·h[${n}-k]`);
+    // 累加
+    const sum = product.reduce((a, b) => a + b, 0);
+    ctx4.fillStyle = '#ecfdf5';
+    ctx4.fillRect(20, 310, 660, 70);
+    ctx4.strokeStyle = '#059669';
+    ctx4.lineWidth = 2;
+    ctx4.strokeRect(20, 310, 660, 70);
+    ctx4.fillStyle = '#059669';
+    ctx4.font = 'bold 18px sans-serif';
+    ctx4.fillText(`④ 累加: y[${n}] = ${product.join(' + ')} = ${sum}`, 40, 350);
+  }
+  // 步骤说明
+  const explanations = [
+    '我们有输入信号 x[n] 和冲激响应 h[k]。目标：计算 y = x * h。',
+    '冲激响应 h[k] 描述系统对一个冲激的反应随时间 k 的变化。',
+    '第一步【翻转】：把 h 沿纵轴翻转，得到 h[-k]。物理意义：近的过去对应 h 靠前的部分。',
+    `第二步【滑动】：把翻转后的 h 向右滑动 n=${n} 个位置，得到 h[${n}-k]。每个输出位置 n 都要滑一次。`,
+    '第三步【相乘】：x[k] 和 h[n-k] 逐点相乘。每个输入样本对当前输出的贡献。',
+    `第四步【累加】：把所有乘积加起来，得到 y[${n}]。这就是第 n 个输出样本的值。`
+  ];
+  ctx4.fillStyle = '#333';
+  ctx4.font = '13px sans-serif';
+  ctx4.fillText(explanations[s], 20, h - 15);
+}
+
+function nextStep() { if (stepState.step < 5) { stepState.step++; drawConvStep(); } }
+function prevStep() { if (stepState.step > 0) { stepState.step--; drawConvStep(); } }
+function resetSteps() { stepState.step = 0; stepState.n = 0; if (stepState.autoTimer) clearInterval(stepState.autoTimer); stepState.autoPlaying = false; drawConvStep(); }
+function onNChange() { stepState.n = parseInt(document.getElementById('nSlider').value); drawConvStep(); }
+function autoPlaySteps() {
+  if (stepState.autoPlaying) { clearInterval(stepState.autoTimer); stepState.autoPlaying = false; return; }
+  stepState.autoPlaying = true;
+  stepState.autoTimer = setInterval(() => {
+    if (stepState.step < 5) stepState.step++;
+    else { stepState.step = 0; stepState.n = (stepState.n + 1) % 5; document.getElementById('nSlider').value = stepState.n; }
+    drawConvStep();
+  }, 1500);
+}
+drawConvStep();
+
+// ==================== 动画5：图像卷积全过程 ====================
+const imgConv = document.getElementById('imgConv');
+const ctx5 = imgConv.getContext('2d');
+let imgConvState = { 
+  sourceImg: null, resultImg: null, kernelPos: 0, running: false, 
+  raf: null, kernel: null, kernelType: 'box3', srcData: null,
+  boxSelecting: false, boxStart: null, boxEnd: null, customKernel: null,
+  boxDragActive: false
+};
+
+// 卷积核名称映射
+const kernelNames = {
+  identity: '恒等（不变）',
+  box3: '3×3 均值模糊',
+  box5: '5×5 均值模糊',
+  gaussian3: '3×3 高斯模糊',
+  gaussian5: '5×5 高斯模糊',
+  sharpen: '锐化',
+  edge_laplacian: '边缘检测（拉普拉斯）',
+  edge_sobelx: '边缘检测（Sobel X）',
+  edge_sobely: '边缘检测（Sobel Y）',
+  emboss: '浮雕',
+  motion: '运动模糊',
+  match_text: '识别文字（模板匹配）',
+  match_circle: '识别圆形（模板匹配）',
+  match_square: '识别方形（模板匹配）',
+  match_triangle: '识别三角形（模板匹配）',
+  custom: '手动框选模板'
+};
+
+// 判断是否为模板匹配核
+function isMatchKernel(type) {
+  return type.startsWith('match_') || type === 'custom';
+}
+
+// 生成二值形状模板核（支持矩形，形状区域=+1，背景区域=-0.3，归一化）
+function makeShapeTemplate(width, height, shapeFn) {
+  const data = [];
+  const halfW = Math.floor(width / 2);
+  const halfH = Math.floor(height / 2);
+  let posCount = 0, negCount = 0;
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      const dx = x - halfW, dy = y - halfH;
+      if (shapeFn(dx, dy, halfW, halfH)) { data.push(1); posCount++; }
+      else { data.push(-0.3); negCount++; }
+    }
+  }
+  // 归一化：使正区域总和 = 负区域绝对值总和（零和核）
+  const posSum = posCount * 1;
+  const negSum = negCount * 0.3;
+  const scale = negSum / posSum;
+  for (let i = 0; i < data.length; i++) {
+    if (data[i] > 0) data[i] = scale;
+  }
+  return { width: width, height: height, data: data, size: Math.max(width, height) };
+}
+
+// 生成测试图像（渐变+几何图形）
+function generateTestImage() {
+  const canvas = document.createElement('canvas');
+  canvas.width = 96; canvas.height = 72;
+  const c = canvas.getContext('2d');
+  const grad = c.createLinearGradient(0, 0, 96, 72);
+  grad.addColorStop(0, '#1e3a8a');
+  grad.addColorStop(1, '#7c3aed');
+  c.fillStyle = grad;
+  c.fillRect(0, 0, 96, 72);
+  // 圆形（中心30,30，半径15）
+  c.fillStyle = '#fbbf24';
+  c.beginPath(); c.arc(30, 30, 15, 0, Math.PI * 2); c.fill();
+  // 方形（57,15起，24×24）
+  c.fillStyle = '#ef4444';
+  c.fillRect(57, 15, 24, 24);
+  // 三角形（顶点48,45，底边27~69在y=66）
+  c.fillStyle = '#10b981';
+  c.beginPath(); c.moveTo(48, 45); c.lineTo(69, 66); c.lineTo(27, 66); c.fill();
+  // 文字（8,16，12px粗体）
+  c.fillStyle = 'white';
+  c.font = 'bold 12px sans-serif';
+  c.fillText('DSP', 8, 16);
+  return canvas;
+}
+
+// 从实际测试图像中提取指定区域，创建RGB三通道真实模板核（与目标100%一致，含抗锯齿）
+function extractTemplate(srcCanvas, tx, ty, tw, th) {
+  const c = srcCanvas.getContext('2d');
+  const imgData = c.getImageData(tx, ty, tw, th);
+  const n = tw * th;
+  // 提取RGB三通道
+  const Rs = [], Gs = [], Bs = [];
+  let sumR = 0, sumG = 0, sumB = 0;
+  for (let i = 0; i < n; i++) {
+    Rs.push(imgData.data[i*4]);
+    Gs.push(imgData.data[i*4+1]);
+    Bs.push(imgData.data[i*4+2]);
+    sumR += imgData.data[i*4];
+    sumG += imgData.data[i*4+1];
+    sumB += imgData.data[i*4+2];
+  }
+  const avgR = sumR / n, avgG = sumG / n, avgB = sumB / n;
+  // 对每个通道创建零和核：高于通道平均的为正，低于的为负
+  function makeZeroSumChannel(vals, avg) {
+    const data = [];
+    let posSum = 0, negSum = 0;
+    for (let i = 0; i < vals.length; i++) {
+      const diff = vals[i] - avg;
+      data.push(diff);
+      if (diff > 0) posSum += diff;
+      else negSum += -diff;
+    }
+    const scale = negSum / (posSum || 1);
+    for (let i = 0; i < data.length; i++) {
+      if (data[i] > 0) data[i] *= scale;
+    }
+    return data;
+  }
+  return {
+    width: tw, height: th, size: Math.max(tw, th),
+    dataR: makeZeroSumChannel(Rs, avgR),
+    dataG: makeZeroSumChannel(Gs, avgG),
+    dataB: makeZeroSumChannel(Bs, avgB),
+    isRealTemplate: true, isColor: true,
+    // 保留原始RGB用于显示
+    origR: Rs, origG: Gs, origB: Bs
+  };
+}
+
+// 判断是否为彩色模板
+function isColorKernel(kernel) {
+  return kernel && kernel.isColor && kernel.dataR;
+}
+
+// 文字模板：x=4~36 (宽32), y=4~20 (高16)
+function extractTextTemplate(srcCanvas) {
+  return extractTemplate(srcCanvas, 4, 4, 32, 16);
+}
+
+// 方形模板：方形在(57,15)起24×24，加2px边距 → x=55, y=13, 28×28
+function extractSquareTemplate(srcCanvas) {
+  return extractTemplate(srcCanvas, 55, 13, 28, 28);
+}
+
+// 三角形模板：顶点(48,45)，底边(27,66)~(69,66)，加2px边距 → x=25, y=43, 46×25
+function extractTriangleTemplate(srcCanvas) {
+  return extractTemplate(srcCanvas, 25, 43, 46, 25);
+}
+
+// 圆形模板：中心(30,30)，半径15，加2px边距 → x=13, y=13, 34×34
+function extractCircleTemplate(srcCanvas) {
+  return extractTemplate(srcCanvas, 13, 13, 34, 34);
+}
+
+// 获取源图像数据
+function getSrcData() {
+  if (!imgConvState.srcData) {
+    const src = imgConvState.sourceImg;
+    const canvas = document.createElement('canvas');
+    canvas.width = src.width; canvas.height = src.height;
+    const c = canvas.getContext('2d');
+    c.drawImage(src, 0, 0);
+    imgConvState.srcData = c.getImageData(0, 0, src.width, src.height);
+  }
+  return imgConvState.srcData;
+}
+
+// 获取像素灰度值
+function getGray(imgData, x, y) {
+  x = clamp(x, 0, imgData.width - 1);
+  y = clamp(y, 0, imgData.height - 1);
+  const idx = (y * imgData.width + x) * 4;
+  return Math.round(0.299 * imgData.data[idx] + 0.587 * imgData.data[idx+1] + 0.114 * imgData.data[idx+2]);
+}
+
+// 扩充卷积核库
+function sq(size, data) { return { width: size, height: size, size: size, data: data }; }
+function getKernel(type) {
+  switch(type) {
+    case 'identity':
+      return sq(3, [0,0,0, 0,1,0, 0,0,0]);
+    case 'box3':
+      return sq(3, Array(9).fill(1/9));
+    case 'box5':
+      return sq(5, Array(25).fill(1/25));
+    case 'gaussian3':
+      return sq(3, [1/16,2/16,1/16, 2/16,4/16,2/16, 1/16,2/16,1/16]);
+    case 'gaussian5':
+      return sq(5, [1,4,6,4,1, 4,16,24,16,4, 6,24,36,24,6, 4,16,24,16,4, 1,4,6,4,1].map(v => v/256));
+    case 'sharpen':
+      return sq(3, [0,-1,0, -1,5,-1, 0,-1,0]);
+    case 'edge_laplacian':
+      return sq(3, [0,1,0, 1,-4,1, 0,1,0]);
+    case 'edge_sobelx':
+      return sq(3, [-1,0,1, -2,0,2, -1,0,1]);
+    case 'edge_sobely':
+      return sq(3, [-1,-2,-1, 0,0,0, 1,2,1]);
+    case 'emboss':
+      return sq(3, [-2,-1,0, -1,1,1, 0,1,2]);
+    case 'motion':
+      return sq(3, [1/3,0,0, 0,1/3,0, 0,0,1/3]);
+    case 'match_text':
+      // 使用从实际测试图像中提取的真实文字模板（与目标100%一致，包含抗锯齿细节）
+      if (imgConvState.textKernel) return imgConvState.textKernel;
+      // fallback：手动模板（仅在真实模板未生成时使用）
+      return makeShapeTemplate(27, 14, (dx, dy, halfW, halfH) => {
+        if (dy < -5 || dy > 5) return false;
+        const lx = dx + halfW; // 局部x坐标
+        // D字母
+        if (lx >= 0 && lx <= 7) {
+          if (lx === 0 || lx === 7 || dy === -5 || dy === 5) return true;
+          if (lx >= 3 && lx <= 6 && dy > -5 && dy < 5) return true;
+        }
+        // S字母
+        if (lx >= 9 && lx <= 15) {
+          if (dy === -5 || dy === 0 || dy === 5) return true;
+          if (lx === 9 && dy > -5 && dy < 0) return true;
+          if (lx === 15 && dy > 0 && dy < 5) return true;
+        }
+        // P字母
+        if (lx >= 17 && lx <= 24) {
+          if (lx === 17) return true;
+          if (dy === -5 && lx > 17 && lx <= 24) return true;
+          if (lx === 24 && dy >= -5 && dy <= 0) return true;
+          if (dy === 0 && lx > 17 && lx <= 24) return true;
+        }
+        return false;
+      });
+    case 'match_circle':
+      // 使用从实际图像中提取的真实圆形模板（34×34，含抗锯齿，与目标100%一致）
+      if (imgConvState.circleKernel) return imgConvState.circleKernel;
+      // fallback：几何模板
+      return makeShapeTemplate(31, 31, (dx, dy) => {
+        return (dx * dx + dy * dy) <= 225; // 15²
+      });
+    case 'match_square':
+      // 使用从实际图像中提取的真实方形模板（28×28，含抗锯齿，与目标100%一致）
+      if (imgConvState.squareKernel) return imgConvState.squareKernel;
+      // fallback：几何模板
+      return makeShapeTemplate(25, 25, (dx, dy) => {
+        return Math.abs(dx) <= 12 && Math.abs(dy) <= 12;
+      });
+    case 'match_triangle':
+      // 使用从实际图像中提取的真实三角形模板（46×25，含抗锯齿，与目标100%一致）
+      if (imgConvState.triangleKernel) return imgConvState.triangleKernel;
+      // fallback：几何模板
+      return makeShapeTemplate(43, 23, (dx, dy, halfW, halfH) => {
+        // 顶点在(0,-10)，底边在y=11，从x=-21到x=21
+        if (dy < -10 || dy > 11) return false;
+        const halfWidth = 21 * ((dy + 10) / 21);
+        return Math.abs(dx) <= halfWidth;
+      });
+    case 'custom':
+      // 手动框选的模板
+      if (imgConvState.customKernel) return imgConvState.customKernel;
+      // 如果还没有框选，返回默认3x3均值
+      return sq(3, Array(9).fill(1/9));
+    default:
+      return sq(3, Array(9).fill(1/9));
+  }
+}
+
+function changeKernel() {
+  imgConvState.kernelType = document.getElementById('kernelSize').value;
+  imgConvState.kernel = getKernel(imgConvState.kernelType);
+  imgConvState.kernelPos = 0;
+  imgConvState.resultImg = null;
+  imgConvState.detectResult = null;
+  imgConvState.matchRange = null;
+  drawImgConv();
+}
+
+function applyConvolutionPixel(imgData, x, y, kernel, size) {
+  let r = 0, g = 0, b = 0;
+  const half = Math.floor(size / 2);
+  for (let ky = 0; ky < size; ky++) {
+    for (let kx = 0; kx < size; kx++) {
+      const px = clamp(x + kx - half, 0, imgData.width - 1);
+      const py = clamp(y + ky - half, 0, imgData.height - 1);
+      const idx = (py * imgData.width + px) * 4;
+      const k = kernel.data[ky * size + kx];
+      r += imgData.data[idx] * k;
+      g += imgData.data[idx + 1] * k;
+      b += imgData.data[idx + 2] * k;
+    }
+  }
+  return [clamp(Math.round(r), 0, 255), clamp(Math.round(g), 0, 255), clamp(Math.round(b), 0, 255)];
+}
+
+// RGB三通道卷积（返回合并响应，用于彩色模板匹配）
+function applyConvolutionRGB(imgData, x, y, kernel) {
+  let sumR = 0, sumG = 0, sumB = 0;
+  const halfW = Math.floor(kernel.width / 2);
+  const halfH = Math.floor(kernel.height / 2);
+  for (let ky = 0; ky < kernel.height; ky++) {
+    for (let kx = 0; kx < kernel.width; kx++) {
+      const px = clamp(x + kx - halfW, 0, imgData.width - 1);
+      const py = clamp(y + ky - halfH, 0, imgData.height - 1);
+      const idx = (py * imgData.width + px) * 4;
+      const ki = ky * kernel.width + kx;
+      sumR += imgData.data[idx] * kernel.dataR[ki];
+      sumG += imgData.data[idx+1] * kernel.dataG[ki];
+      sumB += imgData.data[idx+2] * kernel.dataB[ki];
+    }
+  }
+  // 合并三通道响应：绝对值之和（颜色越匹配，响应越大）
+  return { total: Math.abs(sumR) + Math.abs(sumG) + Math.abs(sumB), r: sumR, g: sumG, b: sumB };
+}
+
+// 灰度图卷积（返回原始浮点值，不clamp，用于模板匹配，支持矩形核）
+function applyConvolutionGray(imgData, x, y, kernel) {
+  let sum = 0;
+  const halfW = Math.floor(kernel.width / 2);
+  const halfH = Math.floor(kernel.height / 2);
+  for (let ky = 0; ky < kernel.height; ky++) {
+    for (let kx = 0; kx < kernel.width; kx++) {
+      const px = clamp(x + kx - halfW, 0, imgData.width - 1);
+      const py = clamp(y + ky - halfH, 0, imgData.height - 1);
+      const idx = (py * imgData.width + px) * 4;
+      const gray = 0.299 * imgData.data[idx] + 0.587 * imgData.data[idx+1] + 0.114 * imgData.data[idx+2];
+      const k = kernel.data[ky * kernel.width + kx];
+      sum += gray * k;
+    }
+  }
+  return sum; // 返回原始浮点值，可能为负
+}
+
+// 绘制矩阵（用于详细运算过程，支持矩形矩阵）
+function drawMatrix(ctx, matrix, x, y, cellSize, title, colorMap, highlightCenter, cols, rows) {
+  ctx.fillStyle = '#333';
+  ctx.font = 'bold 11px sans-serif';
+  ctx.fillText(title, x, y - 5);
+  cols = cols || Math.round(Math.sqrt(matrix.length));
+  rows = rows || Math.round(matrix.length / cols);
+  const isLarge = Math.max(cols, rows) > 7;
+  const actualCell = isLarge ? Math.min(cellSize, Math.floor(140 / Math.max(cols, rows))) : cellSize;
+  
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < cols; j++) {
+      const val = matrix[i * cols + j];
+      const px = x + j * actualCell;
+      const py = y + i * actualCell;
+      if (colorMap) {
+        ctx.fillStyle = colorMap(val);
+      } else {
+        ctx.fillStyle = val > 0 ? `rgba(37,99,235,${Math.min(1, Math.abs(val)*0.8)})` : `rgba(239,68,68,${Math.min(1, Math.abs(val)*0.8)})`;
+      }
+      ctx.fillRect(px, py, actualCell - 1, actualCell - 1);
+      if (highlightCenter && i === Math.floor(rows/2) && j === Math.floor(cols/2)) {
+        ctx.strokeStyle = '#fbbf24';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(px, py, actualCell - 1, actualCell - 1);
+      }
+      if (!isLarge) {
+        ctx.fillStyle = 'white';
+        ctx.font = 'bold 10px monospace';
+        ctx.textAlign = 'center';
+        const displayVal = Math.abs(val) < 0.01 ? val.toExponential(1) : val.toFixed(2);
+        ctx.fillText(displayVal, px + (actualCell-1)/2, py + (actualCell-1)/2 + 3);
+        ctx.textAlign = 'left';
+      }
+    }
+  }
+  if (isLarge) {
+    ctx.fillStyle = '#888';
+    ctx.font = '10px sans-serif';
+    ctx.fillText(`(${cols}×${rows} 缩略图)`, x, y + rows * actualCell + 12);
+  }
+}
+
+function drawImgConv() {
+  const w = imgConv.width, h = imgConv.height;
+  ctx5.fillStyle = '#fafafa'; ctx5.fillRect(0, 0, w, h);
+  if (!imgConvState.sourceImg) {
+    imgConvState.sourceImg = generateTestImage();
+    imgConvState.textKernel = extractTextTemplate(imgConvState.sourceImg);
+    imgConvState.circleKernel = extractCircleTemplate(imgConvState.sourceImg);
+    imgConvState.squareKernel = extractSquareTemplate(imgConvState.sourceImg);
+    imgConvState.triangleKernel = extractTriangleTemplate(imgConvState.sourceImg);
+    imgConvState.kernel = getKernel('box3');
+  }
+  const src = imgConvState.sourceImg;
+  const srcData = getSrcData();
+  const scale = 3;
+  const imgW = src.width * scale, imgH = src.height * scale;
+  const offsetX = 20, offsetY = 40;
+  
+  // 画原图
+  ctx5.imageSmoothingEnabled = false;
+  ctx5.drawImage(src, offsetX, offsetY, imgW, imgH);
+  ctx5.strokeStyle = '#2563eb';
+  ctx5.lineWidth = 2;
+  ctx5.strokeRect(offsetX, offsetY, imgW, imgH);
+  ctx5.fillStyle = '#2563eb';
+  ctx5.font = 'bold 12px sans-serif';
+  ctx5.fillText(`原图 (${src.width}×${src.height})`, offsetX, offsetY - 8);
+  
+  // 框选模式：绘制选框和提示
+  if (imgConvState.boxSelecting) {
+    // 半透明遮罩
+    ctx5.fillStyle = 'rgba(0,0,0,0.4)';
+    ctx5.fillRect(offsetX, offsetY, imgW, imgH);
+    // 提示文字
+    ctx5.fillStyle = '#fff';
+    ctx5.font = 'bold 14px sans-serif';
+    ctx5.textAlign = 'center';
+    ctx5.fillText('✋ 在原图上拖动鼠标框选要识别的区域', offsetX + imgW/2, offsetY + imgH/2 - 10);
+    ctx5.font = '12px sans-serif';
+    ctx5.fillText('选框完成后自动提取模板并全图搜索匹配位置', offsetX + imgW/2, offsetY + imgH/2 + 15);
+    ctx5.textAlign = 'left';
+    // 绘制选框
+    if (imgConvState.boxStart && imgConvState.boxEnd) {
+      const s = imgConvState.boxStart, e = imgConvState.boxEnd;
+      const bx = offsetX + Math.min(s.x, e.x) * scale;
+      const by = offsetY + Math.min(s.y, e.y) * scale;
+      const bw = (Math.abs(e.x - s.x) + 1) * scale;
+      const bh = (Math.abs(e.y - s.y) + 1) * scale;
+      // 清除选框内的遮罩
+      ctx5.clearRect(bx, by, bw, bh);
+      ctx5.drawImage(src, Math.min(s.x,e.x), Math.min(s.y,e.y), Math.abs(e.x-s.x)+1, Math.abs(e.y-s.y)+1, bx, by, bw, bh);
+      // 选框边框
+      ctx5.strokeStyle = '#fbbf24';
+      ctx5.lineWidth = 3;
+      ctx5.strokeRect(bx, by, bw, bh);
+      // 尺寸标注
+      ctx5.fillStyle = '#fbbf24';
+      ctx5.font = 'bold 11px sans-serif';
+      ctx5.fillText(`${Math.abs(e.x-s.x)+1}×${Math.abs(e.y-s.y)+1}`, bx, by - 6);
+    }
+    // 框选模式下不显示卷积核位置
+  } else {
+  
+  // 画卷积核位置（支持矩形核）
+  const pos = imgConvState.kernelPos;
+  const totalPixels = src.width * src.height;
+  const py = Math.floor(pos / src.width);
+  const px = pos % src.width;
+  const kW = imgConvState.kernel.width * scale;
+  const kH = imgConvState.kernel.height * scale;
+  const kx = offsetX + px * scale - kW/2 + scale/2;
+  const ky = offsetY + py * scale - kH/2 + scale/2;
+  ctx5.strokeStyle = '#ef4444';
+  ctx5.lineWidth = 3;
+  ctx5.strokeRect(kx, ky, kW, kH);
+  // 中心像素标记
+  ctx5.fillStyle = '#fbbf24';
+  ctx5.fillRect(offsetX + px * scale, offsetY + py * scale, scale, scale);
+  
+  // 进度
+  ctx5.fillStyle = '#333';
+  ctx5.font = '11px sans-serif';
+  ctx5.fillText(`卷积核位置: (${px}, ${py}) / 进度: ${(pos/totalPixels*100).toFixed(1)}% / 核: ${kernelNames[imgConvState.kernelType]}`, offsetX, offsetY + imgH + 18);
+  
+  } // 结束框选模式的else块
+  
+  // 画结果图
+  const resX = offsetX + imgW + 25;
+  if (imgConvState.resultImg) {
+    ctx5.imageSmoothingEnabled = false;
+    ctx5.drawImage(imgConvState.resultImg, resX, offsetY, imgW, imgH);
+    ctx5.strokeStyle = '#059669';
+    ctx5.lineWidth = 2;
+    ctx5.strokeRect(resX, offsetY, imgW, imgH);
+    ctx5.fillStyle = '#059669';
+    ctx5.font = 'bold 12px sans-serif';
+    const isMatch = isMatchKernel(imgConvState.kernelType);
+    ctx5.fillText(isMatch ? '匹配响应热力图' : '卷积结果', resX, offsetY - 8);
+    
+    // 模板匹配：标注检测到的位置
+    if (isMatch && imgConvState.detectResult) {
+      const det = imgConvState.detectResult;
+      const kHalfW = Math.floor(k.width / 2);
+      const kHalfH = Math.floor(k.height / 2);
+      // 画检测框（矩形核）
+      const boxX = resX + (det.x - kHalfW) * scale;
+      const boxY = offsetY + (det.y - kHalfH) * scale;
+      const boxW = k.width * scale;
+      const boxH = k.height * scale;
+      ctx5.strokeStyle = '#fbbf24';
+      ctx5.lineWidth = 3;
+      ctx5.strokeRect(boxX, boxY, boxW, boxH);
+      // 中心点
+      ctx5.fillStyle = '#ef4444';
+      ctx5.beginPath();
+      ctx5.arc(resX + det.x * scale, offsetY + det.y * scale, 4, 0, Math.PI * 2);
+      ctx5.fill();
+      // 标注文字
+      ctx5.fillStyle = '#fbbf24';
+      ctx5.font = 'bold 11px sans-serif';
+      ctx5.fillText(`✓ 检测到${det.shapeName} (${k.width}×${k.height}核)`, boxX, boxY - 6);
+      ctx5.fillStyle = '#fff';
+      ctx5.font = '10px sans-serif';
+      ctx5.fillText(`置信度: ${det.confidence}%`, boxX + 4, boxY + 14);
+    }
+  } else {
+    ctx5.fillStyle = '#e5e5e5';
+    ctx5.fillRect(resX, offsetY, imgW, imgH);
+    ctx5.fillStyle = '#999';
+    ctx5.font = '12px sans-serif';
+    ctx5.textAlign = 'center';
+    const isMatch = isMatchKernel(imgConvState.kernelType);
+    ctx5.fillText(isMatch ? '点击"一键应用卷积"\n查看形状匹配结果' : '点击"一键应用卷积"\n查看结果', resX + imgW/2, offsetY + imgH/2);
+    ctx5.textAlign = 'left';
+  }
+  
+  // ========== 卷积核预览区域 ==========
+  const kernelPreviewY = offsetY + imgH + 20;
+  ctx5.fillStyle = '#faf5ff';
+  ctx5.fillRect(10, kernelPreviewY - 10, w - 20, 95);
+  ctx5.strokeStyle = '#d8b4fe';
+  ctx5.lineWidth = 1;
+  ctx5.strokeRect(10, kernelPreviewY - 10, w - 20, 95);
+  ctx5.fillStyle = '#7c3aed';
+  ctx5.font = 'bold 13px sans-serif';
+  const k = imgConvState.kernel;
+  const isColorK = isColorKernel(k);
+  ctx5.fillText(`当前卷积核：${kernelNames[imgConvState.kernelType]} (${k.width}×${k.height}${isColorK ? '，RGB彩色' : '，灰度'})`, 20, kernelPreviewY + 5);
+  
+  // 绘制卷积核预览图
+  const previewX = 20, previewY = kernelPreviewY + 15;
+  const maxPreviewW = 200, maxPreviewH = 65;
+  const previewScale = Math.min(maxPreviewW / k.width, maxPreviewH / k.height);
+  const pw = k.width * previewScale, ph = k.height * previewScale;
+  
+  if (isColorK && k.origR) {
+    // 彩色模板：显示原始RGB彩色图像
+    for (let y = 0; y < k.height; y++) {
+      for (let x = 0; x < k.width; x++) {
+        const idx = y * k.width + x;
+        ctx5.fillStyle = `rgb(${k.origR[idx]},${k.origG[idx]},${k.origB[idx]})`;
+        ctx5.fillRect(previewX + x * previewScale, previewY + y * previewScale, previewScale, previewScale);
+      }
+    }
+  } else if (k.data) {
+    // 灰度/普通核：显示热力图
+    let kmax = 0;
+    for (let i = 0; i < k.data.length; i++) kmax = Math.max(kmax, Math.abs(k.data[i]));
+    kmax = kmax || 1;
+    for (let y = 0; y < k.height; y++) {
+      for (let x = 0; x < k.width; x++) {
+        const val = k.data[y * k.width + x];
+        const intensity = Math.abs(val) / kmax;
+        if (val >= 0) ctx5.fillStyle = `rgba(37,99,235,${intensity})`;
+        else ctx5.fillStyle = `rgba(239,68,68,${intensity})`;
+        ctx5.fillRect(previewX + x * previewScale, previewY + y * previewScale, previewScale, previewScale);
+      }
+    }
+  }
+  ctx5.strokeStyle = '#7c3aed';
+  ctx5.lineWidth = 2;
+  ctx5.strokeRect(previewX, previewY, pw, ph);
+  
+  // 卷积核说明
+  ctx5.fillStyle = '#555';
+  ctx5.font = '11px sans-serif';
+  if (isColorK) {
+    ctx5.fillText('彩色模板：RGB三通道分别做零和卷积，响应=|R|+|G|+|B|', previewX + pw + 15, previewY + 20);
+    ctx5.fillText('颜色信息被充分利用，红色方形/绿色三角形等彩色目标识别更精准', previewX + pw + 15, previewY + 40);
+    if (k.boxX !== undefined) {
+      ctx5.fillText(`框选位置：(${k.boxX}, ${k.boxY})`, previewX + pw + 15, previewY + 60);
+    }
+  } else if (isMatchKernel(imgConvState.kernelType)) {
+    ctx5.fillText('灰度模板：亮区域=正值，暗背景=负值，零和核', previewX + pw + 15, previewY + 20);
+    ctx5.fillText('滑到目标位置时响应最大', previewX + pw + 15, previewY + 40);
+  } else {
+    ctx5.fillText('蓝色=正值，红色=负值，亮度=绝对值大小', previewX + pw + 15, previewY + 20);
+  }
+  
+  // ========== 详细运算过程（下半部分） ==========
+  const detailY = kernelPreviewY + 100;
+  ctx5.fillStyle = '#f0f9ff';
+  ctx5.fillRect(10, detailY - 15, w - 20, 230);
+  ctx5.strokeStyle = '#bae6fd';
+  ctx5.lineWidth = 1;
+  ctx5.strokeRect(10, detailY - 15, w - 20, 230);
+  ctx5.fillStyle = '#0369a1';
+  ctx5.font = 'bold 13px sans-serif';
+  ctx5.fillText(`详细运算过程 — 当前计算输出像素 (${px}, ${py})`, 20, detailY);
+  
+  const kcols = k.width;
+  const krows = k.height;
+  const halfW = Math.floor(kcols / 2);
+  const halfH = Math.floor(krows / 2);
+  const cellSize = 32;
+  const matrixW = kcols * cellSize;
+  
+  // 1. 邻域像素灰度值
+  const neighborhood = [];
+  for (let i = 0; i < krows; i++) {
+    for (let j = 0; j < kcols; j++) {
+      neighborhood.push(getGray(srcData, px + j - halfW, py + i - halfH));
+    }
+  }
+  const centerIdx = Math.floor(krows / 2) * kcols + Math.floor(kcols / 2);
+  drawMatrix(ctx5, neighborhood, 25, detailY + 20, cellSize, 
+    `① 邻域像素灰度值 (中心=${neighborhood[centerIdx]})`,
+    (v) => `rgba(${v},${v},${v},0.9)`, true, kcols, krows);
+  
+  // 2. 卷积核
+  drawMatrix(ctx5, k.data, 25 + matrixW + 30, detailY + 20, cellSize,
+    `② 卷积核 (${kcols}×${krows})`, null, true, kcols, krows);
+  
+  // 3. 逐点相乘
+  const product = neighborhood.map((v, i) => v * k.data[i]);
+  drawMatrix(ctx5, product, 25 + 2 * (matrixW + 30), detailY + 20, cellSize,
+    `③ 逐点相乘 (①×②)`,
+    (v) => v >= 0 ? `rgba(37,99,235,${Math.min(1, Math.abs(v)/255*2)})` : `rgba(239,68,68,${Math.min(1, Math.abs(v)/255*2)})`,
+    true, kcols, krows);
+  
+  // 4. 累加结果
+  const sumGray = product.reduce((a, b) => a + b, 0);
+  const isMatch = isMatchKernel(imgConvState.kernelType);
+  const resultGray = isMatch ? sumGray : clamp(Math.round(sumGray), 0, 255);
+  const sumX = 25 + 3 * (matrixW + 30);
+  ctx5.fillStyle = '#333';
+  ctx5.font = 'bold 11px sans-serif';
+  ctx5.fillText('④ 累加求和', sumX, detailY + 15);
+  
+  // 公式
+  ctx5.font = '10px monospace';
+  ctx5.fillStyle = '#555';
+  const formula = product.map((v, i) => `${neighborhood[i]}×${k.data[i].toFixed(2)}`).join(' + ');
+  ctx5.fillText(`y = ${formula.length > 80 ? formula.substring(0, 80) + '...' : formula}`, sumX, detailY + 35);
+  if (isMatch) {
+    ctx5.fillText(`  = ${sumGray.toFixed(2)} (原始响应，不clamp)`, sumX, detailY + 52);
+    ctx5.fillStyle = '#b45309';
+    ctx5.font = '10px sans-serif';
+    ctx5.fillText('模板匹配：响应越大=匹配度越高', sumX, detailY + 68);
+  } else {
+    ctx5.fillText(`  = ${sumGray.toFixed(2)} → clamp(0,255) = ${resultGray}`, sumX, detailY + 52);
+  }
+  
+  // 结果色块
+  let displayGray, displayText;
+  if (isMatch && imgConvState.matchRange) {
+    const range = imgConvState.matchRange;
+    const norm = ((sumGray - range.min) / (range.max - range.min || 1)) * 255;
+    displayGray = clamp(Math.round(norm), 0, 255);
+    displayText = sumGray.toFixed(1);
+  } else {
+    displayGray = resultGray;
+    displayText = resultGray;
+  }
+  ctx5.fillStyle = `rgb(${displayGray},${displayGray},${displayGray})`;
+  ctx5.fillRect(sumX, detailY + 65, 50, 50);
+  ctx5.strokeStyle = '#333';
+  ctx5.lineWidth = 2;
+  ctx5.strokeRect(sumX, detailY + 65, 50, 50);
+  ctx5.fillStyle = displayGray > 128 ? 'black' : 'white';
+  ctx5.font = 'bold 12px sans-serif';
+  ctx5.textAlign = 'center';
+  ctx5.fillText(displayText, sumX + 25, detailY + 95);
+  ctx5.textAlign = 'left';
+  ctx5.fillStyle = '#333';
+  ctx5.font = '11px sans-serif';
+  ctx5.fillText(isMatch ? '匹配响应强度' : '输出像素灰度值', sumX + 60, detailY + 95);
+  
+  // 运算步骤说明
+  ctx5.fillStyle = '#0369a1';
+  ctx5.font = 'bold 11px sans-serif';
+  ctx5.fillText('卷积四步对应：', 25, detailY + 175);
+  ctx5.fillStyle = '#555';
+  ctx5.font = '11px sans-serif';
+  ctx5.fillText('① 取邻域 = 滑动到当前位置  ② 卷积核 = 模板（图像处理用相关运算，不翻转）  ③ 逐点相乘 = 对应位置配对相乘  ④ 累加求和 = 所有乘积相加得到输出', 25, detailY + 195);
+  if (isMatch) {
+    ctx5.fillStyle = '#b45309';
+    ctx5.font = 'bold 11px sans-serif';
+    ctx5.fillText('🔍 模板匹配原理：所有模板均从实际图像中提取（文字32×16、圆形34×34、方形28×28、三角形46×25、手动框选），含抗锯齿细节，与目标100%一致。RGB彩色模板对R/G/B三通道分别做零和卷积，合并响应=|R|+|G|+|B|，颜色信息被充分利用（红色方形、绿色三角形等彩色目标识别更精准）。核滑到目标位置时三通道同时匹配，响应最大 → 检测到目标。黄色框为最佳匹配位置。', 25, detailY + 212);
+  } else {
+    ctx5.fillText('注意：图像卷积中卷积核通常预先翻转（180度），所以滑动时不需要再翻转；这里展示的是"相关运算"形式，与卷积在核对称时等价。', 25, detailY + 212);
+  }
+}
+
+function startImgConv() {
+  if (imgConvState.running) { 
+    imgConvState.running = false; 
+    if (imgConvState.raf) cancelAnimationFrame(imgConvState.raf); 
+    return; 
+  }
+  imgConvState.running = true;
+  function animate() {
+    imgConvState.kernelPos += 2;
+    const total = imgConvState.sourceImg.width * imgConvState.sourceImg.height;
+    if (imgConvState.kernelPos >= total) { imgConvState.kernelPos = 0; }
+    drawImgConv();
+    if (imgConvState.running) imgConvState.raf = requestAnimationFrame(animate);
+  }
+  animate();
+}
+
+function stepPixel() {
+  const total = imgConvState.sourceImg.width * imgConvState.sourceImg.height;
+  imgConvState.kernelPos = (imgConvState.kernelPos + 1) % total;
+  drawImgConv();
+}
+
+function applyBlur() {
+  const src = imgConvState.sourceImg;
+  const canvas = document.createElement('canvas');
+  canvas.width = src.width; canvas.height = src.height;
+  const c = canvas.getContext('2d');
+  c.drawImage(src, 0, 0);
+  const srcData = c.getImageData(0, 0, src.width, src.height);
+  const outData = c.createImageData(src.width, src.height);
+  const k = imgConvState.kernel;
+  const isMatch = isMatchKernel(imgConvState.kernelType);
+  
+  if (isMatch) {
+    const isColor = isColorKernel(k);
+    // 模板匹配：保留原始浮点响应（不clamp）
+    const rawOutput = new Float32Array(src.width * src.height);
+    let maxVal = -Infinity, minVal = Infinity;
+    for (let y = 0; y < src.height; y++) {
+      for (let x = 0; x < src.width; x++) {
+        let resp;
+        if (isColor) {
+          resp = applyConvolutionRGB(srcData, x, y, k).total;
+        } else {
+          resp = applyConvolutionGray(srcData, x, y, k);
+        }
+        rawOutput[y * src.width + x] = resp;
+        if (resp > maxVal) maxVal = resp;
+        if (resp < minVal) minVal = resp;
+      }
+    }
+    // 归一化到0-255，用热力图显示
+    const range = maxVal - minVal || 1;
+    let bestX = 0, bestY = 0, bestResp = -Infinity;
+    for (let y = 0; y < src.height; y++) {
+      for (let x = 0; x < src.width; x++) {
+        const idx = y * src.width + x;
+        const norm = ((rawOutput[idx] - minVal) / range) * 255;
+        if (isColor) {
+          // 彩色模板：用彩色热力图（红→黄→绿）
+          outData.data[idx*4] = norm;
+          outData.data[idx*4+1] = norm * 0.6;
+          outData.data[idx*4+2] = norm * 0.2;
+        } else {
+          outData.data[idx*4] = norm;
+          outData.data[idx*4+1] = norm * 0.2;
+          outData.data[idx*4+2] = norm * 0.2;
+        }
+        outData.data[idx*4+3] = 255;
+        if (rawOutput[idx] > bestResp) {
+          bestResp = rawOutput[idx];
+          bestX = x;
+          bestY = y;
+        }
+      }
+    }
+    const shapeName = imgConvState.kernelType === 'custom' ? '手动框选区域' : kernelNames[imgConvState.kernelType].replace('识别', '').replace('（模板匹配）', '');
+    imgConvState.detectResult = {
+      x: bestX, y: bestY,
+      confidence: ((bestResp - minVal) / range * 100).toFixed(1),
+      shapeName: shapeName,
+      rawResponse: bestResp.toFixed(2),
+      isColor: isColor
+    };
+    imgConvState.matchRange = { min: minVal, max: maxVal };
+  } else {
+    // 普通卷积：RGB三通道分别卷积，clamp到0-255
+    for (let y = 0; y < src.height; y++) {
+      for (let x = 0; x < src.width; x++) {
+        const [r, g, b] = applyConvolutionPixel(srcData, x, y, k, k.size);
+        const idx = (y * src.width + x) * 4;
+        outData.data[idx] = r; outData.data[idx+1] = g; outData.data[idx+2] = b; outData.data[idx+3] = 255;
+      }
+    }
+    imgConvState.detectResult = null;
+  }
+  
+  c.putImageData(outData, 0, 0);
+  imgConvState.resultImg = canvas;
+  drawImgConv();
+}
+
+// ==================== 手动框选模板功能 ====================
+function startBoxSelect() {
+  if (imgConvState.running) { imgConvState.running = false; if (imgConvState.raf) cancelAnimationFrame(imgConvState.raf); }
+  imgConvState.boxSelecting = true;
+  imgConvState.boxStart = null;
+  imgConvState.boxEnd = null;
+  imgConvState.boxDragActive = false;
+  imgConv.canvas.style.cursor = 'crosshair';
+  drawImgConv();
+}
+
+function cancelBoxSelect() {
+  imgConvState.boxSelecting = false;
+  imgConvState.boxStart = null;
+  imgConvState.boxEnd = null;
+  imgConvState.boxDragActive = false;
+  imgConv.canvas.style.cursor = 'default';
+  drawImgConv();
+}
+
+// 将画布坐标转换为图像像素坐标
+function canvasToImage(canvasX, canvasY) {
+  const rect = imgConv.getBoundingClientRect();
+  const scaleX = imgConv.width / rect.width;
+  const scaleY = imgConv.height / rect.height;
+  const x = (canvasX - rect.left) * scaleX;
+  const y = (canvasY - rect.top) * scaleY;
+  // 图像区域：offsetX=20, offsetY=40, scale=3
+  const offsetX = 20, offsetY = 40, scale = 3;
+  const imgX = Math.floor((x - offsetX) / scale);
+  const imgY = Math.floor((y - offsetY) / scale);
+  const src = imgConvState.sourceImg;
+  if (imgX < 0 || imgX >= src.width || imgY < 0 || imgY >= src.height) return null;
+  return { x: imgX, y: imgY };
+}
+
+function onImgConvMouseDown(e) {
+  if (!imgConvState.boxSelecting) return;
+  const pos = canvasToImage(e.clientX, e.clientY);
+  if (!pos) return;
+  imgConvState.boxStart = pos;
+  imgConvState.boxEnd = pos;
+  imgConvState.boxDragActive = true;
+}
+
+function onImgConvMouseMove(e) {
+  if (!imgConvState.boxSelecting || !imgConvState.boxDragActive) return;
+  const pos = canvasToImage(e.clientX, e.clientY);
+  if (!pos) return;
+  imgConvState.boxEnd = pos;
+  drawImgConv();
+}
+
+function onImgConvMouseUp(e) {
+  if (!imgConvState.boxSelecting || !imgConvState.boxDragActive) return;
+  imgConvState.boxDragActive = false;
+  const s = imgConvState.boxStart;
+  const en = imgConvState.boxEnd;
+  if (!s || !en) { cancelBoxSelect(); return; }
+  const x = Math.min(s.x, en.x);
+  const y = Math.min(s.y, en.y);
+  const w = Math.abs(en.x - s.x) + 1;
+  const h = Math.abs(en.y - s.y) + 1;
+  if (w < 3 || h < 3) { alert('框选区域太小，请至少选择 3×3 像素'); cancelBoxSelect(); return; }
+  // 提取模板
+  imgConvState.customKernel = extractTemplate(imgConvState.sourceImg, x, y, w, h);
+  imgConvState.customKernel.boxX = x;
+  imgConvState.customKernel.boxY = y;
+  // 切换到自定义模板
+  document.getElementById('kernelSize').value = 'custom';
+  imgConvState.kernelType = 'custom';
+  imgConvState.kernel = imgConvState.customKernel;
+  imgConvState.kernelPos = 0;
+  imgConvState.resultImg = null;
+  imgConvState.detectResult = null;
+  imgConvState.matchRange = null;
+  cancelBoxSelect();
+  // 自动应用卷积
+  setTimeout(() => applyBlur(), 100);
+}
+
+// 绑定鼠标事件
+imgConv.addEventListener('mousedown', onImgConvMouseDown);
+imgConv.addEventListener('mousemove', onImgConvMouseMove);
+imgConv.addEventListener('mouseup', onImgConvMouseUp);
+imgConv.addEventListener('mouseleave', () => { if (imgConvState.boxDragActive) { imgConvState.boxDragActive = false; cancelBoxSelect(); } });
+
+function resetImgConv() {
+  if (imgConvState.raf) cancelAnimationFrame(imgConvState.raf);
+  imgConvState = { sourceImg: null, resultImg: null, kernelPos: 0, running: false, raf: null, kernel: null, kernelType: 'box3', srcData: null, detectResult: null, matchRange: null, textKernel: null, circleKernel: null, squareKernel: null, triangleKernel: null, boxSelecting: false, boxStart: null, boxEnd: null, customKernel: null, boxDragActive: false };
+  imgConv.canvas.style.cursor = 'default';
+  drawImgConv();
+}
+drawImgConv();
+
+// ==================== 动画6：音频混响 ====================
+const audioConv = document.getElementById('audioConv');
+const ctx6 = audioConv.getContext('2d');
+let audioState = { input: [], output: [], h: [], playing: false, playIdx: 0, raf: null, room: 'bathroom' };
+
+function getRoomIR(type) {
+  if (type === 'bathroom') {
+    const h = [];
+    for (let i = 0; i < 30; i++) h.push(Math.exp(-i / 8) * (0.8 + Math.random() * 0.4));
+    return h;
+  }
+  if (type === 'hall') {
+    const h = [];
+    for (let i = 0; i < 60; i++) h.push(Math.exp(-i / 20) * (0.7 + Math.random() * 0.3));
+    return h;
+  }
+  return [1, 0.05, 0, 0, 0]; // 消音室
+}
+
+function changeRoom() {
+  audioState.room = document.getElementById('roomType').value;
+  audioState.h = getRoomIR(audioState.room);
+  audioState.input = [];
+  audioState.output = [];
+  drawAudio();
+}
+
+function drawWaveform(ctx, data, x, y, w, h, color, label, maxVal) {
+  maxVal = maxVal || Math.max(...data.map(Math.abs), 0.01);
+  ctx.fillStyle = 'white';
+  ctx.fillRect(x, y, w, h);
+  ctx.strokeStyle = '#ddd';
+  ctx.strokeRect(x, y, w, h);
+  ctx.fillStyle = '#333';
+  ctx.font = 'bold 12px sans-serif';
+  ctx.fillText(label, x + 8, y + 18);
+  const centerY = y + h / 2 + 5;
+  ctx.strokeStyle = '#aaa';
+  ctx.beginPath(); ctx.moveTo(x + 10, centerY); ctx.lineTo(x + w - 10, centerY); ctx.stroke();
+  if (data.length > 1) {
+    ctx.beginPath();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1.5;
+    for (let i = 0; i < data.length; i++) {
+      const px = x + 15 + (i / (data.length - 1)) * (w - 30);
+      const py = centerY - (data[i] / maxVal) * (h / 2 - 20);
+      if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+    }
+    ctx.stroke();
+  }
+}
+
+function drawAudio() {
+  const w = audioConv.width, h = audioConv.height;
+  ctx6.fillStyle = '#fafafa'; ctx6.fillRect(0, 0, w, h);
+  if (audioState.h.length === 0) audioState.h = getRoomIR('bathroom');
+  drawWaveform(ctx6, audioState.input, 20, 15, 660, 80, '#2563eb', '输入信号 x[n] (声音)', 1);
+  drawWaveform(ctx6, audioState.h, 20, 110, 320, 80, '#059669', `房间冲激响应 h[n] (${audioState.room})`, 1);
+  drawWaveform(ctx6, audioState.output, 360, 110, 320, 80, '#d97706', '输出 y[n] = x * h (带混响的声音)', 3);
+  // 说明
+  ctx6.fillStyle = '#333';
+  ctx6.font = '13px sans-serif';
+  const roomNames = { bathroom: '浴室', hall: '音乐厅', anechoic: '消音室' };
+  ctx6.fillText(`当前房间: ${roomNames[audioState.room]} | 冲激响应长度: ${audioState.h.length} 个样本 | 点击上方按钮发声`, 20, h - 20);
+}
+
+function playClap() {
+  // 冲激输入：只有一个非零点
+  audioState.input = [1];
+  computeOutput();
+  animateAudio();
+}
+
+function playVoice() {
+  // 模拟一句话：衰减的正弦波包络
+  const input = [];
+  for (let i = 0; i < 40; i++) {
+    const env = Math.exp(-Math.pow((i - 15) / 12, 2));
+    input.push(env * Math.sin(i * 0.8) * 0.8);
+  }
+  audioState.input = input;
+  computeOutput();
+  animateAudio();
+}
+
+function computeOutput() {
+  const x = audioState.input, h = audioState.h;
+  const y = [];
+  for (let n = 0; n < x.length + h.length - 1; n++) {
+    let sum = 0;
+    for (let k = 0; k < x.length; k++) {
+      const hi = n - k;
+      if (hi >= 0 && hi < h.length) sum += x[k] * h[hi];
+    }
+    y.push(sum);
+  }
+  audioState.output = y;
+}
+
+function animateAudio() {
+  if (audioState.playing) { if (audioState.raf) cancelAnimationFrame(audioState.raf); }
+  audioState.playing = true;
+  audioState.playIdx = 0;
+  const total = Math.max(audioState.input.length, audioState.output.length);
+  function step() {
+    audioState.playIdx += 0.5;
+    drawAudio();
+    // 画播放位置指示
+    if (audioState.playIdx < total) {
+      const px1 = 35 + (audioState.playIdx / Math.max(audioState.input.length-1,1)) * 630;
+      ctx6.strokeStyle = '#ef4444';
+      ctx6.lineWidth = 2;
+      ctx6.beginPath(); ctx6.moveTo(px1, 15); ctx6.lineTo(px1, 95); ctx6.stroke();
+      const px2 = 375 + (audioState.playIdx / Math.max(audioState.output.length-1,1)) * 290;
+      ctx6.beginPath(); ctx6.moveTo(px2, 110); ctx6.lineTo(px2, 190); ctx6.stroke();
+      audioState.raf = requestAnimationFrame(step);
+    } else {
+      audioState.playing = false;
+    }
+  }
+  step();
+}
+
+function resetAudio() {
+  if (audioState.raf) cancelAnimationFrame(audioState.raf);
+  audioState = { input: [], output: [], h: [], playing: false, playIdx: 0, raf: null, room: document.getElementById('roomType').value };
+  drawAudio();
+}
+drawAudio();
+
+</script>
+</body>
+</html>
