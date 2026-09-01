@@ -1,4 +1,4 @@
-/* ============================================================
+﻿/* ============================================================
    设计系统 Design Tokens（8档字号 + 8档间距）
    建立统一刻度，消除魔法数字 [RUI Ch.3]
    ============================================================ */
@@ -259,6 +259,7 @@ body {
   color: var(--color-text);
   line-height: 1.6;
   min-height: 100vh;
+  overflow-x: hidden;
   transition: background-color var(--transition), color var(--transition);
 }
 a { color: var(--link-color); text-decoration: none; }
@@ -456,6 +457,8 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .post-image { max-width: 42em; margin: 0 auto var(--sp-6); border-radius: var(--border-radius); overflow: hidden; }
 /* 修复：文章正文限制行宽 42em（约70个中文字）[RUI Ch.4: Keep line length in check] */
 .post-content { font-size: var(--fs-base); line-height: 1.9; color: var(--color-text); overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; min-width: 0; max-width: 42em; margin: 0 auto; }
+.post-content img, .post-content iframe, .post-content video { max-width: 100%; height: auto; }
+.post-content pre { max-width: 100%; overflow-x: auto; }
 /* serif 学术主题：更宽的行高 */
 [data-theme="serif"] .post-content { line-height: 2.0; }
 [data-theme="serif"] .post-title { font-size: var(--fs-3xl); }
@@ -1090,8 +1093,10 @@ select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
 
 /* A3 格子内的工具容器（主题+搜索垂直排列） */
 /* 页眉右栏工具：主题+搜索水平排列 */
-.header-right .theme-switcher { flex-shrink: 0; }
-.header-right .search-box { width: 220px; flex-shrink: 0; }
+@media (min-width: 1025px) {
+  .header-right .theme-switcher { flex-shrink: 0; }
+  .header-right .search-box { width: 220px; flex-shrink: 0; }
+}
 
 /* 页眉压缩状态 [hci: 减少头重脚轻] */
 .site-header-row.compact .site-subtitle,
