@@ -1,0 +1,16 @@
+{
+  "id": "2026-002",
+  "title": "TinyML 入门：为什么一毛钱的芯片也能跑人工智能？",
+  "date": "2026-09-01T10:00:00",
+  "tags": ["books", "tech"],
+  "milestone": false,
+  "summary": "从14KB神经网络的发现开始，理解TinyML的核心逻辑：1mW功耗阈值、本地计算比传输更省电、与树莓派的本质区别，以及一毛钱芯片的野心。",
+  "theme": "mono",
+  "image": "",
+  "links": [
+    {"text": "本书配套代码", "url": "https://tinymlbook.com/supplemental"},
+    {"text": "TensorFlow Lite for Microcontrollers", "url": "https://www.tensorflow.org/lite/microcontrollers"},
+    {"text": "TinyML Foundation", "url": "https://www.tinyml.org/"}
+  ],
+  "format": "markdown"
+}
