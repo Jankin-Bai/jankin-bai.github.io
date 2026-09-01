@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 博文详情页：post.html?id=xxx
  * 加载 meta.json + content.html，支持主题切换面板
  *
@@ -206,6 +206,18 @@
     }
 
     $('post-content').innerHTML = content;
+
+    // HTML格式文章：手动执行插入的script标签（innerHTML不会自动执行script，导致Canvas动画不初始化）
+    if (format === 'html') {
+      const pc = $('post-content');
+      const oldScripts = pc.querySelectorAll('script');
+      oldScripts.forEach(oldSc => {
+        const newSc = document.createElement('script');
+        if (oldSc.src) { newSc.src = oldSc.src; } else { newSc.textContent = oldSc.textContent; }
+        Array.from(oldSc.attributes).forEach(a => { if (a.name !== 'src') newSc.setAttribute(a.name, a.value); });
+        oldSc.parentNode.replaceChild(newSc, oldSc);
+      });
+    }
 
     // 给所有图片添加 referrerpolicy="no-referrer"，绕过 CSDN 等防盗链
     $('post-content').querySelectorAll('img').forEach(img => {
