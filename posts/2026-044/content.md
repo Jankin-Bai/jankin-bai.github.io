@@ -1,4 +1,4 @@
-<!-- Post: 【DSP系列】音频与图像处理应用：DSP在实际工程中的威力（Ch22-25） | ID: 2026-044 | Created: 2026-09-03 | Tags: tech, books | Format: markdown -->
+﻿<!-- Post: 【DSP系列】音频与图像处理应用：DSP在实际工程中的威力（Ch22-25） | ID: 2026-044 | Created: 2026-09-03 | Tags: tech, books | Format: markdown -->
 
 ## 开篇：你手机里的"数字暗房"和"数字调音台"
 
@@ -41,7 +41,7 @@
 | **双耳定位** | 用两耳的时间差和强度差定位 | 空间音频、3D音效、立体声 |
 | **哈斯效应** | 先到达的声音决定方向 | 延迟、混响、声场设计 |
 
-![人耳听觉系统结构与频率响应（原书第22章插图）](https://jankinbai.top/images/dsp/ch22_p17_0.png)
+![人耳听觉系统结构与频率响应（原书第22章插图）](https://raw.githubusercontent.com/Jankin-Bai/jankin-bai.github.io/main/images/dsp/ch22_p17_0.png)
 
 *图：人耳听觉系统结构与关键特性（原书第22章，第367页插图）。人耳的频率响应、动态范围和掩蔽效应是所有音频DSP算法的设计依据。*
 
@@ -169,15 +169,15 @@ $$
 
 其中$h[m,n]$是二维滤波器核（通常是3×3或5×5的小矩阵）。
 
-![图像卷积示意图1（原书第24章插图）](https://jankinbai.top/images/dsp/ch24_p5_0.png)
+![图像卷积示意图1（原书第24章插图）](https://raw.githubusercontent.com/Jankin-Bai/jankin-bai.github.io/main/images/dsp/ch24_p5_0.png)
 
-![图像卷积示意图2（原书第24章插图）](https://jankinbai.top/images/dsp/ch24_p5_1.png)
+![图像卷积示意图2（原书第24章插图）](https://raw.githubusercontent.com/Jankin-Bai/jankin-bai.github.io/main/images/dsp/ch24_p5_1.png)
 
-![图像卷积示意图3（原书第24章插图）](https://jankinbai.top/images/dsp/ch24_p5_2.png)
+![图像卷积示意图3（原书第24章插图）](https://raw.githubusercontent.com/Jankin-Bai/jankin-bai.github.io/main/images/dsp/ch24_p5_2.png)
 
-![图像卷积示意图4（原书第24章插图）](https://jankinbai.top/images/dsp/ch24_p5_3.png)
+![图像卷积示意图4（原书第24章插图）](https://raw.githubusercontent.com/Jankin-Bai/jankin-bai.github.io/main/images/dsp/ch24_p5_3.png)
 
-![图像卷积示意图5（原书第24章插图）](https://jankinbai.top/images/dsp/ch24_p5_4.png)
+![图像卷积示意图5（原书第24章插图）](https://raw.githubusercontent.com/Jankin-Bai/jankin-bai.github.io/main/images/dsp/ch24_p5_4.png)
 
 *图：二维图像卷积的完整过程演示（原书第24章，第401页插图）。滤波器核在输入图像上滑动，每个位置的输出是核覆盖区域的加权求和。*
 
@@ -194,29 +194,29 @@ $$
 | **Laplacian** | 四邻域或八邻域负，中心正 | 检测所有方向的边缘 |
 | **浮雕（Emboss）** | 非对称核 | 产生浮雕效果 |
 
-![常见滤波器核与效果1（原书第24章插图）](https://jankinbai.top/images/dsp/ch24_p7_0.png)
+![常见滤波器核与效果1（原书第24章插图）](https://raw.githubusercontent.com/Jankin-Bai/jankin-bai.github.io/main/images/dsp/ch24_p7_0.png)
 
-![常见滤波器核与效果2（原书第24章插图）](https://jankinbai.top/images/dsp/ch24_p7_1.png)
+![常见滤波器核与效果2（原书第24章插图）](https://raw.githubusercontent.com/Jankin-Bai/jankin-bai.github.io/main/images/dsp/ch24_p7_1.png)
 
-![常见滤波器核与效果3（原书第24章插图）](https://jankinbai.top/images/dsp/ch24_p7_2.png)
+![常见滤波器核与效果3（原书第24章插图）](https://raw.githubusercontent.com/Jankin-Bai/jankin-bai.github.io/main/images/dsp/ch24_p7_2.png)
 
-![常见滤波器核与效果4（原书第24章插图）](https://jankinbai.top/images/dsp/ch24_p7_3.png)
+![常见滤波器核与效果4（原书第24章插图）](https://raw.githubusercontent.com/Jankin-Bai/jankin-bai.github.io/main/images/dsp/ch24_p7_3.png)
 
 *图：各种常见滤波器核及其对图像的处理效果（原书第24章，第403页插图）。从左到右依次展示了不同核产生的模糊、锐化、边缘检测等效果。*
 
-![图像滤波效果对比1（原书第24章插图）](https://jankinbai.top/images/dsp/ch24_p17_0.png)
+![图像滤波效果对比1（原书第24章插图）](https://raw.githubusercontent.com/Jankin-Bai/jankin-bai.github.io/main/images/dsp/ch24_p17_0.png)
 
-![图像滤波效果对比2（原书第24章插图）](https://jankinbai.top/images/dsp/ch24_p17_1.png)
+![图像滤波效果对比2（原书第24章插图）](https://raw.githubusercontent.com/Jankin-Bai/jankin-bai.github.io/main/images/dsp/ch24_p17_1.png)
 
-![图像滤波效果对比3（原书第24章插图）](https://jankinbai.top/images/dsp/ch24_p17_2.png)
+![图像滤波效果对比3（原书第24章插图）](https://raw.githubusercontent.com/Jankin-Bai/jankin-bai.github.io/main/images/dsp/ch24_p17_2.png)
 
-![图像滤波效果对比4（原书第24章插图）](https://jankinbai.top/images/dsp/ch24_p17_3.png)
+![图像滤波效果对比4（原书第24章插图）](https://raw.githubusercontent.com/Jankin-Bai/jankin-bai.github.io/main/images/dsp/ch24_p17_3.png)
 
-![图像滤波效果对比5（原书第24章插图）](https://jankinbai.top/images/dsp/ch24_p17_4.png)
+![图像滤波效果对比5（原书第24章插图）](https://raw.githubusercontent.com/Jankin-Bai/jankin-bai.github.io/main/images/dsp/ch24_p17_4.png)
 
-![图像滤波效果对比6（原书第24章插图）](https://jankinbai.top/images/dsp/ch24_p17_5.png)
+![图像滤波效果对比6（原书第24章插图）](https://raw.githubusercontent.com/Jankin-Bai/jankin-bai.github.io/main/images/dsp/ch24_p17_5.png)
 
-![图像滤波效果对比7（原书第24章插图）](https://jankinbai.top/images/dsp/ch24_p17_6.png)
+![图像滤波效果对比7（原书第24章插图）](https://raw.githubusercontent.com/Jankin-Bai/jankin-bai.github.io/main/images/dsp/ch24_p17_6.png)
 
 *图：多种图像滤波器的实际效果对比（原书第24章，第413页插图）。包括低通滤波、高通滤波、边缘增强、噪声去除等不同处理的视觉效果。*
 
@@ -233,11 +233,11 @@ $$
 
 **生活类比**：可分离卷积就像先横向抹墙、再纵向抹墙——比用方形抹子一点点抹快得多。高斯模糊和均值模糊都可以这样做。
 
-![可分离卷积示意图1（原书第24章插图）](https://jankinbai.top/images/dsp/ch24_p13_0.png)
+![可分离卷积示意图1（原书第24章插图）](https://raw.githubusercontent.com/Jankin-Bai/jankin-bai.github.io/main/images/dsp/ch24_p13_0.png)
 
-![可分离卷积示意图2（原书第24章插图）](https://jankinbai.top/images/dsp/ch24_p13_1.png)
+![可分离卷积示意图2（原书第24章插图）](https://raw.githubusercontent.com/Jankin-Bai/jankin-bai.github.io/main/images/dsp/ch24_p13_1.png)
 
-![可分离卷积示意图3（原书第24章插图）](https://jankinbai.top/images/dsp/ch24_p13_2.png)
+![可分离卷积示意图3（原书第24章插图）](https://raw.githubusercontent.com/Jankin-Bai/jankin-bai.github.io/main/images/dsp/ch24_p13_2.png)
 
 *图：可分离卷积的原理与效果（原书第24章，第409页插图）。将二维核分解为两个一维核，先做行卷积再做列卷积，计算量大幅降低。*
 
@@ -250,9 +250,9 @@ $$
 
 当核很大时，FFT卷积比直接卷积快得多。
 
-![FFT卷积与频域处理（原书第24章插图）](https://jankinbai.top/images/dsp/ch24_p9_0.png)
+![FFT卷积与频域处理（原书第24章插图）](https://raw.githubusercontent.com/Jankin-Bai/jankin-bai.github.io/main/images/dsp/ch24_p9_0.png)
 
-![图像频域滤波效果（原书第24章插图）](https://jankinbai.top/images/dsp/ch24_p21_0.png)
+![图像频域滤波效果（原书第24章插图）](https://raw.githubusercontent.com/Jankin-Bai/jankin-bai.github.io/main/images/dsp/ch24_p21_0.png)
 
 *图：基于FFT的频域图像处理（原书第24章，第405、417页插图）。利用卷积定理，在频域进行滤波可以大幅加速大核卷积运算。*
 
@@ -294,9 +294,9 @@ MRI的原理：用强磁场和射频脉冲激发人体中的氢原子，接收�
 
 **生活类比**：这三种成像技术就像三种不同的"透视眼"——CT是X射线旋转扫描（像切片面包），MRI是用磁场"摇"氢原子然后听回声（像敲钟听音色），超声是用超声波"敲"人体然后听回声（像蝙蝠回声定位）。三种技术都用DSP把采集到的信号变成我们能看懂的图像。
 
-![医学成像与重建效果1（原书第24章插图）](https://jankinbai.top/images/dsp/ch24_p23_1.png)
+![医学成像与重建效果1（原书第24章插图）](https://raw.githubusercontent.com/Jankin-Bai/jankin-bai.github.io/main/images/dsp/ch24_p23_1.png)
 
-![医学成像与重建效果2（原书第24章插图）](https://jankinbai.top/images/dsp/ch24_p23_2.png)
+![医学成像与重建效果2（原书第24章插图）](https://raw.githubusercontent.com/Jankin-Bai/jankin-bai.github.io/main/images/dsp/ch24_p23_2.png)
 
 *图：图像重建与处理在医学成像中的应用（原书第24章，第419页插图）。展示了从原始数据到最终图像的DSP处理流程。*
 
