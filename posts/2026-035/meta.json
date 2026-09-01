@@ -1,0 +1,19 @@
+{
+  "id": "2026-035",
+  "title": "开源教材英雄谱：9位教授与他们的免费电子工程巨著",
+  "date": "2026-09-01T16:00:00",
+  "tags": ["tech", "books"],
+  "milestone": false,
+  "summary": "以James Fiore为基准画像，OSINT调研发现9位开源教材教授及其40+本免费电子工程著作，覆盖电路、射频、无线电、信号处理四大领域，全部提供免费PDF和Creative Commons开源许可。",
+  "theme": "mono",
+  "image": "",
+  "links": [
+    {"text": "Fiore 免费书籍页", "url": "https://www2.mvcc.edu/users/faculty/jfiore/freebooks.html"},
+    {"text": "All About Circuits 教材", "url": "https://www.allaboutcircuits.com/textbook/"},
+    {"text": "NC State Microwave and RF Design", "url": "https://repository.lib.ncsu.edu/handle/1840.20/36776"},
+    {"text": "Virginia Tech Radio Systems Engineering", "url": "https://vtechworks.lib.vt.edu/handle/10919/114634"},
+    {"text": "DSP Guide 免费下载", "url": "https://www.analog.com/en/resources/technical-books/scientist_engineers_guide.html"},
+    {"text": "OpenStax 开源教材平台", "url": "https://openstax.org/"}
+  ],
+  "format": "html"
+}
