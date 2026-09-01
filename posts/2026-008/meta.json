@@ -1,0 +1,15 @@
+{
+  "id": "2026-008",
+  "title": "深入TFLM：张量竞技场、解释器模式与FlatBuffers——理解微控制器上的推理引擎",
+  "date": "2026-09-01T16:00:00",
+  "tags": ["books", "tech"],
+  "milestone": false,
+  "summary": "6个核心主题之4：深入TFLM运行时架构。涵盖三代演进(TensorFlow→TFLite→TFLM)、四个设计约束(无OS/无标准库/无浮点/无动态内存)、四大核心组件详解(Tensor Arena张量竞技场/Interpreter解释器/AllOpsResolver操作符解析器/FlatBuffers零拷贝格式)、内存布局全景图、常见问题调试速查表。",
+  "theme": "mono",
+  "image": "",
+  "links": [
+    {"text": "第6篇：四大项目共性模式", "url": "./?id=2026-007"},
+    {"text": "第5篇：模型部署流水线", "url": "./?id=2026-006"}
+  ],
+  "format": "markdown"
+}
