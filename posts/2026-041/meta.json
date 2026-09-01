@@ -1,0 +1,12 @@
+{
+  "id": "2026-041",
+  "title": "【DSP系列】傅里叶变换与DFT/FFT：从时域到频域的桥梁（Ch8-13）",
+  "date": "2026-09-03T00:30:00",
+  "tags": ["tech", "books"],
+  "milestone": false,
+  "summary": "核心主题3：深入拆解DSP第二大核心工具——傅里叶变换与DFT/FFT。讲解傅里叶分析家族（级数/变换/DFT）、DFT的定义与几何意义、DFT的应用（频谱分析/滤波）、傅里叶变换性质（线性/时移/卷积定理）、常见变换对、FFT快速算法（Cooley-Tukey/蝶形运算/复杂度），配完整实例计算和Python代码。",
+  "theme": "mono",
+  "image": "",
+  "links": [],
+  "format": "markdown"
+}
