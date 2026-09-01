@@ -1,0 +1,15 @@
+{
+  "id": "2026-007",
+  "title": "4个项目，1套架构：拆解TinyML应用的Provider-Feature-Model-Responder四层模式",
+  "date": "2026-09-01T15:00:00",
+  "tags": ["books", "tech"],
+  "milestone": false,
+  "summary": "6个核心主题之3：深入拆解TinyML应用的通用四层架构——Data Provider(数据采集)→Feature Provider(特征提取)→Model(推理+后处理)→Responder(输出响应)。包含四个项目的架构映射对比表、每一层的职责与接口设计、分层架构的三大价值(可测试/可替换/可移植)，以及如何用这套架构设计自己的应用。",
+  "theme": "mono",
+  "image": "",
+  "links": [
+    {"text": "第5篇：模型部署流水线", "url": "./?id=2026-006"},
+    {"text": "第4篇：技术本质", "url": "./?id=2026-005"}
+  ],
+  "format": "markdown"
+}
