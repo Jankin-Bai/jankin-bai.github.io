@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 首页：时间线
  * 修复内容：
  *   - 加载状态指示
@@ -117,6 +117,18 @@
     renderMain();  // tags 加载完成后重新渲染，使用正确的标签颜色
   });
 
+  /* ---------- 从 bfcache 恢复时重新渲染标签（解决文章页后退后标签消失） ---------- */
+  window.addEventListener('pageshow', (e) => {
+    if (e.persisted) {
+      SiteUtils.log && SiteUtils.log('从往返缓存恢复，重新渲染标签筛选');
+      if (tags.length === 0 && typeof DataLoader !== 'undefined' && typeof DataLoader.getAllTags === 'function') {
+        DataLoader.getAllTags().then(t => { tags = t; renderTagFilter(); renderMain(); }).catch(() => {});
+      } else {
+        renderTagFilter();
+      }
+    }
+  });
+
   /* ---------- 主题初始化 ---------- */
   if (window.ThemeManager && typeof ThemeManager.init === 'function') {
     ThemeManager.init();
@@ -138,6 +150,9 @@
          style="--tag-color:${escapeHtml(t.color)};--tag-bg:${escapeHtml(t.colorLight)};"
          aria-pressed="${curTag === t.id ? 'true' : 'false'}">#${escapeHtml(t.name)} <span class="tag-chip-count">${t.count}</span></a>`).join('');
     list.innerHTML = allBtn + tagBtns;
+    list.classList.remove('collapsed');
+    const tg = document.getElementById('tag-toggle');
+    if (tg) { tg.setAttribute('aria-expanded', 'true'); const sv = tg.querySelector('svg'); if (sv) sv.style.transform = 'rotate(0)'; }
     list.querySelectorAll('.tag-chip').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
