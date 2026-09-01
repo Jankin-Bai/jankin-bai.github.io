@@ -1,0 +1,12 @@
+{
+  "id": "2026-042",
+  "title": "【DSP系列】FIR数字滤波器设计：移动平均、窗函数sinc与自定义滤波器（Ch14-18）",
+  "date": "2026-09-03T01:00:00",
+  "tags": ["tech", "books"],
+  "milestone": false,
+  "summary": "核心主题4：深入拆解FIR数字滤波器设计。讲解数字滤波器基础（用途/分类/技术指标/FIR vs IIR）、移动平均滤波器、窗函数sinc滤波器（标准FIR设计方法）、常见窗函数对比（矩形/汉宁/汉明/布莱克曼）、自定义滤波器（频率采样法）、FFT卷积快速实现，配完整设计实例和Python代码。",
+  "theme": "mono",
+  "image": "",
+  "links": [],
+  "format": "markdown"
+}
