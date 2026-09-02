@@ -1,0 +1,708 @@
+﻿<style>
+/* 在线广播播放器样式 */
+.radio-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px 0;
+}
+
+.radio-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.radio-header h2 {
+  font-size: 1.8em;
+  margin-bottom: 10px;
+  color: var(--color-text);
+}
+
+.radio-header p {
+  color: var(--color-text-muted);
+  font-size: 0.95em;
+  line-height: 1.6;
+}
+
+/* 播放器 */
+.radio-player {
+  background: var(--color-surface-alt, #f5f5f5);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  position: sticky;
+  top: 10px;
+  z-index: 100;
+  backdrop-filter: blur(10px);
+}
+
+.player-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.player-status {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--color-border, #ccc);
+  flex-shrink: 0;
+  transition: all 0.3s;
+}
+
+.player-status.playing {
+  background: #22c55e;
+  box-shadow: 0 0 12px #22c55e;
+  animation: pulse 1.5s infinite;
+}
+
+.player-status.loading {
+  background: #f59e0b;
+  animation: pulse 0.8s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.player-station-name {
+  font-size: 1.2em;
+  font-weight: 600;
+  color: var(--color-text);
+  flex: 1;
+}
+
+.player-station-desc {
+  font-size: 0.85em;
+  color: var(--color-text-muted);
+}
+
+.player-controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.play-btn {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  background: var(--color-primary, #2563eb);
+  color: white;
+  font-size: 1.4em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.play-btn:hover {
+  transform: scale(1.08);
+  box-shadow: 0 4px 16px rgba(37,99,235,0.4);
+}
+
+.play-btn:active {
+  transform: scale(0.95);
+}
+
+.volume-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.volume-icon {
+  font-size: 1.2em;
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+
+.volume-slider {
+  flex: 1;
+  max-width: 200px;
+  height: 6px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--color-border, #ddd);
+  border-radius: 3px;
+  outline: none;
+  cursor: pointer;
+}
+
+.volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--color-primary, #2563eb);
+  cursor: pointer;
+}
+
+.volume-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--color-primary, #2563eb);
+  cursor: pointer;
+  border: none;
+}
+
+.player-error {
+  color: #ef4444;
+  font-size: 0.85em;
+  margin-top: 8px;
+  display: none;
+}
+
+/* 分类筛选 */
+.radio-categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 24px;
+  justify-content: center;
+}
+
+.category-btn {
+  padding: 8px 20px;
+  border-radius: 20px;
+  border: 1px solid var(--color-border, #ddd);
+  background: var(--color-surface, #fff);
+  color: var(--color-text);
+  cursor: pointer;
+  font-size: 0.9em;
+  transition: all 0.2s;
+}
+
+.category-btn:hover {
+  border-color: var(--color-primary, #2563eb);
+  color: var(--color-primary, #2563eb);
+}
+
+.category-btn.active {
+  background: var(--color-primary, #2563eb);
+  color: white;
+  border-color: var(--color-primary, #2563eb);
+}
+
+/* 电台列表 */
+.radio-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.radio-card {
+  background: var(--color-surface, #fff);
+  border: 1px solid var(--color-border, #e5e5e5);
+  border-radius: 12px;
+  padding: 18px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+.radio-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  border-color: var(--color-primary, #2563eb);
+}
+
+.radio-card.playing {
+  border-color: #22c55e;
+  background: linear-gradient(135deg, rgba(34,197,94,0.05), transparent);
+}
+
+.radio-card.playing::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #22c55e, #10b981);
+}
+
+.radio-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.radio-card-name {
+  font-size: 1.05em;
+  font-weight: 600;
+  color: var(--color-text);
+  flex: 1;
+}
+
+.radio-card-badge {
+  font-size: 0.7em;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: var(--color-surface-alt, #f0f0f0);
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+  margin-left: 8px;
+}
+
+.radio-card-desc {
+  font-size: 0.85em;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+
+.radio-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.radio-card-format {
+  font-size: 0.75em;
+  color: var(--color-text-muted);
+  font-family: monospace;
+}
+
+.radio-card-play {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: var(--color-primary, #2563eb);
+  color: white;
+  font-size: 0.9em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.radio-card-play:hover {
+  transform: scale(1.1);
+}
+
+.radio-card.playing .radio-card-play {
+  background: #22c55e;
+}
+
+/* 分类标题 */
+.category-title {
+  font-size: 1.3em;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 30px 0 16px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--color-primary, #2563eb);
+  display: inline-block;
+}
+
+/* 说明区域 */
+.radio-notes {
+  margin-top: 40px;
+  padding: 20px;
+  background: var(--color-surface-alt, #f9f9f9);
+  border-radius: 12px;
+  font-size: 0.9em;
+  color: var(--color-text-muted);
+  line-height: 1.8;
+}
+
+.radio-notes h3 {
+  color: var(--color-text);
+  margin-bottom: 12px;
+  font-size: 1.1em;
+}
+
+.radio-notes ul {
+  padding-left: 20px;
+}
+
+.radio-notes li {
+  margin-bottom: 6px;
+}
+
+/* 响应式 */
+@media (max-width: 640px) {
+  .radio-container {
+    padding: 10px 0;
+  }
+
+  .radio-player {
+    padding: 16px;
+    position: static;
+  }
+
+  .player-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .player-controls {
+    flex-wrap: wrap;
+  }
+
+  .volume-slider {
+    max-width: 120px;
+  }
+
+  .radio-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .radio-card {
+    padding: 14px;
+  }
+
+  .category-btn {
+    padding: 6px 14px;
+    font-size: 0.85em;
+  }
+}
+
+/* 深色主题适配 */
+@media (prefers-color-scheme: dark) {
+  .radio-player {
+    background: rgba(30, 30, 30, 0.9);
+  }
+}
+</style>
+
+<div class="radio-container">
+  <div class="radio-header">
+    <h2>📻 在线广播</h2>
+    <p>收集整理国内外可直接在浏览器播放的在线广播电台流媒体，涵盖央广系列、音乐电台、国际广播等。支持 HLS/m3u8 直播流，点击即可收听。</p>
+  </div>
+
+  <!-- 播放器 -->
+  <div class="radio-player">
+    <div class="player-info">
+      <div class="player-status" id="playerStatus"></div>
+      <div style="flex:1">
+        <div class="player-station-name" id="playerStationName">选择一个电台开始收听</div>
+        <div class="player-station-desc" id="playerStationDesc"></div>
+      </div>
+    </div>
+    <div class="player-controls">
+      <button class="play-btn" id="playBtn" onclick="togglePlay()">▶</button>
+      <div class="volume-control">
+        <span class="volume-icon" onclick="toggleMute()">🔊</span>
+        <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="80" oninput="setVolume(this.value)">
+      </div>
+    </div>
+    <div class="player-error" id="playerError"></div>
+    <audio id="audioPlayer" crossorigin="anonymous"></audio>
+  </div>
+
+  <!-- 分类筛选 -->
+  <div class="radio-categories" id="categoryButtons">
+    <button class="category-btn active" data-category="all">全部</button>
+    <button class="category-btn" data-category="cnr">央广系列</button>
+    <button class="category-btn" data-category="music">音乐电台</button>
+    <button class="category-btn" data-category="international">国际广播</button>
+    <button class="category-btn" data-category="local">地方电台</button>
+  </div>
+
+  <!-- 电台列表容器 -->
+  <div id="radioList"></div>
+
+  <!-- 说明 -->
+  <div class="radio-notes">
+    <h3>📋 使用说明</h3>
+    <ul>
+      <li>点击电台卡片或播放按钮即可开始收听，再次点击暂停</li>
+      <li>流媒体地址来源于公开网络，部分电台可能因地域或时效原因无法播放</li>
+      <li>支持 HLS (m3u8) 和 MP3/AAC 等常见音频流格式</li>
+      <li>如遇播放卡顿，可尝试切换其他电台或刷新页面</li>
+      <li>本页面仅作技术学习和资源整理之用，所有电台版权归原机构所有</li>
+    </ul>
+    <h3 style="margin-top:16px">🔗 数据来源</h3>
+    <ul>
+      <li>央广系列：中央广播电视总台官方 CDN (ngcdn.cnr.cn)</li>
+      <li>国际广播：BBC、NHK、NPR 官方直播流</li>
+      <li>整理时间：2026年9月</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+// 动态加载 hls.js
+let hlsLoaded = false;
+function loadHls() {
+  return new Promise((resolve) => {
+    if (typeof Hls !== "undefined") { hlsLoaded = true; resolve(); return; }
+    const script = document.createElement("script");
+    script.src = "https://cdn.jsdelivr.net/npm/hls.js@latest";
+    script.onload = () => { hlsLoaded = true; resolve(); };
+    script.onerror = () => { console.warn("hls.js 加载失败，将使用原生播放"); resolve(); };
+    document.head.appendChild(script);
+  });
+}
+// 预加载 hls.js
+loadHls();
+
+// 电台数据
+const stations = [
+  // 央广系列
+  { id: 'zgzs', name: '中国之声', desc: '中央人民广播电台新闻综合频率，全国覆盖', category: 'cnr', format: 'HLS', url: 'http://ngcdn001.cnr.cn/live/zgzs/index.m3u8' },
+  { id: 'jjzs', name: '经济之声', desc: '以财经资讯和生活服务为主的专业频率', category: 'cnr', format: 'HLS', url: 'http://ngcdn002.cnr.cn/live/jjzs/index.m3u8' },
+  { id: 'yyzs', name: '音乐之声', desc: '流行音乐为主，伴随性音乐频率', category: 'music', format: 'HLS', url: 'http://ngcdn003.cnr.cn/live/yyzs/index.m3u8' },
+  { id: 'dszs', name: '经典音乐广播', desc: '经典老歌、古典音乐、爵士乐等', category: 'music', format: 'HLS', url: 'http://ngcdn004.cnr.cn/live/dszs/index.m3u8' },
+  { id: 'zhzs', name: '中华之声', desc: '面向港澳台地区的新闻综合频率', category: 'cnr', format: 'HLS', url: 'http://ngcdn005.cnr.cn/live/zhzs/index.m3u8' },
+  { id: 'wyzs', name: '文艺之声', desc: '文学、戏剧、曲艺等文艺节目', category: 'cnr', format: 'HLS', url: 'http://ngcdn006.cnr.cn/live/wyzs/index.m3u8' },
+  { id: 'ydzs', name: '阅读之声', desc: '有声书、文学朗读、阅读分享', category: 'cnr', format: 'HLS', url: 'http://ngcdn007.cnr.cn/live/ydzs/index.m3u8' },
+  { id: 'dwqzs', name: '大湾区之声', desc: '面向粤港澳大湾区的粤语/普通话频率', category: 'cnr', format: 'HLS', url: 'http://ngcdn008.cnr.cn/live/dwqzs/index.m3u8' },
+  { id: 'jtgb', name: '中国交通广播', desc: '路况信息、交通资讯、出行服务', category: 'cnr', format: 'HLS', url: 'http://ngcdn016.cnr.cn/live/jtgb/index.m3u8' },
+  { id: 'xczs', name: '中国乡村之声', desc: '面向农村的农业资讯和民生服务', category: 'cnr', format: 'HLS', url: 'http://ngcdn017.cnr.cn/live/xczs/index.m3u8' },
+  { id: 'nhzs', name: '南海之声', desc: '面向南海及周边的国际传播频率', category: 'international', format: 'HLS', url: 'http://cnlive.cnr.cn/hls/nanhaizhisheng.m3u8' },
+  { id: 'yyzxgb', name: '英语资讯广播', desc: 'China Plus Radio，英文新闻资讯', category: 'international', format: 'HLS', url: 'http://cnlive.cnr.cn/hls/yyzxgb.m3u8' },
+
+  // 国际广播
+  { id: 'bbc', name: 'BBC World Service', desc: '英国广播公司国际频道，全球新闻', category: 'international', format: 'HLS', url: 'https://stream.live.vc.bbcmedia.co.uk/bbc_world_service' },
+  { id: 'npr', name: 'NPR News', desc: '美国国家公共广播电台，新闻和文化节目', category: 'international', format: 'MP3', url: 'http://npr-ice.streamguys1.com/live.mp3' },
+
+  // 地方电台
+  { id: 'bjmusic', name: '北京音乐广播', desc: '北京人民广播电台音乐频率，流行音乐', category: 'music', format: 'HLS', url: 'http://live.xmcdn.com/live/45/64.m3u8' },
+  { id: 'gdmusic', name: '广东音乐之声', desc: '广东广播电视台音乐之声，粤语流行', category: 'music', format: 'HLS', url: 'http://satellitepull.cnr.cn/live/wxgdgb/playlist.m3u8' },
+];
+
+// 播放器状态
+let currentStation = null;
+let hls = null;
+let isPlaying = false;
+let isMuted = false;
+let lastVolume = 80;
+
+const audio = document.getElementById('audioPlayer');
+const playBtn = document.getElementById('playBtn');
+const playerStatus = document.getElementById('playerStatus');
+const playerStationName = document.getElementById('playerStationName');
+const playerStationDesc = document.getElementById('playerStationDesc');
+const playerError = document.getElementById('playerError');
+const volumeSlider = document.getElementById('volumeSlider');
+
+// 初始化音量
+audio.volume = 0.8;
+
+// 渲染电台列表
+function renderStations(category = 'all') {
+  const container = document.getElementById('radioList');
+  const filtered = category === 'all' ? stations : stations.filter(s => s.category === category);
+
+  // 按分类分组
+  const categories = {
+    cnr: { title: '📻 央广系列', stations: [] },
+    music: { title: '🎵 音乐电台', stations: [] },
+    international: { title: '🌍 国际广播', stations: [] },
+    local: { title: '🏙️ 地方电台', stations: [] }
+  };
+
+  filtered.forEach(s => {
+    if (categories[s.category]) {
+      categories[s.category].stations.push(s);
+    }
+  });
+
+  let html = '';
+  Object.values(categories).forEach(cat => {
+    if (cat.stations.length > 0) {
+      html += `<div class="category-title">${cat.title}</div>`;
+      html += '<div class="radio-grid">';
+      cat.stations.forEach(s => {
+        const isCurrent = currentStation && currentStation.id === s.id;
+        html += `
+          <div class="radio-card ${isCurrent ? 'playing' : ''}" data-id="${s.id}" onclick="playStation('${s.id}')">
+            <div class="radio-card-header">
+              <div class="radio-card-name">${s.name}</div>
+              <span class="radio-card-badge">${s.format}</span>
+            </div>
+            <div class="radio-card-desc">${s.desc}</div>
+            <div class="radio-card-footer">
+              <span class="radio-card-format">${s.url.substring(0, 40)}...</span>
+              <button class="radio-card-play" onclick="event.stopPropagation(); playStation('${s.id}')">${isCurrent && isPlaying ? '⏸' : '▶'}</button>
+            </div>
+          </div>
+        `;
+      });
+      html += '</div>';
+    }
+  });
+
+  container.innerHTML = html;
+}
+
+// 播放电台
+async function playStation(id) {
+  const station = stations.find(s => s.id === id);
+  if (!station) return;
+
+  // 如果点击的是当前电台，则切换播放/暂停
+  if (currentStation && currentStation.id === id) {
+    togglePlay();
+    return;
+  }
+
+  // 停止当前播放
+  stopPlay();
+
+  currentStation = station;
+  playerStationName.textContent = station.name;
+  playerStationDesc.textContent = station.desc;
+  playerError.style.display = 'none';
+
+  // 设置加载状态
+  playerStatus.className = 'player-status loading';
+  playBtn.textContent = '⏳';
+
+  // 播放流
+  if (station.url.includes('.m3u8')) {
+    await loadHls();
+  }
+  if (typeof Hls !== 'undefined' && Hls.isSupported() && station.url.includes('.m3u8')) {
+    hls = new Hls({
+      enableWorker: true,
+      lowLatencyMode: true,
+    });
+    hls.loadSource(station.url);
+    hls.attachMedia(audio);
+    hls.on(Hls.Events.MANIFEST_PARSED, () => {
+      audio.play().then(() => {
+        isPlaying = true;
+        playBtn.textContent = '⏸';
+        playerStatus.className = 'player-status playing';
+        renderStations(currentCategory);
+      }).catch(err => {
+        showError('播放失败: ' + err.message);
+      });
+    });
+    hls.on(Hls.Events.ERROR, (event, data) => {
+      if (data.fatal) {
+        showError('流加载失败: ' + data.type + ' - ' + data.details);
+        playerStatus.className = 'player-status';
+        playBtn.textContent = '▶';
+      }
+    });
+  } else {
+    // 原生支持（Safari 或 MP3）
+    audio.src = station.url;
+    audio.play().then(() => {
+      isPlaying = true;
+      playBtn.textContent = '⏸';
+      playerStatus.className = 'player-status playing';
+      renderStations(currentCategory);
+    }).catch(err => {
+      showError('播放失败: ' + err.message);
+      playerStatus.className = 'player-status';
+    });
+  }
+
+  // 音频事件
+  audio.onplaying = () => {
+    isPlaying = true;
+    playBtn.textContent = '⏸';
+    playerStatus.className = 'player-status playing';
+  };
+
+  audio.onpause = () => {
+    isPlaying = false;
+    playBtn.textContent = '▶';
+    playerStatus.className = 'player-status';
+  };
+
+  audio.onerror = () => {
+    showError('音频加载错误，该流可能已失效或不支持跨域播放');
+    playerStatus.className = 'player-status';
+    playBtn.textContent = '▶';
+  };
+}
+
+// 停止播放
+function stopPlay() {
+  if (hls) {
+    hls.destroy();
+    hls = null;
+  }
+  audio.pause();
+  audio.src = '';
+  isPlaying = false;
+  playBtn.textContent = '▶';
+  playerStatus.className = 'player-status';
+}
+
+// 切换播放/暂停
+function togglePlay() {
+  if (!currentStation) {
+    // 如果没有选择电台，播放第一个
+    playStation(stations[0].id);
+    return;
+  }
+  if (isPlaying) {
+    audio.pause();
+  } else {
+    audio.play().catch(err => showError('播放失败: ' + err.message));
+  }
+}
+
+// 设置音量
+function setVolume(value) {
+  audio.volume = value / 100;
+  if (value > 0) {
+    isMuted = false;
+    document.querySelector('.volume-icon').textContent = value > 50 ? '🔊' : '🔉';
+  }
+}
+
+// 静音切换
+function toggleMute() {
+  if (isMuted) {
+    audio.volume = lastVolume / 100;
+    volumeSlider.value = lastVolume;
+    isMuted = false;
+    document.querySelector('.volume-icon').textContent = '🔊';
+  } else {
+    lastVolume = volumeSlider.value;
+    audio.volume = 0;
+    volumeSlider.value = 0;
+    isMuted = true;
+    document.querySelector('.volume-icon').textContent = '🔇';
+  }
+}
+
+// 显示错误
+function showError(msg) {
+  playerError.textContent = '⚠️ ' + msg;
+  playerError.style.display = 'block';
+}
+
+// 分类筛选
+let currentCategory = 'all';
+document.querySelectorAll('.category-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentCategory = btn.dataset.category;
+    renderStations(currentCategory);
+  });
+});
+
+// 初始化（DOM 就绪后立即执行，不依赖 hls.js）
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => renderStations('all'));
+} else {
+  renderStations('all');
+}
+</script>
