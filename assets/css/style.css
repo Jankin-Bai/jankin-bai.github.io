@@ -1,4 +1,31 @@
 ﻿/* ============================================================
+   全局基础样式（放在最前面确保优先级）
+   ============================================================ */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  max-width: 100%;
+  overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* 移动端搜索框最小宽度清零，防止小屏溢出 */
+@media (max-width: 640px) {
+  .search-box {
+    min-width: 0 !important;
+  }
+  .header-right .search-box {
+    min-width: 0 !important;
+  }
+}
+/* ============================================================
    设计系统 Design Tokens（8档字号 + 8档间距）
    建立统一刻度，消除魔法数字 [RUI Ch.3]
    ============================================================ */
