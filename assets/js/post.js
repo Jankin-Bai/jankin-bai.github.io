@@ -214,9 +214,19 @@
       const oldScripts = pc.querySelectorAll('script');
       oldScripts.forEach(oldSc => {
         const newSc = document.createElement('script');
-        if (oldSc.src) { newSc.src = oldSc.src; } else { newSc.textContent = oldSc.textContent; }
+        if (oldSc.src) { 
+          newSc.src = oldSc.src; 
+        } else { 
+          // 用多种方式获取 script 内容，确保通过 innerHTML 插入的标签内容不为空
+          const scriptContent = oldSc.text || oldSc.textContent || oldSc.innerHTML || '';
+          newSc.textContent = scriptContent;
+        }
         Array.from(oldSc.attributes).forEach(a => { if (a.name !== 'src') newSc.setAttribute(a.name, a.value); });
-        oldSc.parentNode.replaceChild(newSc, oldSc);
+        try {
+          oldSc.parentNode.replaceChild(newSc, oldSc);
+        } catch (e) {
+          console.warn('替换 script 标签失败:', e);
+        }
       });
       // 重新创建style标签，确保CSS变量正确继承页面主题（innerHTML插入的style中部分CSS变量继承异常）
       const oldStyles = pc.querySelectorAll('style');

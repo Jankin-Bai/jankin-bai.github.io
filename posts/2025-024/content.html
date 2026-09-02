@@ -414,7 +414,6 @@
     <button class="category-btn" data-category="cnr">央广系列</button>
     <button class="category-btn" data-category="music">音乐电台</button>
     <button class="category-btn" data-category="international">国际广播</button>
-    <button class="category-btn" data-category="local">地方电台</button>
   </div>
 
   <!-- 电台列表容器 -->
@@ -432,9 +431,11 @@
     </ul>
     <h3 style="margin-top:16px">🔗 数据来源</h3>
     <ul>
-      <li>央广系列：中央广播电视总台官方 CDN (ngcdn.cnr.cn)</li>
-      <li>国际广播：BBC、NHK、NPR 官方直播流</li>
-      <li>整理时间：2026年9月</li>
+      <li>央广系列：中央广播电视总台官方 CDN (ngcdn.cnr.cn / satellitepull.cnr.cn)</li>
+      <li>CRI 国际广播：中国国际广播电台官方流 (sk.cri.cn)</li>
+      <li>北京广播：北京广播电视台官方流 (brtv-radiolive.rbc.cn)</li>
+      <li>国际广播：BBC World Service、NPR News 官方直播流</li>
+      <li>流地址验证时间：2026年9月2日（OSINT 多源交叉验证）</li>
     </ul>
   </div>
 </div>
@@ -455,29 +456,30 @@ function loadHls() {
 // 预加载 hls.js
 loadHls();
 
-// 电台数据
+// 电台数据（2026-09-02 OSINT 验证更新，流媒体来源：央广官方CDN、satellitepull、BRTV、CRI、BBC、NPR）
 const stations = [
   // 央广系列
   { id: 'zgzs', name: '中国之声', desc: '中央人民广播电台新闻综合频率，全国覆盖', category: 'cnr', format: 'HLS', url: 'http://ngcdn001.cnr.cn/live/zgzs/index.m3u8' },
   { id: 'jjzs', name: '经济之声', desc: '以财经资讯和生活服务为主的专业频率', category: 'cnr', format: 'HLS', url: 'http://ngcdn002.cnr.cn/live/jjzs/index.m3u8' },
-  { id: 'yyzs', name: '音乐之声', desc: '流行音乐为主，伴随性音乐频率', category: 'music', format: 'HLS', url: 'http://ngcdn003.cnr.cn/live/yyzs/index.m3u8' },
-  { id: 'dszs', name: '经典音乐广播', desc: '经典老歌、古典音乐、爵士乐等', category: 'music', format: 'HLS', url: 'http://ngcdn004.cnr.cn/live/dszs/index.m3u8' },
   { id: 'zhzs', name: '中华之声', desc: '面向港澳台地区的新闻综合频率', category: 'cnr', format: 'HLS', url: 'http://ngcdn005.cnr.cn/live/zhzs/index.m3u8' },
-  { id: 'wyzs', name: '文艺之声', desc: '文学、戏剧、曲艺等文艺节目', category: 'cnr', format: 'HLS', url: 'http://ngcdn006.cnr.cn/live/wyzs/index.m3u8' },
-  { id: 'ydzs', name: '阅读之声', desc: '有声书、文学朗读、阅读分享', category: 'cnr', format: 'HLS', url: 'http://ngcdn007.cnr.cn/live/ydzs/index.m3u8' },
-  { id: 'dwqzs', name: '大湾区之声', desc: '面向粤港澳大湾区的粤语/普通话频率', category: 'cnr', format: 'HLS', url: 'http://ngcdn008.cnr.cn/live/dwqzs/index.m3u8' },
-  { id: 'jtgb', name: '中国交通广播', desc: '路况信息、交通资讯、出行服务', category: 'cnr', format: 'HLS', url: 'http://ngcdn016.cnr.cn/live/jtgb/index.m3u8' },
-  { id: 'xczs', name: '中国乡村之声', desc: '面向农村的农业资讯和民生服务', category: 'cnr', format: 'HLS', url: 'http://ngcdn017.cnr.cn/live/xczs/index.m3u8' },
-  { id: 'nhzs', name: '南海之声', desc: '面向南海及周边的国际传播频率', category: 'international', format: 'HLS', url: 'http://cnlive.cnr.cn/hls/nanhaizhisheng.m3u8' },
-  { id: 'yyzxgb', name: '英语资讯广播', desc: 'China Plus Radio，英文新闻资讯', category: 'international', format: 'HLS', url: 'http://cnlive.cnr.cn/hls/yyzxgb.m3u8' },
+  { id: 'wyzs', name: '文艺之声', desc: '文学、戏剧、曲艺等文艺节目', category: 'cnr', format: 'HLS', url: 'https://satellitepull.cnr.cn/live/wxwyzs/playlist.m3u8' },
+  { id: 'jtgb', name: '中国交通广播', desc: '路况信息、交通资讯、出行服务', category: 'cnr', format: 'HLS', url: 'http://ngcdn016.cnr.cn/live/gsgljtgb/index.m3u8' },
+  { id: 'xczs', name: '中国乡村之声', desc: '面向农村的农业资讯和民生服务', category: 'cnr', format: 'HLS', url: 'https://satellitepull.cnr.cn/live/wxxczs/playlist.m3u8' },
+
+  // 音乐电台
+  { id: 'yyzs', name: '音乐之声', desc: '流行音乐为主，伴随性音乐频率', category: 'music', format: 'HLS', url: 'https://satellitepull.cnr.cn/live/wxyyzs/playlist.m3u8' },
+  { id: 'dszs', name: '经典音乐广播', desc: '经典老歌、古典音乐、爵士乐等', category: 'music', format: 'HLS', url: 'http://ngcdn004.cnr.cn/live/dszs/index.m3u8' },
+  { id: 'hitfm', name: 'CRI HitFM', desc: '中国国际广播电台劲曲调频，欧美流行音乐', category: 'music', format: 'HLS', url: 'http://satellitepull.cnr.cn/live/wxhitfm/playlist.m3u8' },
+  { id: 'bjmusic', name: '北京音乐广播', desc: '北京广播电视台音乐频率 FM97.4，华语流行', category: 'music', format: 'HLS', url: 'https://brtv-radiolive.rbc.cn/alive/fm974.m3u8' },
+  { id: 'bjwy', name: '北京文艺广播', desc: '北京广播电视台文艺频率 FM87.6，娱乐文艺', category: 'music', format: 'HLS', url: 'https://brtv-radiolive.rbc.cn/alive/fm876.m3u8' },
+  { id: 'jsmusic', name: '江苏音乐广播', desc: '江苏广播电视台音乐频率 FM89.7，流行音乐', category: 'music', format: 'HLS', url: 'http://lzlive.vojs.cn/jAmO6Ng/92/live.m3u8' },
+  { id: 'gdmusic', name: '广东音乐之声', desc: '广东广播电视台音乐之声，粤语流行音乐', category: 'music', format: 'HLS', url: 'https://satellitepull.cnr.cn/live/wxgdyyzs/playlist.m3u8' },
 
   // 国际广播
+  { id: 'crihq', name: 'CRI环球资讯', desc: '中国国际广播电台环球资讯广播 FM90.5', category: 'international', format: 'HLS', url: 'http://sk.cri.cn/905.m3u8' },
+  { id: 'nhzs', name: 'CRI南海之声', desc: '中国国际广播电台南海之声，面向南海及周边', category: 'international', format: 'HLS', url: 'https://sk.cri.cn/nhzs.m3u8' },
   { id: 'bbc', name: 'BBC World Service', desc: '英国广播公司国际频道，全球新闻', category: 'international', format: 'HLS', url: 'https://stream.live.vc.bbcmedia.co.uk/bbc_world_service' },
   { id: 'npr', name: 'NPR News', desc: '美国国家公共广播电台，新闻和文化节目', category: 'international', format: 'MP3', url: 'http://npr-ice.streamguys1.com/live.mp3' },
-
-  // 地方电台
-  { id: 'bjmusic', name: '北京音乐广播', desc: '北京人民广播电台音乐频率，流行音乐', category: 'music', format: 'HLS', url: 'http://live.xmcdn.com/live/45/64.m3u8' },
-  { id: 'gdmusic', name: '广东音乐之声', desc: '广东广播电视台音乐之声，粤语流行', category: 'music', format: 'HLS', url: 'http://satellitepull.cnr.cn/live/wxgdgb/playlist.m3u8' },
 ];
 
 // 播放器状态
@@ -507,8 +509,7 @@ function renderStations(category = 'all') {
   const categories = {
     cnr: { title: '📻 央广系列', stations: [] },
     music: { title: '🎵 音乐电台', stations: [] },
-    international: { title: '🌍 国际广播', stations: [] },
-    local: { title: '🏙️ 地方电台', stations: [] }
+    international: { title: '🌍 国际广播', stations: [] }
   };
 
   filtered.forEach(s => {
