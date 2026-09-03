@@ -1839,3 +1839,17 @@ select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
   .post-content h3 { font-size: 1.1em !important; }
   .post-title { font-size: 1.3em !important; }
 }
+/* ---------- 文章页面：隐藏搜索栏和侧栏导航面板 ---------- */
+.page-post .header-right .search-box {
+  display: none;
+}
+.page-post .mobile-search {
+  display: none;
+}
+.page-post .post-sidebar {
+  display: none;
+}
+/* 文章页主内容占满宽度（侧栏隐藏后） */
+.page-post .post-article {
+  grid-column: 1 / -1;
+}
