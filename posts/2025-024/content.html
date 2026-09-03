@@ -459,16 +459,16 @@ loadHls();
 // 电台数据（2026-09-02 OSINT 验证更新，流媒体来源：央广官方CDN、satellitepull、BRTV、CRI、BBC、NPR）
 const stations = [
   // 央广系列
-  { id: 'zgzs', name: '中国之声', desc: '中央人民广播电台新闻综合频率，全国覆盖', category: 'cnr', format: 'HLS', url: 'http://ngcdn001.cnr.cn/live/zgzs/index.m3u8' },
-  { id: 'jjzs', name: '经济之声', desc: '以财经资讯和生活服务为主的专业频率', category: 'cnr', format: 'HLS', url: 'http://ngcdn002.cnr.cn/live/jjzs/index.m3u8' },
-  { id: 'zhzs', name: '中华之声', desc: '面向港澳台地区的新闻综合频率', category: 'cnr', format: 'HLS', url: 'http://ngcdn005.cnr.cn/live/zhzs/index.m3u8' },
+  { id: 'zgzs', name: '中国之声', desc: '中央人民广播电台新闻综合频率，全国覆盖', category: 'cnr', format: 'HLS', url: 'https://satellitepull.cnr.cn/live/wxzgzs/playlist.m3u8' },
+  { id: 'jjzs', name: '经济之声', desc: '以财经资讯和生活服务为主的专业频率', category: 'cnr', format: 'HLS', url: 'https://satellitepull.cnr.cn/live/wxjjzs/playlist.m3u8' },
+  { id: 'zhzs', name: '中华之声', desc: '面向港澳台地区的新闻综合频率', category: 'cnr', format: 'HLS', url: 'https://satellitepull.cnr.cn/live/wxzhzs/playlist.m3u8' },
   { id: 'wyzs', name: '文艺之声', desc: '文学、戏剧、曲艺等文艺节目', category: 'cnr', format: 'HLS', url: 'https://satellitepull.cnr.cn/live/wxwyzs/playlist.m3u8' },
-  { id: 'jtgb', name: '中国交通广播', desc: '路况信息、交通资讯、出行服务', category: 'cnr', format: 'HLS', url: 'http://ngcdn016.cnr.cn/live/gsgljtgb/index.m3u8' },
+  { id: 'jtgb', name: '中国交通广播', desc: '路况信息、交通资讯、出行服务', category: 'cnr', format: 'HLS', url: 'https://satellitepull.cnr.cn/live/wxzgjtgb/playlist.m3u8' },
   { id: 'xczs', name: '中国乡村之声', desc: '面向农村的农业资讯和民生服务', category: 'cnr', format: 'HLS', url: 'https://satellitepull.cnr.cn/live/wxxczs/playlist.m3u8' },
 
   // 音乐电台
   { id: 'yyzs', name: '音乐之声', desc: '流行音乐为主，伴随性音乐频率', category: 'music', format: 'HLS', url: 'https://satellitepull.cnr.cn/live/wxyyzs/playlist.m3u8' },
-  { id: 'dszs', name: '经典音乐广播', desc: '经典老歌、古典音乐、爵士乐等', category: 'music', format: 'HLS', url: 'http://ngcdn004.cnr.cn/live/dszs/index.m3u8' },
+  { id: 'dszs', name: '经典音乐广播', desc: '经典老歌、古典音乐、爵士乐等', category: 'music', format: 'HLS', url: 'https://satellitepull.cnr.cn/live/wxdszs/playlist.m3u8' },
   { id: 'hitfm', name: 'CRI HitFM', desc: '中国国际广播电台劲曲调频，欧美流行音乐', category: 'music', format: 'HLS', url: 'http://satellitepull.cnr.cn/live/wxhitfm/playlist.m3u8' },
   { id: 'bjmusic', name: '北京音乐广播', desc: '北京广播电视台音乐频率 FM97.4，华语流行', category: 'music', format: 'HLS', url: 'https://brtv-radiolive.rbc.cn/alive/fm974.m3u8' },
   { id: 'bjwy', name: '北京文艺广播', desc: '北京广播电视台文艺频率 FM87.6，娱乐文艺', category: 'music', format: 'HLS', url: 'https://brtv-radiolive.rbc.cn/alive/fm876.m3u8' },
@@ -557,8 +557,14 @@ async function playStation(id) {
     return;
   }
 
-  // 停止当前播放
-  stopPlay();
+  // 停止当前播放（内联，不设置 src='' 避免触发 load 中断 play）
+  if (hls) {
+    hls.destroy();
+    hls = null;
+  }
+  audio.pause();
+  audio.removeAttribute('src');
+  audio.load();
 
   currentStation = station;
   playerStationName.textContent = station.name;
@@ -568,6 +574,27 @@ async function playStation(id) {
   // 设置加载状态
   playerStatus.className = 'player-status loading';
   playBtn.textContent = '⏳';
+
+  // 统一播放启动函数：在媒体准备好后调用，避免 play() 被新的 load() 中断
+  function startPlay() {
+    audio.play().then(() => {
+      isPlaying = true;
+      playBtn.textContent = '⏸';
+      playerStatus.className = 'player-status playing';
+      renderStations(currentCategory);
+    }).catch(err => {
+      // AbortError 是切换电台时的正常中断，不显示错误
+      if (err.name !== 'AbortError' && err.message.indexOf('interrupted') === -1) {
+        if (err.message.indexOf('user didn\'t interact') !== -1) {
+          showError('浏览器自动播放限制，请点击播放按钮开始收听');
+        } else {
+          showError('播放失败: ' + err.message);
+        }
+      }
+      playerStatus.className = 'player-status';
+      playBtn.textContent = '▶';
+    });
+  }
 
   // 播放流
   if (station.url.includes('.m3u8')) {
@@ -581,14 +608,8 @@ async function playStation(id) {
     hls.loadSource(station.url);
     hls.attachMedia(audio);
     hls.on(Hls.Events.MANIFEST_PARSED, () => {
-      audio.play().then(() => {
-        isPlaying = true;
-        playBtn.textContent = '⏸';
-        playerStatus.className = 'player-status playing';
-        renderStations(currentCategory);
-      }).catch(err => {
-        showError('播放失败: ' + err.message);
-      });
+      // 延迟 300ms 让第一个片段缓冲，确保 readyState 足够再 play
+      setTimeout(startPlay, 300);
     });
     hls.on(Hls.Events.ERROR, (event, data) => {
       if (data.fatal) {
@@ -598,37 +619,18 @@ async function playStation(id) {
       }
     });
   } else {
-    // 原生支持（Safari 或 MP3）
+    // 原生支持（Safari HLS 或 MP3）
     audio.src = station.url;
-    audio.play().then(() => {
-      isPlaying = true;
-      playBtn.textContent = '⏸';
-      playerStatus.className = 'player-status playing';
-      renderStations(currentCategory);
-    }).catch(err => {
-      showError('播放失败: ' + err.message);
-      playerStatus.className = 'player-status';
-    });
+    audio.load();
+    // 等待媒体可以播放后再调用 play，避免 play 被 load 中断
+    audio.addEventListener('canplay', startPlay, { once: true });
+    // 超时兜底：5秒后如果还没播放，强制尝试
+    setTimeout(() => {
+      if (currentStation && currentStation.id === station.id && !isPlaying) {
+        startPlay();
+      }
+    }, 5000);
   }
-
-  // 音频事件
-  audio.onplaying = () => {
-    isPlaying = true;
-    playBtn.textContent = '⏸';
-    playerStatus.className = 'player-status playing';
-  };
-
-  audio.onpause = () => {
-    isPlaying = false;
-    playBtn.textContent = '▶';
-    playerStatus.className = 'player-status';
-  };
-
-  audio.onerror = () => {
-    showError('音频加载错误，该流可能已失效或不支持跨域播放');
-    playerStatus.className = 'player-status';
-    playBtn.textContent = '▶';
-  };
 }
 
 // 停止播放
@@ -638,7 +640,6 @@ function stopPlay() {
     hls = null;
   }
   audio.pause();
-  audio.src = '';
   isPlaying = false;
   playBtn.textContent = '▶';
   playerStatus.className = 'player-status';
@@ -647,14 +648,21 @@ function stopPlay() {
 // 切换播放/暂停
 function togglePlay() {
   if (!currentStation) {
-    // 如果没有选择电台，播放第一个
     playStation(stations[0].id);
     return;
   }
   if (isPlaying) {
     audio.pause();
   } else {
-    audio.play().catch(err => showError('播放失败: ' + err.message));
+    audio.play().catch(err => {
+      if (err.name !== 'AbortError' && err.message.indexOf('interrupted') === -1) {
+        if (err.message.indexOf('user didn\'t interact') !== -1) {
+          showError('浏览器自动播放限制，请点击播放按钮开始收听');
+        } else {
+          showError('播放失败: ' + err.message);
+        }
+      }
+    });
   }
 }
 
