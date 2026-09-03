@@ -2077,10 +2077,7 @@ select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
 .page-home .year-header {
   top: var(--timeline-header-offset, 80px);
 }
-/* 确保父容器不限制 sticky */
-.year-group {
-  contain: layout;
-}
+/* 确保父容器不限制 sticky（不能用 contain:layout，会破坏图片懒加载） */
 .timeline-container {
   overflow: visible;
 }

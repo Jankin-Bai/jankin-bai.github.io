@@ -17,29 +17,7 @@
   /* ---------- XSS 转义（使用公共工具） ---------- */
   const escapeHtml = window.SiteUtils ? SiteUtils.escapeHtml : (s) => String(s || '');
 
-  /* ---------- 加载状态：骨架屏 [frontend: 感知性能, hci: 反馈] ---------- */
-  function showLoading() {
-    const area = $('content-area');
-    if (!area) return;
-    // 生成 3 个模拟年份组，每组 2 张卡片的骨架屏
-    let skeleton = '<div class="skeleton-container">';
-    for (let y = 0; y < 3; y++) {
-      skeleton += '<div class="skeleton-year">';
-      skeleton += '<div class="skeleton-year-header"></div>';
-      for (let i = 0; i < 2; i++) {
-        skeleton += '<div class="skeleton-card">';
-        skeleton += '<div class="skeleton-line date"></div>';
-        skeleton += '<div class="skeleton-line title"></div>';
-        skeleton += '<div class="skeleton-line summary"></div>';
-        skeleton += '<div class="skeleton-line summary short"></div>';
-        skeleton += '<div class="skeleton-tags"><span class="skeleton-line tag"></span><span class="skeleton-line tag"></span></div>';
-        skeleton += '</div>';
-      }
-      skeleton += '</div>';
-    }
-    skeleton += '</div>';
-    area.innerHTML = skeleton;
-  }
+  /* ---------- 加载状态：扫描进度 [frontend: 感知性能, hci: 反馈] ---------- */
   function showProgress(year, percent) {
     const area = $('content-area');
     if (!area) return;
@@ -173,9 +151,6 @@
          style="--tag-color:${escapeHtml(t.color)};--tag-bg:${escapeHtml(t.colorLight)};"
          aria-pressed="${curTag === t.id ? 'true' : 'false'}">#${escapeHtml(t.name)} <span class="tag-chip-count">${t.count}</span></a>`).join('');
     list.innerHTML = allBtn + tagBtns;
-    list.classList.remove('collapsed');
-    const tg = document.getElementById('tag-toggle');
-    if (tg) { tg.setAttribute('aria-expanded', 'true'); const sv = tg.querySelector('svg'); if (sv) sv.style.transform = 'rotate(0)'; }
     list.querySelectorAll('.tag-chip').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
@@ -377,27 +352,14 @@
   btt.addEventListener('click', () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
-
-  /* ---------- 标签列表折叠/展开 ---------- */
-  const tagToggle = $('tag-toggle');
-  const tagList = $('dimension-list');
-  if (tagToggle && tagList) {
-    tagToggle.addEventListener('click', () => {
-      const expanded = tagToggle.getAttribute('aria-expanded') === 'true';
-      tagToggle.setAttribute('aria-expanded', !expanded);
-      tagList.classList.toggle('collapsed', expanded);
-      tagToggle.querySelector('svg').style.transform = expanded ? 'rotate(-90deg)' : 'rotate(0)';
-    });
-  }
-
   /* ---------- 侧栏插槽渲染（广告位/公告位） ---------- */
   renderSidebarSlot();
   renderWidgets();
 
   /* ---------- 初始化 ---------- */
   renderTagFilter();
-  renderMain();
   updateBackToTop();
+  initRevealAnimations();
 
 
   /* Widgets 加载使用公共工具 SiteUtils.loadWidgets() */
@@ -541,19 +503,7 @@
   }
 
   // 视图切换/筛选后重新初始化
-  var originalRender = null;
   document.addEventListener('jankin-render-complete', initRevealAnimations);
-
-  /* ---------- 手机端：侧栏折叠切换 ---------- */
-  var sidebarToggle = document.querySelector('.sidebar-toggle-btn');
-  var sidebarContent = document.getElementById('sidebar-content');
-  if (sidebarToggle && sidebarContent) {
-    sidebarToggle.addEventListener('click', function() {
-      var isOpen = sidebarContent.classList.toggle('open');
-      sidebarToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-    });
-  }
-
   /* ---------- 手机端：搜索框与桌面端同步 ---------- */
   var mobileSearch = document.getElementById('mobile-search-input');
   var desktopSearch = document.getElementById('search-input');
