@@ -1435,13 +1435,18 @@ select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
   }
 
   /* ---------- 触摸目标统一 44px ---------- */
-  .tag,
   .tag-chip,
   .post-tag-nav-item,
-  .post-action-btn,
   .post-action-btn {
     justify-content: center;
     width: 100%;
+  }
+  /* 文章页标签保持横向紧凑排列，不占满整行 */
+  .post-tags .tag {
+    width: auto;
+    justify-content: flex-start;
+    padding: 4px 10px;
+    font-size: var(--fs-xs);
   }
 
   /* ---------- 正文排版优化 ---------- */
@@ -1811,4 +1816,31 @@ select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
   .post-content h2 { font-size: 1.25em !important; }
   .post-content h3 { font-size: 1.1em !important; }
   .post-title { font-size: 1.3em !important; }
+}
+/* 滑动切换主题提示 */
+.theme-switch-toast {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  padding: 16px 24px;
+  font-size: var(--fs-md);
+  color: var(--color-text);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+  text-align: center;
+}
+.theme-switch-toast.show {
+  opacity: 1;
+}
+.theme-switch-toast .toast-icon {
+  font-size: 1.5rem;
+  display: block;
+  margin-bottom: 4px;
 }

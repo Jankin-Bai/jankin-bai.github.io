@@ -569,4 +569,69 @@
     });
   }
 
+  /* ---------- 向上滑动切换主题（手机端手势） ---------- */
+  (function initSwipeThemeSwitch() {
+    // 只在触摸设备上启用
+    if (!('ontouchstart' in window)) return;
+
+    var touchStartY = 0;
+    var touchStartX = 0;
+    var touchStartTime = 0;
+    var SWIPE_THRESHOLD = 80;      // 最小滑动距离 (px)
+    var SWIPE_SPEED = 0.3;         // 最小速度 (px/ms)
+    var toastTimer = null;
+
+    // 创建主题切换提示
+    var toast = document.createElement('div');
+    toast.className = 'theme-switch-toast';
+    toast.innerHTML = '<span class="toast-icon"></span><span class="toast-name"></span>';
+    document.body.appendChild(toast);
+
+    function showThemeToast(themeKey) {
+      var themes = window.ThemeManager ? ThemeManager.getThemes() : {};
+      var t = themes[themeKey];
+      if (!t) return;
+      var icon = t.type === 'dark' ? '🌙' : '☀️';
+      toast.querySelector('.toast-icon').textContent = icon;
+      toast.querySelector('.toast-name').textContent = t.name;
+      toast.classList.add('show');
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(function() {
+        toast.classList.remove('show');
+      }, 1200);
+    }
+
+    function switchToNextTheme() {
+      if (!window.ThemeManager) return;
+      var themes = ThemeManager.getThemes();
+      var keys = Object.keys(themes);
+      if (keys.length < 2) return;
+      var current = ThemeManager.getCurrent();
+      var idx = keys.indexOf(current);
+      var nextKey = keys[(idx + 1) % keys.length];
+      ThemeManager.apply(nextKey);
+      showThemeToast(nextKey);
+    }
+
+    document.addEventListener('touchstart', function(e) {
+      if (e.touches.length !== 1) return;
+      touchStartY = e.touches[0].clientY;
+      touchStartX = e.touches[0].clientX;
+      touchStartTime = Date.now();
+    }, { passive: true });
+
+    document.addEventListener('touchend', function(e) {
+      if (e.changedTouches.length !== 1) return;
+      var deltaY = touchStartY - e.changedTouches[0].clientY;  // 向上为正
+      var deltaX = Math.abs(e.changedTouches[0].clientX - touchStartX);
+      var deltaTime = Date.now() - touchStartTime;
+      var speed = deltaY / deltaTime;
+
+      // 向上快速滑动（fling），且不是横向滑动
+      if (deltaY > SWIPE_THRESHOLD && deltaX < deltaY * 0.6 && speed > SWIPE_SPEED) {
+        switchToNextTheme();
+      }
+    }, { passive: true });
+  })();
+
 })();
