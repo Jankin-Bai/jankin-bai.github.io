@@ -2062,3 +2062,25 @@ select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
   border-radius: 999px;
   pointer-events: none;
 }
+
+/* ---------- 月份标题粘性定位（滚动时固定在顶部） ---------- */
+.year-header {
+  position: sticky;
+  top: var(--timeline-header-offset, 72px);
+  z-index: 20;
+  background: var(--color-bg);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--color-border-light);
+}
+/* 主页顶部站点栏较高时，月份标题在其下方固定 */
+.page-home .year-header {
+  top: var(--timeline-header-offset, 80px);
+}
+/* 确保父容器不限制 sticky */
+.year-group {
+  contain: layout;
+}
+.timeline-container {
+  overflow: visible;
+}
