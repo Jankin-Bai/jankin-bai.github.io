@@ -152,7 +152,7 @@ const DataLoader = (() => {
     try { localStorage.removeItem(CACHE_KEY); } catch {}
   }
 
-  async function init() {
+  async function init(silent = false) {
     config = await loadJSON('data/config.json');
 
     // ── 纯自动发现模式（不依赖 index.json）──
@@ -181,11 +181,13 @@ const DataLoader = (() => {
       return { config, posts, tags: tagsCache || [] };
     }
 
-    // 无缓存 → 首次加载，触发进度事件
-    document.dispatchEvent(new CustomEvent('discover-start'));
-    posts = await discoverPosts();
+    // 无缓存 → 首次加载
+    // silent=true（文章页后台模式）：不触发进度事件，无90ms延迟
+    // silent=false（主页首次加载）：触发进度事件，有90ms延迟让进度可见
+    if (!silent) document.dispatchEvent(new CustomEvent('discover-start'));
+    posts = await discoverPosts(silent);
     setCache(posts);
-    document.dispatchEvent(new CustomEvent('discover-complete', { detail: { count: posts.length } }));
+    if (!silent) document.dispatchEvent(new CustomEvent('discover-complete', { detail: { count: posts.length } }));
 
     // 首次加载时 tags 也需要等待（因为要渲染标签筛选）
     const tags = await getAllTags();

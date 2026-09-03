@@ -17,12 +17,13 @@
   let allPosts = [];
   async function loadAllPosts() {
     try {
-      // const 声明的全局变量不会成为 window 属性，直接用 typeof 检查
       if (typeof DataLoader === 'undefined') {
         allPosts = [];
         return;
       }
-      await DataLoader.init();
+      // 文章页：始终用silent模式初始化（无90ms进度延迟，不触发进度事件）
+      // 有缓存时init(true)立即返回缓存；无缓存时silent扫描
+      await DataLoader.init(true);
       allPosts = DataLoader.getPosts() || [];
     } catch (e) {
       SiteUtils.warn && SiteUtils.warn('加载文章列表失败:', e.message);
@@ -92,30 +93,23 @@
     ${meta.milestone ? '<span class="milestone-badge">★ 里程碑</span>' : ''}
   `;
 
-  /* ---------- 先加载文章列表和标签（必须在标签渲染之前） ---------- */
-  await loadAllPosts();
-  // 自动发现所有标签（从文章 meta.json 中收集）
-  if (typeof DataLoader !== 'undefined' && typeof DataLoader.getAllTags === 'function') {
-    tags = await DataLoader.getAllTags();
+  /* ---------- 标签渲染函数（首屏先用默认颜色，不阻塞首屏） ---------- */
+  function renderArticleTags(tagList) {
+    const allTagLink = `<a href="index.html" class="tag" style="--tag-color:var(--color-text-muted);--tag-bg:var(--color-surface-alt);">
+      <span class="tag-icon" aria-hidden="true">#</span>全部</a>`;
+    const articleTagLinks = meta.tags.map(tid => {
+      const tag = tagList.find(t => t.id === tid);
+      return tag ? `<a href="index.html?tag=${esc(tid)}" class="tag" style="--tag-color:${esc(tag.color)};--tag-bg:${esc(tag.colorLight)};">
+        <span class="tag-icon" aria-hidden="true">${esc(tag.icon)}</span>${esc(tag.name)}</a>` : `<a href="index.html?tag=${esc(tid)}" class="tag">#${esc(tid)}</a>`;
+    }).join('');
+    $('post-tags').innerHTML = allTagLink + articleTagLinks;
   }
-
-  // 渲染文章标签：#全部 + 当前文章所属标签
-  const allTagLink = `<a href="index.html" class="tag" style="--tag-color:var(--color-text-muted);--tag-bg:var(--color-surface-alt);">
-    <span class="tag-icon" aria-hidden="true">#</span>全部</a>`;
-  const articleTagLinks = meta.tags.map(tid => {
-    const tag = tags.find(t => t.id === tid);
-    return tag ? `<a href="index.html?tag=${esc(tid)}" class="tag" style="--tag-color:${esc(tag.color)};--tag-bg:${esc(tag.colorLight)};">
-      <span class="tag-icon" aria-hidden="true">${esc(tag.icon)}</span>${esc(tag.name)}</a>` : `<a href="index.html?tag=${esc(tid)}" class="tag">#${esc(tid)}</a>`;
-  }).join('');
-  $('post-tags').innerHTML = allTagLink + articleTagLinks;
-
-  /* ---------- 侧栏标签导航 ---------- */
-  const tagNav = $('post-tag-nav');
-  if (tagNav) {
-    // #全部 链接（跳转到主页，显示所有文章）
+  // 侧栏标签导航渲染函数
+  function renderSidebarTags() {
+    const tagNav = $('post-tag-nav');
+    if (!tagNav) return;
     const allLink = `<a href="index.html" class="post-tag-nav-item" style="--tag-color:var(--color-text-muted);">
       <span aria-hidden="true">#</span><span>全部</span><span class="tag-count">${allPosts.length}</span></a>`;
-    // 当前文章所属标签优先显示
     const currentTags = tags.filter(t => t.active && meta.tags.includes(t.id));
     const otherTags = tags.filter(t => t.active && !meta.tags.includes(t.id));
     const tagLinks = [...currentTags, ...otherTags].map(t => {
@@ -129,6 +123,18 @@
     }).join('');
     tagNav.innerHTML = allLink + tagLinks;
   }
+  // 首屏立即渲染标签（无颜色，不等待全量扫描）
+  renderArticleTags([]);
+
+  /* ---------- 后台异步加载全量文章列表，完成后更新标签/侧栏/导航 ---------- */
+  loadAllPosts().then(async () => {
+    if (typeof DataLoader !== 'undefined' && typeof DataLoader.getAllTags === 'function') {
+      tags = await DataLoader.getAllTags();
+    }
+    renderArticleTags(tags);
+    renderSidebarTags();
+    renderPostNavigation();
+  }).catch(() => {});
 
   if (meta.summary) {
     $('post-summary').textContent = meta.summary;
@@ -352,25 +358,28 @@
       meta.links.map(l => `<li><a href="${esc(l.url)}" target="_blank" rel="noopener noreferrer">${esc(l.text)} ↗</a></li>`).join('') + '</ul>';
   }
 
-  // 上一篇/下一篇导航（使用 DataLoader 自动发现的文章列表，不依赖 index.json）
-  try {
-    const sorted = (allPosts.length > 0 ? allPosts : (DataLoader.getPosts() || []))
-      .slice()
-      .sort((a, b) => new Date(b.date) - new Date(a.date));
-    if (sorted.length > 0) {
-      const idx = sorted.findIndex(p => p.id === postId);
-      const prev = sorted[idx + 1]; // 更早的
-      const next = sorted[idx - 1]; // 更新的
-      $('post-nav').innerHTML = `
-        ${prev ? `<a href="post.html?id=${esc(prev.id)}" class="post-nav-prev">← ${esc(prev.title)}</a>` : '<span></span>'}
-        <a href="index.html" class="post-nav-home">🏠 首页</a>
-        ${next ? `<a href="post.html?id=${esc(next.id)}" class="post-nav-next">${esc(next.title)} →</a>` : '<span></span>'}
-      `;
+  // 上一篇/下一篇导航函数（在后台文章列表加载完成后调用）
+  function renderPostNavigation() {
+    try {
+      const sorted = (allPosts.length > 0 ? allPosts : (DataLoader.getPosts() || []))
+        .slice()
+        .sort((a, b) => new Date(b.date) - new Date(a.date));
+      if (sorted.length > 0) {
+        const idx = sorted.findIndex(p => p.id === postId);
+        const prev = sorted[idx + 1]; // 更早的
+        const next = sorted[idx - 1]; // 更新的
+        $('post-nav').innerHTML = `
+          ${prev ? `<a href="post.html?id=${esc(prev.id)}" class="post-nav-prev">← ${esc(prev.title)}</a>` : '<span></span>'}
+          <a href="index.html" class="post-nav-home">🏠 首页</a>
+          ${next ? `<a href="post.html?id=${esc(next.id)}" class="post-nav-next">${esc(next.title)} →</a>` : '<span></span>'}
+        `;
+      }
+    } catch (e) {
+      SiteUtils.warn && SiteUtils.warn('文章导航加载失败:', e.message);
     }
-  } catch (e) {
-    // 导航可选，失败不影响
-    SiteUtils.warn && SiteUtils.warn('文章导航加载失败:', e.message);
   }
+  // 立即尝试渲染（如果有缓存则立即显示，没有则等后台加载完再渲染）
+  renderPostNavigation();
 
   /* Widgets 加载使用公共工具 SiteUtils.loadWidgets() */
 
