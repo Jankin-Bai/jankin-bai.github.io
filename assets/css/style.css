@@ -1853,3 +1853,33 @@ select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
 .page-post .post-article {
   grid-column: 1 / -1;
 }
+
+/* ---------- 主页：标签直接排列在时间线上方 ---------- */
+.page-home .sidebar {
+  display: none;
+}
+.page-home .main-area {
+  grid-column: 1 / -1;
+}
+.timeline-tags {
+  margin-bottom: var(--sp-5);
+  padding: var(--sp-3) 0;
+  border-bottom: 1px solid var(--color-border-light);
+}
+.timeline-tags .dim-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+.timeline-tags .tag-chip {
+  width: auto;
+  justify-content: center;
+  padding: 4px 12px;
+  font-size: var(--fs-xs);
+  min-height: 28px;
+}
+.timeline-tags .tag-chip-count {
+  margin-left: 4px;
+  font-size: var(--fs-xs);
+  opacity: 0.7;
+}

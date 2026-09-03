@@ -42,7 +42,7 @@
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="assets/css/style.css?v=20260904e">
+  <link rel="stylesheet" href="assets/css/style.css?v=20260904f">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Serif+SC:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 </head>
 <body class="page-home">
@@ -74,27 +74,15 @@
         </div>
       </div>
     </header>
-    <aside class="sidebar" aria-label="侧边栏">
-      <button class="sidebar-toggle-btn" type="button" aria-expanded="false" aria-controls="sidebar-content">
-        <span>导航与筛选</span>
-        <svg class="toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
-      </button>
-      <div class="sidebar-content" id="sidebar-content">
+    <aside class="sidebar" aria-label="侧边栏" hidden>
       <div class="sidebar-slot" id="sidebar-slot" hidden></div>
       <div class="widgets-container" id="widgets-top" hidden></div>
-      <div class="sidebar-section">
-        <div class="sidebar-section-header">
-          <h2 class="sidebar-title">标签筛选</h2>
-          <button class="sidebar-toggle" id="tag-toggle" type="button" aria-expanded="true" aria-label="折叠或展开标签列表">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
-          </button>
-        </div>
-        <div class="dim-list" id="dimension-list" role="group" aria-label="标签列表"></div>
-      </div>
       <div class="widgets-container" id="widgets-bottom" hidden></div>
-      </div>
     </aside>
     <main class="main-area" id="main-content">
+      <div class="timeline-tags" id="timeline-tags">
+        <div class="dim-list" id="dimension-list" role="group" aria-label="标签列表"></div>
+      </div>
       <div class="mobile-search">
         <div class="search-box">
           <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -129,12 +117,12 @@
   <button class="back-to-top" id="back-to-top" aria-label="回到顶部" hidden>
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
   </button>
-  <script src="assets/js/ganzhi.js?v=20260904e"></script>
-  <script src="assets/js/theme.js?v=20260904e"></script>
-  <script src="assets/js/utils.js?v=20260904e"></script>
-  <script src="assets/js/data.js?v=20260904e"></script>
-  <script src="assets/js/render.js?v=20260904e"></script>
-  <script src="assets/js/app.js?v=20260904e"></script>
+  <script src="assets/js/ganzhi.js?v=20260904f"></script>
+  <script src="assets/js/theme.js?v=20260904f"></script>
+  <script src="assets/js/utils.js?v=20260904f"></script>
+  <script src="assets/js/data.js?v=20260904f"></script>
+  <script src="assets/js/render.js?v=20260904f"></script>
+  <script src="assets/js/app.js?v=20260904f"></script>
   <script>
     (function() {
       var headerRow = document.querySelector('.site-header-row');
