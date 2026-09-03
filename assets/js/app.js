@@ -227,6 +227,8 @@
         </div>`;
       }
       area.innerHTML = html;
+      // 恢复月份折叠状态（重新渲染后不丢失）
+      restoreCollapsedState();
     }
     const totalLabel = allPostsLoaded ? filtered.length : `${filtered.length}+`;
     $('stats').innerHTML = `共 <strong>${totalLabel}</strong> 条 · <strong>${tags.length}</strong> 标签`;
@@ -248,16 +250,35 @@
   }
   window.addEventListener('scroll', checkLoadMore, { passive: true });
 
-  /* ---------- 时间线月份折叠/展开 ---------- */
+  /* ---------- 时间线月份折叠/展开（状态持久化，重新渲染不丢失） ---------- */
+  const collapsedMonths = new Set();
   // 事件委托：点击月份标题切换折叠
   document.addEventListener('click', function(e) {
     const header = e.target.closest('.year-header');
     if (!header) return;
     const group = header.closest('.year-group');
     if (!group) return;
-    const collapsed = group.classList.toggle('collapsed');
-    header.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+    const monthKey = group.dataset.year; // "YYYY-MM"
+    const isCollapsed = group.classList.toggle('collapsed');
+    header.setAttribute('aria-expanded', isCollapsed ? 'false' : 'true');
+    // 记录折叠状态
+    if (isCollapsed) {
+      collapsedMonths.add(monthKey);
+    } else {
+      collapsedMonths.delete(monthKey);
+    }
   });
+  // 渲染后恢复折叠状态
+  function restoreCollapsedState() {
+    collapsedMonths.forEach(function(monthKey) {
+      const group = document.querySelector('.year-group[data-year="' + monthKey + '"]');
+      if (group && !group.classList.contains('collapsed')) {
+        group.classList.add('collapsed');
+        const header = group.querySelector('.year-header');
+        if (header) header.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
   // 键盘支持：Enter/Space 切换折叠
   document.addEventListener('keydown', function(e) {
     if ((e.key === 'Enter' || e.key === ' ') && e.target.classList.contains('year-header')) {
@@ -265,6 +286,25 @@
       e.target.click();
     }
   });
+  /* ---------- 折叠状态下：文章卡片第一次点击展开，第二次点击进入 ---------- */
+  document.addEventListener('click', function(e) {
+    const card = e.target.closest('.timeline-card');
+    if (!card) return;
+    const group = card.closest('.year-group');
+    // 只在月份折叠状态下处理
+    if (!group || !group.classList.contains('collapsed')) return;
+    // 如果卡片已经展开，则正常跳转（不阻止）
+    if (card.classList.contains('card-expanded')) return;
+    // 第一次点击：阻止跳转，展开卡片
+    e.preventDefault();
+    e.stopPropagation();
+    // 收起其他已展开的卡片
+    document.querySelectorAll('.timeline-card.card-expanded').forEach(function(c) {
+      c.classList.remove('card-expanded');
+    });
+    card.classList.add('card-expanded');
+  });
+
 
   /* ---------- 全部折叠/展开按钮 ---------- */
   (function initCollapseAll() {

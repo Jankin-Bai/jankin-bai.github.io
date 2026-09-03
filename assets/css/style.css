@@ -2000,3 +2000,65 @@ select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
   flex: 1;
   min-width: 0;
 }
+
+/* 折叠状态下，单张卡片展开为完整卡片 */
+.year-group.collapsed .timeline-card.card-expanded {
+  padding: var(--sp-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  background: var(--color-surface);
+  box-shadow: var(--card-shadow);
+  margin: 4px 0;
+}
+.year-group.collapsed .timeline-card.card-expanded:hover {
+  box-shadow: var(--card-shadow-hover);
+  background: var(--color-surface);
+}
+.year-group.collapsed .timeline-card.card-expanded .card-dot {
+  width: 10px;
+  height: 10px;
+  top: 24px;
+  left: -26px;
+}
+.year-group.collapsed .timeline-card.card-expanded .card-image,
+.year-group.collapsed .timeline-card.card-expanded .card-summary,
+.year-group.collapsed .timeline-card.card-expanded .card-tags,
+.year-group.collapsed .timeline-card.card-expanded .card-read-more,
+.year-group.collapsed .timeline-card.card-expanded .milestone-inline,
+.year-group.collapsed .timeline-card.card-expanded .card-date .date-ganzhi {
+  display: flex !important;
+}
+.year-group.collapsed .timeline-card.card-expanded .card-summary {
+  display: -webkit-box !important;
+}
+.year-group.collapsed .timeline-card.card-expanded .card-header {
+  margin-bottom: var(--sp-2);
+}
+.year-group.collapsed .timeline-card.card-expanded .card-date {
+  font-size: var(--fs-sm);
+  color: var(--color-text-secondary);
+  min-width: auto;
+}
+.year-group.collapsed .timeline-card.card-expanded .card-title {
+  font-size: var(--fs-md);
+  font-weight: 600;
+  margin-bottom: var(--sp-2);
+  display: block;
+}
+.year-group.collapsed .timeline-card.card-expanded .card-read-more {
+  color: var(--color-primary);
+  font-weight: 500;
+}
+/* 展开的卡片加一个提示标记 */
+.year-group.collapsed .timeline-card.card-expanded::after {
+  content: "点击进入";
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  font-size: 10px;
+  color: var(--color-primary);
+  background: var(--color-primary-light);
+  padding: 2px 8px;
+  border-radius: 999px;
+  pointer-events: none;
+}
