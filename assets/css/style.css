@@ -1111,6 +1111,28 @@ select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
   flex: 1;
   min-width: 0;
 }
+.reading-header-theme-btn {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-sm);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: color var(--transition), background var(--transition), border-color var(--transition);
+}
+.reading-header-theme-btn:hover {
+  color: var(--color-primary);
+  background: var(--color-primary-light);
+  border-color: var(--color-primary);
+}
+.reading-header-theme-btn:active {
+  transform: scale(0.95);
+}
 
 /* 阅读模式下，文章侧栏从阅读标题栏下方开始 sticky */
 .page-post.reading-mode .post-sidebar {
@@ -1816,31 +1838,4 @@ select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
   .post-content h2 { font-size: 1.25em !important; }
   .post-content h3 { font-size: 1.1em !important; }
   .post-title { font-size: 1.3em !important; }
-}
-/* 滑动切换主题提示 */
-.theme-switch-toast {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--border-radius);
-  padding: 16px 24px;
-  font-size: var(--fs-md);
-  color: var(--color-text);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-  z-index: 9999;
-  opacity: 0;
-  transition: opacity 0.2s ease;
-  pointer-events: none;
-  text-align: center;
-}
-.theme-switch-toast.show {
-  opacity: 1;
-}
-.theme-switch-toast .toast-icon {
-  font-size: 1.5rem;
-  display: block;
-  margin-bottom: 4px;
 }
