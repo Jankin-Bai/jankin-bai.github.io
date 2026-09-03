@@ -49,7 +49,12 @@ const Renderer = (() => {
 
   function renderMonthGroup(year, month, posts, tags, config) {
     const monthNames = ['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'];
-    const gz = ` <span class="year-ganzhi">${esc(Ganzhi.getYearGanzhi(year).full)}</span>`;
+    // 计算干支年和干支月（用该月15号作为基准日，近似节气月）
+    const yearGZ = Ganzhi.getYearGanzhi(year);
+    const midDate = new Date(year, month - 1, 15);
+    const lunarMonth = Ganzhi.getApproxLunarMonth(midDate);
+    const monthGZ = Ganzhi.getMonthGanzhi(yearGZ.gan, lunarMonth);
+    const gz = ` <span class="year-ganzhi">${esc(yearGZ.full)} ${esc(monthGZ.full)}</span>`;
     return `<section class="year-group" data-year="${esc(year)}-${String(month).padStart(2,'0')}">
       <h2 class="year-header" role="button" tabindex="0" aria-expanded="true" aria-label="折叠或展开 ${esc(year)}年${esc(monthNames[month-1])}的文章">
         <span class="year-collapse-arrow" aria-hidden="true">
