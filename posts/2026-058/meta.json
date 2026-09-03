@@ -1,0 +1,12 @@
+{
+  "id": "2026-058",
+  "title": "【机器学习阅读导论第9篇】从感知机到深层网络：训练神经网络时你到底在调什么？",
+  "date": "2026-09-04T00:00:00",
+  "tags": ["books", "tech", "机器学习"],
+  "milestone": false,
+  "summary": "神经网络基础（感知机/MLP/反向传播/Keras三种API）与训练深水区（梯度消失/初始化/激活函数/BatchNorm/优化器进化/Dropout正则化）。",
+  "theme": "serif",
+  "image": "",
+  "links": [],
+  "format": "markdown"
+}

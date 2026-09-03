@@ -1,0 +1,12 @@
+{
+  "id": "2026-055",
+  "title": "【机器学习阅读导论第6篇】SVM的核技巧与决策树的CART算法：两种截然不同的建模哲学",
+  "date": "2026-09-03T22:30:00",
+  "tags": ["books", "tech", "机器学习"],
+  "milestone": false,
+  "summary": "SVM最大间隔与核技巧（RBF/多项式/线性）、决策树CART算法与Gini不纯度、正则化方法，以及两种建模哲学的全面对比。",
+  "theme": "serif",
+  "image": "",
+  "links": [],
+  "format": "markdown"
+}

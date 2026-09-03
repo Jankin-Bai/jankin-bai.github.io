@@ -1,0 +1,12 @@
+{
+  "id": "2026-057",
+  "title": "【机器学习阅读导论第8篇】没有标签怎么学？K-Means聚类与异常检测的艺术",
+  "date": "2026-09-03T23:30:00",
+  "tags": ["books", "tech", "机器学习"],
+  "milestone": false,
+  "summary": "无监督学习两大任务：聚类（K-Means/DBSCAN/GMM）与异常检测。K值选择、聚类应用（图像分割/半监督）、高斯混合模型EM算法。",
+  "theme": "serif",
+  "image": "",
+  "links": [],
+  "format": "markdown"
+}

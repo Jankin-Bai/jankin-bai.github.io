@@ -1,0 +1,12 @@
+{
+  "id": "2026-056",
+  "title": "【机器学习阅读导论第7篇】三个臭皮匠赛过诸葛亮：集成学习为什么赢，以及高维诅咒怎么破",
+  "date": "2026-09-03T23:00:00",
+  "tags": ["books", "tech", "机器学习"],
+  "milestone": false,
+  "summary": "集成学习四大流派（Voting/Bagging/Boosting/Stacking）与随机森林，以及降维方法（PCA/Kernel PCA/LLE）对抗维度灾难，附代码示例。",
+  "theme": "serif",
+  "image": "",
+  "links": [],
+  "format": "markdown"
+}

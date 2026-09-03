@@ -1,0 +1,12 @@
+{
+  "id": "2026-059",
+  "title": "【机器学习阅读导论第10篇】自定义模型与卷积神经网络：从调包侠到造轮子",
+  "date": "2026-09-04T00:30:00",
+  "tags": ["books", "tech", "机器学习"],
+  "milestone": false,
+  "summary": "TensorFlow自定义（GradientTape/自定义训练循环/TF Function）、Data API数据管道、CNN卷积运算与架构进化史（LeNet→ResNet）、迁移学习与目标检测。",
+  "theme": "serif",
+  "image": "",
+  "links": [],
+  "format": "markdown"
+}

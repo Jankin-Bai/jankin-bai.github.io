@@ -1,0 +1,12 @@
+{
+  "id": "2026-054",
+  "title": "【机器学习阅读导论第5篇】分类与回归的数学本质：从逻辑回归到梯度下降",
+  "date": "2026-09-03T22:00:00",
+  "tags": ["books", "tech", "机器学习"],
+  "milestone": false,
+  "summary": "用MNIST讲透分类评估（混淆矩阵/Precision/Recall/F1/ROC-AUC），从线性回归正态方程推导到梯度下降三兄弟，以及Ridge/Lasso/Elastic Net正则化。",
+  "theme": "serif",
+  "image": "",
+  "links": [],
+  "format": "markdown"
+}
