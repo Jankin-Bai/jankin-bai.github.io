@@ -79,11 +79,34 @@
     showProgress('准备中', 2);  // 初始进度，等待 discover-start
   }
 
+  // 分页显示：每次渲染 PAGE_SIZE 篇，滚动到底部加载更多
+  const PAGE_SIZE = 5;
+  let displayCount = PAGE_SIZE;
+  let allPostsLoaded = false; // 全量扫描是否完成
+
   try {
-    const data = await DataLoader.init();
-    config = data.config;
-    posts = data.posts;
-    tags = data.tags || [];
+    // 有缓存 → 直接用缓存（全量数据）
+    if (DataLoader.hasValidCache()) {
+      const data = await DataLoader.init();
+      config = data.config;
+      posts = data.posts;
+      tags = data.tags || [];
+      allPostsLoaded = true;
+    } else {
+      // 无缓存 → 先快速加载最新5篇，立即渲染
+      config = await (await fetch('data/config.json')).json();
+      posts = await DataLoader.discoverQuick(PAGE_SIZE);
+      allPostsLoaded = false;
+      // 后台静默全量扫描（不阻塞首屏，用于搜索/筛选准确性）
+      DataLoader.init(true).then(data => {
+        posts = data.posts;
+        tags = data.tags || [];
+        allPostsLoaded = true;
+        renderTagFilter();
+        renderMain();
+        SiteUtils.log && SiteUtils.log('✅ 后台全量扫描完成');
+      }).catch(() => {});
+    }
   } catch (e) {
     const area = $('content-area');
     if (area) {
@@ -158,6 +181,7 @@
         e.preventDefault();
         curTag = btn.dataset.tag;
         applyTagTheme(curTag);
+        displayCount = PAGE_SIZE; // 切换标签时重置分页
         renderTagFilter();
         renderMain();
       });
@@ -184,20 +208,51 @@
     return r;
   }
 
-  /* ---------- 主内容渲染 ---------- */
+  /* ---------- 主内容渲染（分页显示） ---------- */
   function renderMain() {
     const filtered = getFiltered();
+    const visible = filtered.slice(0, displayCount);
+    const hasMore = displayCount < filtered.length;
     const area = $('content-area');
     if (area) {
-      area.innerHTML = Renderer.render(filtered, tags, config);
+      let html = Renderer.render(visible, tags, config);
+      // 加载更多提示
+      if (hasMore) {
+        html += `<div class="load-more-hint" id="load-more-hint">
+          <span>滚动加载更多（已显示 ${visible.length} / ${filtered.length}）</span>
+        </div>`;
+      } else if (!allPostsLoaded) {
+        html += `<div class="load-more-hint" id="load-more-hint">
+          <span>正在后台扫描更多文章...</span>
+        </div>`;
+      }
+      area.innerHTML = html;
     }
-    $('stats').innerHTML = `共 <strong>${filtered.length}</strong> 条 · <strong>${tags.length}</strong> 标签`;
+    const totalLabel = allPostsLoaded ? filtered.length : `${filtered.length}+`;
+    $('stats').innerHTML = `共 <strong>${totalLabel}</strong> 条 · <strong>${tags.length}</strong> 标签`;
   }
+
+  /* ---------- 无限滚动：滚动到底部加载更多 ---------- */
+  function checkLoadMore() {
+    const hint = $('load-more-hint');
+    if (!hint) return;
+    const rect = hint.getBoundingClientRect();
+    // 提示元素进入视口（底部200px内）时加载更多
+    if (rect.top < window.innerHeight + 200) {
+      const filtered = getFiltered();
+      if (displayCount < filtered.length) {
+        displayCount = Math.min(displayCount + PAGE_SIZE, filtered.length);
+        renderMain();
+      }
+    }
+  }
+  window.addEventListener('scroll', checkLoadMore, { passive: true });
 
   /* ---------- 后台更新事件 ---------- */
   document.addEventListener('posts-updated', (e) => {
     SiteUtils.log && SiteUtils.log(`📡 博文列表已更新：${e.detail?.count || posts.length} 篇`);
     posts = DataLoader.getPosts();
+    allPostsLoaded = true;
     renderTagFilter();
     renderMain();
   });
@@ -209,6 +264,7 @@
   searchInput.addEventListener('input', e => {
     keyword = e.target.value;
     searchClear.hidden = !keyword;
+    displayCount = PAGE_SIZE; // 搜索时重置分页
     renderMain();
   });
 

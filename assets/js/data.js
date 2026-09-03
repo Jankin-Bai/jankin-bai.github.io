@@ -117,6 +117,70 @@ const DataLoader = (() => {
     return found;
   }
 
+  /**
+   * 快速发现最新的 count 篇文章（首屏优化）
+   * 用指数探测找到最大序号，然后倒序取 count 篇
+   * 比全量扫描快很多：约 log2(n) + count 次请求
+   */
+  async function discoverQuick(count = 5) {
+    const found = [];
+    const currentYear = new Date().getFullYear();
+    const startYear = (config && config.discovery?.startYear) || 2015;
+
+    for (let year = currentYear; year >= startYear && found.length < count; year--) {
+      // 指数探测找到该年份的最大序号
+      let maxSeq = 0;
+      let probe = 1;
+      while (probe <= 999) {
+        try {
+          const id = `${year}-${String(probe).padStart(3, '0')}`;
+          const r = await fetch(`posts/${id}/meta.json`, { method: 'HEAD' });
+          if (r.ok) {
+            maxSeq = probe;
+            probe *= 2;
+          } else {
+            break;
+          }
+        } catch { break; }
+      }
+      if (maxSeq === 0) continue; // 该年份无文章
+
+      // 在 [maxSeq/2, maxSeq] 之间精确找最大序号（二分）
+      let lo = Math.floor(maxSeq / 2), hi = maxSeq;
+      while (lo < hi) {
+        const mid = Math.ceil((lo + hi) / 2);
+        try {
+          const id = `${year}-${String(mid).padStart(3, '0')}`;
+          const r = await fetch(`posts/${id}/meta.json`, { method: 'HEAD' });
+          if (r.ok) lo = mid; else hi = mid - 1;
+        } catch { hi = mid - 1; }
+      }
+      maxSeq = lo;
+
+      // 从最大序号倒序取文章
+      const batchSize = 5;
+      for (let seq = maxSeq; seq >= 1 && found.length < count; ) {
+        const batch = [];
+        const endSeq = Math.max(1, seq - batchSize + 1);
+        for (let s = seq; s >= endSeq && found.length + batch.length < count; s--) {
+          const id = `${year}-${String(s).padStart(3, '0')}`;
+          batch.push(
+            fetch(`posts/${id}/meta.json`)
+              .then(r => r.ok ? r.json() : null)
+              .catch(() => null)
+          );
+        }
+        const results = await Promise.all(batch);
+        results.filter(Boolean).forEach(m => found.push(m));
+        seq = endSeq - 1;
+      }
+    }
+
+    found.sort((a, b) => new Date(b.date) - new Date(a.date));
+    SiteUtils.log && SiteUtils.log(`⚡ 快速发现：${found.length} 篇最新文章`);
+    return found;
+  }
+
   /** localStorage 缓存：二次加载秒开 */
   function getCache() {
     try {
@@ -318,6 +382,6 @@ const DataLoader = (() => {
     init, getPostContent, getPostMeta, getPostById, getConfig, getPosts, hasValidCache,
     getActiveDimensions, getDimensionById,
     filterByDimension, filterBySearch,
-    clearCache, discoverPosts
+    clearCache, discoverPosts, discoverQuick
   };
 })();
