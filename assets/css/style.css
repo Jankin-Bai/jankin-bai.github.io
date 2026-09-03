@@ -1915,14 +1915,59 @@ select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
 .year-group.collapsed .year-collapse-arrow {
   transform: rotate(-90deg);
 }
+/* 折叠状态：文章只显示标题，紧凑排列 */
 .year-group.collapsed .year-posts {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.year-group.collapsed .timeline-card {
+  padding: 6px 12px;
+  min-height: auto;
+  border: none;
+  box-shadow: none;
+  background: transparent;
+}
+.year-group.collapsed .timeline-card:hover {
+  background: var(--color-surface-alt);
+}
+.year-group.collapsed .card-dot {
+  width: 6px;
+  height: 6px;
+  top: 14px;
+  left: -22px;
+}
+.year-group.collapsed .card-image,
+.year-group.collapsed .card-summary,
+.year-group.collapsed .card-tags,
+.year-group.collapsed .card-read-more,
+.year-group.collapsed .milestone-inline {
+  display: none !important;
+}
+.year-group.collapsed .card-header {
+  margin-bottom: 0;
+  flex: 0 0 auto;
+}
+.year-group.collapsed .card-date {
+  font-size: var(--fs-xs);
+  color: var(--color-text-muted);
+  min-width: 85px;
+}
+.year-group.collapsed .card-date .date-ganzhi {
   display: none;
 }
+.year-group.collapsed .card-title {
+  font-size: var(--fs-sm);
+  font-weight: 400;
+  margin: 0;
+  line-height: 1.4;
+  display: inline;
+}
 .year-group.collapsed .year-header {
-  opacity: 0.7;
+  opacity: 0.85;
 }
 .year-group.collapsed .year-count::after {
-  content: " (已折叠)";
+  content: " (仅标题)";
   font-size: var(--fs-xs);
 }
 
