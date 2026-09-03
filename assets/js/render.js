@@ -51,7 +51,13 @@ const Renderer = (() => {
     const monthNames = ['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'];
     const gz = ` <span class="year-ganzhi">${esc(Ganzhi.getYearGanzhi(year).full)}</span>`;
     return `<section class="year-group" data-year="${esc(year)}-${String(month).padStart(2,'0')}">
-      <h2 class="year-header"><span class="year-number">${esc(year)}年 ${esc(monthNames[month-1])}</span>${gz}<span class="year-count">${posts.length} 条</span></h2>
+      <h2 class="year-header" role="button" tabindex="0" aria-expanded="true" aria-label="折叠或展开 ${esc(year)}年${esc(monthNames[month-1])}的文章">
+        <span class="year-collapse-arrow" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg>
+        </span>
+        <span class="year-number">${esc(year)}年 ${esc(monthNames[month-1])}</span>${gz}
+        <span class="year-count">${posts.length} 条</span>
+      </h2>
       <div class="year-posts">${posts.map(p => renderCard(p, tags, config)).join('')}</div>
     </section>`;
   }

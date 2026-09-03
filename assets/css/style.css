@@ -1883,3 +1883,75 @@ select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
   font-size: var(--fs-xs);
   opacity: 0.7;
 }
+
+/* ---------- 时间线月份折叠功能 ---------- */
+.year-header {
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  transition: background var(--transition);
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--border-radius-sm);
+}
+.year-header:hover {
+  background: var(--color-surface-alt);
+}
+.year-header:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+.year-collapse-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  transition: transform var(--transition);
+  color: var(--color-text-muted);
+}
+.year-group.collapsed .year-collapse-arrow {
+  transform: rotate(-90deg);
+}
+.year-group.collapsed .year-posts {
+  display: none;
+}
+.year-group.collapsed .year-header {
+  opacity: 0.7;
+}
+.year-group.collapsed .year-count::after {
+  content: " (已折叠)";
+  font-size: var(--fs-xs);
+}
+
+/* 全部折叠/展开按钮 */
+.collapse-all-btn {
+  margin-left: auto;
+  padding: 4px 12px;
+  font-size: var(--fs-xs);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-sm);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all var(--transition);
+  white-space: nowrap;
+  align-self: center;
+}
+.collapse-all-btn:hover {
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+}
+.timeline-tags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.timeline-tags .dim-list {
+  flex: 1;
+  min-width: 0;
+}
