@@ -452,6 +452,16 @@
   display: none;
   padding: 8px;
 }
+.station-group.playing-group {
+  border-color: #ff9900;
+  box-shadow: 0 0 12px rgba(255,153,0,0.3);
+}
+.station-group.playing-group .station-group-header {
+  background: linear-gradient(90deg, rgba(60,30,0,0.9), rgba(40,20,0,0.7));
+}
+.station-group.playing-group .group-name {
+  color: #ffcc00;
+}
 .station-group.open .station-group-content {
   display: grid;
 }
@@ -850,6 +860,16 @@
   display: none;
   padding: 8px;
 }
+.station-group.playing-group {
+  border-color: #ff9900;
+  box-shadow: 0 0 12px rgba(255,153,0,0.3);
+}
+.station-group.playing-group .station-group-header {
+  background: linear-gradient(90deg, rgba(60,30,0,0.9), rgba(40,20,0,0.7));
+}
+.station-group.playing-group .group-name {
+  color: #ffcc00;
+}
 .station-group.open .station-group-content {
   display: grid;
 }
@@ -967,7 +987,7 @@
   </div>
 
   <!-- 分类筛选 -->
-  <div class="radio-categories" id="categoryButtons">
+  <div class="radio-categories" id="categoryButtons" style="display:none;">
     <button class="category-btn active" data-category="all">全部</button>
     <button class="category-btn" data-category="cnr">央广系列</button>
     <button class="category-btn" data-category="local">地方电台</button>
@@ -1511,9 +1531,9 @@ async function playStation(id) {
       globeInstance.polygonAltitude(d => (d.properties.NAME === currentCountry ? 0.08 : 0.05));
     }
   }
-  // 自动高亮对应分类按钮
-  document.querySelectorAll('.category-btn').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.category === station.category);
+  // 只高亮对应分类，不自动展开（用户手动选择展开）
+  document.querySelectorAll('.station-group').forEach(g => {
+    g.classList.toggle('playing-group', g.dataset.category === station.category);
   });
   playerStationName.textContent = station.name.toUpperCase();
   playerStationDesc.textContent = station.desc;
