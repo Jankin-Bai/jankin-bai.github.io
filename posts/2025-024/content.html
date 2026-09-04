@@ -757,6 +757,14 @@
     width: 70px;
   }
 }
+
+/* 地球容器响应式 */
+@media (min-width: 768px) {
+  .globe-container { height: 320px !important; }
+}
+@media (min-width: 1024px) {
+  .globe-container { height: 380px !important; }
+}
 </style>
 
 <div class="radio-container">
@@ -806,7 +814,7 @@
   <!-- 世界地图 -->
   <div class="map-panel">
     <span class="panel-label">MAP</span>
-    <div id="globeContainer" style="width:100%;height:220px;position:relative;overflow:hidden;border-radius:4px;">
+    <div id="globeContainer" style="width:100%;height:220px;position:relative;overflow:hidden;border-radius:4px;" class="globe-container">
       <canvas id="globeCanvas" style="width:100%;height:100%;display:block;touch-action:none;cursor:grab;"></canvas>
       <div id="globeLoading" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#4a8a4a;font-family:Courier New;font-size:11px;letter-spacing:1px;">INITIALIZING 3D GLOBE...</div>
       <div id="globeHint" style="position:absolute;bottom:4px;right:8px;color:#3a5a3a;font-family:Courier New;font-size:9px;pointer-events:none;">DRAG: ROTATE | SCROLL/PINCH: ZOOM | TAP: PLAY</div>
@@ -1214,7 +1222,7 @@ async function initGlobe() {
     
     // 相机
     globeCamera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
-    globeCamera.position.z = 320;
+    globeCamera.position.z = 200;
     
     // 渲染器
     globeRenderer = new THREE.WebGLRenderer({ canvas: document.getElementById('globeCanvas'), antialias: true, alpha: true });
@@ -1267,35 +1275,31 @@ async function initGlobe() {
         void main() {
           vec4 texColor = texture2D(dayTexture, vUv);
           float brightness = dot(texColor.rgb, vec3(0.299, 0.587, 0.114));
-          // 绿色科技感渐变：深海绿→陆地亮绿
-          vec3 deepOcean = vec3(0.01, 0.05, 0.03);
-          vec3 shallow = vec3(0.03, 0.15, 0.08);
-          vec3 land = vec3(0.08, 0.45, 0.18);
-          vec3 brightLand = vec3(0.25, 0.85, 0.35);
+          // 海陆硬区分：阈值0.4以下海洋，以上陆地
+          vec3 oceanColor = vec3(0.008, 0.03, 0.02);  // 深海近黑
+          vec3 landColor = vec3(0.12, 0.55, 0.22);    // 陆地亮绿
+          vec3 highLand = vec3(0.3, 0.9, 0.4);        // 高亮度地区
           vec3 color;
-          if (brightness < 0.35) {
-            color = mix(deepOcean, shallow, brightness / 0.35);
-          } else if (brightness < 0.6) {
-            color = mix(shallow, land, (brightness - 0.35) / 0.25);
-          } else {
-            color = mix(land, brightLand, (brightness - 0.6) / 0.4);
-          }
+          float landMask = smoothstep(0.38, 0.42, brightness);  // 海陆分界线（硬过渡）
+          color = mix(oceanColor, landColor, landMask);
+          // 陆地内部亮度变化
+          color = mix(color, highLand, landMask * smoothstep(0.6, 0.9, brightness));
           // 光照
           float diff = max(dot(vNormal, lightDir), 0.0);
-          color *= (0.35 + diff * 0.9);
+          color *= (0.3 + diff * 1.0);
+          // 海岸线高亮（海陆交界处，明显的亮绿线）
+          float coast = smoothstep(0.02, 0.0, abs(brightness - 0.4));
+          color += vec3(0.2, 0.8, 0.35) * coast * 0.8;
           // 精细经纬网格线（每15度一条，淡绿色）
           float lat = (vUv.y - 0.5) * 180.0;
           float lon = (vUv.x - 0.5) * 360.0;
-          float latLine = smoothstep(0.8, 1.0, 1.0 - abs(fract(lat / 15.0) - 0.5) * 2.0);
-          float lonLine = smoothstep(0.8, 1.0, 1.0 - abs(fract(lon / 15.0) - 0.5) * 2.0);
-          float grid = max(latLine, lonLine) * 0.15;
+          float latLine = smoothstep(0.85, 1.0, 1.0 - abs(fract(lat / 15.0) - 0.5) * 2.0);
+          float lonLine = smoothstep(0.85, 1.0, 1.0 - abs(fract(lon / 15.0) - 0.5) * 2.0);
+          float grid = max(latLine, lonLine) * 0.12;
           color += vec3(0.1, 0.5, 0.2) * grid;
-          // 扫描线效果（横向细扫描线）
-          float scan = smoothstep(0.95, 1.0, 1.0 - abs(fract(vUv.y * 120.0 + time * 0.1) - 0.5) * 2.0);
-          color += vec3(0.05, 0.2, 0.1) * scan * 0.3;
-          // 大陆边缘高亮（亮度突变处）
-          float edge = abs(brightness - 0.4);
-          if (edge < 0.02) color += vec3(0.15, 0.6, 0.25) * 0.5;
+          // 扫描线效果
+          float scan = smoothstep(0.95, 1.0, 1.0 - abs(fract(vUv.y * 100.0 + time * 0.08) - 0.5) * 2.0);
+          color += vec3(0.05, 0.2, 0.1) * scan * 0.25;
           gl_FragColor = vec4(color, 1.0);
         }
       `
@@ -1383,7 +1387,7 @@ async function initGlobe() {
         const dy = e.touches[0].clientY - e.touches[1].clientY;
         const dist = Math.sqrt(dx*dx + dy*dy);
         const scale = touchStartDist / dist;
-        globeCamera.position.z = Math.max(120, Math.min(500, touchStartZoom * scale));
+        globeCamera.position.z = Math.max(80, Math.min(350, touchStartZoom * scale));
       }
     }, { passive: false });
     canvas.addEventListener('touchend', e => {
@@ -1396,7 +1400,7 @@ async function initGlobe() {
     // 滚轮缩放
     canvas.addEventListener('wheel', e => {
       e.preventDefault();
-      globeCamera.position.z = Math.max(110, Math.min(500, globeCamera.position.z + e.deltaY * 0.25));
+      globeCamera.position.z = Math.max(80, Math.min(350, globeCamera.position.z + e.deltaY * 0.2));
     }, { passive: false });
     
     // 点击检测
