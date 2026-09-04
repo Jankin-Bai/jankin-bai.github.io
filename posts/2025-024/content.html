@@ -256,15 +256,9 @@
   padding: 10px;
   margin-bottom: 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-}
-.map-panel.fixed-top {
-  position: fixed !important;
-  left: 50% !important;
-  transform: translateX(-50%) !important;
-  width: 100% !important;
-  max-width: 720px !important;
-  z-index: 50 !important;
-  margin: 0 !important;
+  position: sticky;
+  top: var(--header-height, 60px);
+  z-index: 50;
 }
 
 .map-panel .panel-label {
@@ -2228,61 +2222,23 @@ function focusGlobeOnStation(stationId) {
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => {
     initGlobe();
-    initMapPanelSticky();
+    updateHeaderHeight();
   });
 } else {
   initGlobe();
-  initMapPanelSticky();
+  updateHeaderHeight();
 }
 
-// 地球sticky效果：初始在文章正常位置，上滑碰到导航栏时吸附固定
-function initMapPanelSticky() {
-  const panel = document.querySelector('.map-panel');
-  if (!panel) return;
-  // 创建占位元素（fixed时保持布局高度）
-  const placeholder = document.createElement('div');
-  placeholder.style.display = 'none';
-  placeholder.style.marginBottom = '12px';
-  panel.parentNode.insertBefore(placeholder, panel);
-  
-  let isFixed = false;
-  
-  function updateSticky() {
-    const header = document.querySelector('.site-header-row');
-    const headerBottom = header ? header.getBoundingClientRect().bottom : 0;
-    const panelRect = panel.getBoundingClientRect();
-    
-    // 当地球顶部碰到导航栏底部时，切换为fixed
-    const shouldFix = panelRect.top <= headerBottom && window.scrollY > 0;
-    
-    if (shouldFix && !isFixed) {
-      // 切换为fixed
-      placeholder.style.height = panel.offsetHeight + 'px';
-      placeholder.style.display = 'block';
-      panel.classList.add('fixed-top');
-      isFixed = true;
-    } else if (!shouldFix && isFixed) {
-      // 恢复正常文档流
-      placeholder.style.display = 'none';
-      panel.classList.remove('fixed-top');
-      panel.style.top = '';
-      isFixed = false;
-    }
-    
-    // fixed时实时跟随导航栏
-    if (isFixed) {
-      panel.style.top = headerBottom + 'px';
-      if (window.innerWidth <= 768) {
-        panel.style.maxWidth = (window.innerWidth - 16) + 'px';
-      } else {
-        panel.style.maxWidth = '720px';
-      }
-    }
-    
-    requestAnimationFrame(updateSticky);
+// 设置导航栏高度CSS变量，供地球sticky的top使用
+function updateHeaderHeight() {
+  const header = document.querySelector('.site-header-row');
+  if (header) {
+    document.documentElement.style.setProperty('--header-height', header.offsetHeight + 'px');
   }
-  updateSticky();
 }
+updateHeaderHeight();
+window.addEventListener('resize', updateHeaderHeight);
+setTimeout(updateHeaderHeight, 500);
 
 /* ========== 休眠定时器 ========== */
 let sleepTimerId = null;
