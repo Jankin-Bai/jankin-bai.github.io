@@ -806,107 +806,11 @@
   <!-- 世界地图 -->
   <div class="map-panel">
     <span class="panel-label">MAP</span>
-    <svg class="world-map" id="worldMap" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid meet">
-      <!-- SVG矢量世界地图背景（与点位共用800x400等距投影坐标系） -->
-      <image href="https://raw.githubusercontent.com/Jankin-Bai/jankin-bai.github.io/main/images/radio/world_vector.svg" x="0" y="0" width="800" height="400" preserveAspectRatio="none"/>
-      <!-- 缩放提示 -->
-      <text x="790" y="15" text-anchor="end" fill="#5a7a5a" font-size="8" font-family="Courier New">SCROLL: ZOOM | DRAG: PAN | DBLCLICK: RESET</text>
-      <!-- 电台点位 -->
-      <g id="mapStations"></g>
-        <g class="map-station" data-id="jjzs" transform="translate(662,108)"><circle r="3"/></g>
-        <g class="map-station" data-id="zhzs" transform="translate(656,114)"><circle r="3"/></g>
-        <g class="map-station" data-id="wyzs" transform="translate(660,116)"><circle r="3"/></g>
-        <g class="map-station" data-id="jtgb" transform="translate(654,109)"><circle r="3"/></g>
-        <g class="map-station" data-id="xczs" transform="translate(663,113)"><circle r="3"/></g>
-        <g class="map-station" data-id="crihy" transform="translate(657,107)"><circle r="3"/></g>
-        <g class="map-station" data-id="crinews" transform="translate(661,110)"><circle r="3"/></g>
-        <g class="map-station" data-id="yyzs" transform="translate(655,115)"><circle r="3"/></g>
-        <g class="map-station" data-id="dszs" transform="translate(659,112)"><circle r="3"/></g>
-        <g class="map-station" data-id="hitfm" transform="translate(662,114)"><circle r="3"/></g>
-        <g class="map-station" data-id="crihq" transform="translate(660,113)"><circle r="3"/></g>
-        <g class="map-station" data-id="nhzs" transform="translate(656,111)"><circle r="3"/></g>
-        <g class="map-station" data-id="bjmusic" transform="translate(658,109)"><circle r="3"/></g>
-        <g class="map-station" data-id="bjwy" transform="translate(661,115)"><circle r="3"/></g>
-        <g class="map-station" data-id="bjjt" transform="translate(655,113)"><circle r="3"/></g>
-        <g class="map-station" data-id="bjxw" transform="translate(660,108)"><circle r="3"/></g>
-        <!-- 上海（第一财经） -->
-        <g class="map-station" data-id="dycj" transform="translate(668,122)">
-          <circle r="4"/><text x="6" y="3">上海</text>
-        </g>
-        <!-- 南京（江苏音乐） -->
-        <g class="map-station" data-id="jsmusic" transform="translate(664,129)">
-          <circle r="4"/><text x="6" y="3">南京</text>
-        </g>
-        <!-- 广州/深圳（广东台） -->
-        <g class="map-station" data-id="gdmusic" transform="translate(652,149)">
-          <circle r="4"/><text x="6" y="3">广州</text>
-        </g>
-        <g class="map-station" data-id="gdxw" transform="translate(650,147)"><circle r="3"/></g>
-        <g class="map-station" data-id="szfy" transform="translate(648,151)">
-          <circle r="4"/><text x="-28" y="14">深圳</text>
-        </g>
-        <!-- 香港（RTHK） -->
-        <g class="map-station" data-id="rthk1" transform="translate(649,153)">
-          <circle r="4"/><text x="6" y="14">香港</text>
-        </g>
-        <g class="map-station" data-id="rthk2" transform="translate(651,152)"><circle r="3"/></g>
-        <g class="map-station" data-id="rthk3" transform="translate(647,154)"><circle r="3"/></g>
-        <!-- 新加坡 -->
-        <g class="map-station" data-id="sg_yes933" transform="translate(620,175)">
-          <circle r="5"/><text x="7" y="3">新加坡</text>
-        </g>
-        <g class="map-station" data-id="sg_class95" transform="translate(623,173)"><circle r="3"/></g>
-        <g class="map-station" data-id="sg_gold905" transform="translate(618,177)"><circle r="3"/></g>
-        <g class="map-station" data-id="sg_symphony" transform="translate(622,176)"><circle r="3"/></g>
-        <!-- 美国（NPR/WNYC/KEXP） -->
-        <g class="map-station" data-id="npr" transform="translate(229,114)">
-          <circle r="5"/><text x="-30" y="3">华盛顿</text>
-        </g>
-        <g class="map-station" data-id="wnyc" transform="translate(235,112)">
-          <circle r="4"/><text x="6" y="14">纽约</text>
-        </g>
-        <g class="map-station" data-id="kexp" transform="translate(168,108)">
-          <circle r="4"/><text x="6" y="3">西雅图</text>
-        </g>
-        <!-- 网络电台（无固定位置，放在太平洋） -->
-        <g class="map-station" data-id="500classic" transform="translate(400,200)">
-          <circle r="4"/><text x="6" y="3">网络</text>
-        </g>
-        <!-- 旧金山（SomaFM网络电台，IP定位） -->
-        <g class="map-station" data-id="soma_groove" transform="translate(129,116)">
-          <circle r="4"/><text x="6" y="3">旧金山</text>
-        </g>
-        <g class="map-station" data-id="soma_drone" transform="translate(132,114)"><circle r="3"/></g>
-        <g class="map-station" data-id="soma_lush" transform="translate(127,118)"><circle r="3"/></g>
-        <g class="map-station" data-id="soma_space" transform="translate(131,117)"><circle r="3"/></g>
-        <!-- 新加坡（Radio Paradise CDN节点，IP定位） -->
-        <g class="map-station" data-id="rp_main" transform="translate(631,197)"><circle r="3"/></g>
-        <g class="map-station" data-id="rp_rock" transform="translate(634,195)"><circle r="3"/></g>
-        <!-- 莫斯科（俄语电台） -->
-        <g class="map-station" data-id="ru_mayak" transform="translate(425,82)">
-          <circle r="5"/><text x="7" y="3">莫斯科</text>
-        </g>
-        <g class="map-station" data-id="ru_vesti" transform="translate(428,80)"><circle r="3"/></g>
-        <g class="map-station" data-id="ru_nashe" transform="translate(422,84)"><circle r="3"/></g>
-        <g class="map-station" data-id="ru_record" transform="translate(426,83)"><circle r="3"/></g>
-        <g class="map-station" data-id="ru_relax" transform="translate(424,81)"><circle r="3"/></g>
-        <!-- 多伦多（古兰经电台Cloudflare CDN，IP定位） -->
-        <g class="map-station" data-id="ar_quran_mishary" transform="translate(224,103)">
-          <circle r="4"/><text x="6" y="3">多伦多</text>
-        </g>
-        <g class="map-station" data-id="ar_quran_tarateel" transform="translate(227,101)"><circle r="3"/></g>
-        <g class="map-station" data-id="ar_quran_abdulbasit" transform="translate(222,105)"><circle r="3"/></g>
-        <!-- 德国（网络电台CDN节点，IP定位） -->
-        <g class="map-station" data-id="ar_orient" transform="translate(428,88)"><circle r="3"/></g>
-        <g class="map-station" data-id="en_classical100" transform="translate(415,86)">
-          <circle r="4"/><text x="6" y="3">德国</text>
-        </g>
-        <!-- 悉尼（Sky News Australia） -->
-        <g class="map-station" data-id="en_skynews" transform="translate(700,200)">
-          <circle r="4"/><text x="6" y="3">悉尼</text>
-        </g>
-      </g>
-    </svg>
+    <div id="globeContainer" style="width:100%;height:220px;position:relative;overflow:hidden;border-radius:4px;">
+      <canvas id="globeCanvas" style="width:100%;height:100%;display:block;touch-action:none;cursor:grab;"></canvas>
+      <div id="globeLoading" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#4a8a4a;font-family:Courier New;font-size:11px;letter-spacing:1px;">INITIALIZING 3D GLOBE...</div>
+      <div id="globeHint" style="position:absolute;bottom:4px;right:8px;color:#3a5a3a;font-family:Courier New;font-size:9px;pointer-events:none;">DRAG: ROTATE | SCROLL: ZOOM | TAP STATION: PLAY</div>
+    </div>
   </div>
 
   <!-- 分类筛选 -->
@@ -1106,11 +1010,8 @@ async function playStation(id) {
   document.getElementById('infoFormat').textContent = station.format;
   document.getElementById('infoCategory').textContent = categoryNames[station.category] || station.category;
 
-  document.querySelectorAll('.map-station').forEach(el => el.classList.remove('playing'));
-  const mapPoint = document.querySelector('.map-station[data-id="' + id + '"]');
-  if (mapPoint) mapPoint.classList.add('playing');
-  // 移动十字瞄准镜
-  if (typeof moveCrosshair === 'function') moveCrosshair(id);
+  // 3D地球聚焦到播放位置
+  if (typeof focusGlobeOnStation === 'function') focusGlobeOnStation(id);
 
   if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
   audio.pause();
@@ -1172,8 +1073,8 @@ function stopPlay() {
   document.getElementById('displaySignal').textContent = 'SIGNAL: ----';
   waveform.classList.add('paused');
   radarPanel.classList.add('paused');
-  document.querySelectorAll('.map-station').forEach(el => el.classList.remove('playing'));
-  if (typeof crosshair !== 'undefined') crosshair.classList.remove('active');
+  // 3D地球恢复自动旋转
+  if (typeof globeAutoRotate !== 'undefined') globeAutoRotate = true;
   renderStations(currentCategory);
 }
 
@@ -1239,273 +1140,228 @@ document.querySelectorAll('.category-btn').forEach(btn => {
   });
 });
 
-// ===== 动态生成地图点位（根据stations的geo字段） =====
-(function renderMapStations() {
-  const mapGroup = document.getElementById('mapStations');
-  if (!mapGroup) return;
-  const ns = 'http://www.w3.org/2000/svg';
-  const posCount = {};
-  stations.forEach(station => {
-    if (!station.geo) return;
-    const { lat, lon, label } = station.geo;
-    const key = `${lat}_${lon}`;
-    const idx = posCount[key] || 0;
-    posCount[key] = idx + 1;
-    const baseX = (lon + 180) / 360 * 800;
-    const baseY = (90 - lat) / 180 * 400;
-    const offsetAngle = idx * 2.4;
-    const offsetR = idx > 0 ? 3 : 0;
-    const x = baseX + Math.cos(offsetAngle) * offsetR;
-    const y = baseY + Math.sin(offsetAngle) * offsetR;
-    const g = document.createElementNS(ns, 'g');
-    g.setAttribute('class', 'map-station');
-    g.setAttribute('data-id', station.id);
-    g.setAttribute('transform', `translate(${x.toFixed(1)},${y.toFixed(1)})`);
-    const circle = document.createElementNS(ns, 'circle');
-    circle.setAttribute('r', label && idx === 0 ? '4' : '3');
-    g.appendChild(circle);
-    if (label && idx === 0) {
-      const text = document.createElementNS(ns, 'text');
-      text.setAttribute('x', '6');
-      text.setAttribute('y', '3');
-      text.textContent = label;
-      g.appendChild(text);
-    }
-    g.addEventListener('click', () => playStation(station.id));
-    mapGroup.appendChild(g);
+// ===== 3D地球（three-globe） =====
+let globeInstance = null;
+let globeScene = null;
+let globeCamera = null;
+let globeRenderer = null;
+let globeControls = null;
+let globeAutoRotate = true;
+let globeTargetRotation = null;
+
+// 动态加载three-globe
+function loadScript(src) {
+  return new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = src;
+    s.onload = resolve;
+    s.onerror = reject;
+    document.head.appendChild(s);
   });
-})();
-
-// 创建十字瞄准镜元素
-const mapPanel = document.querySelector('.map-panel');
-const crosshair = document.createElement('div');
-crosshair.className = 'crosshair';
-crosshair.innerHTML = `
-  <svg width="80" height="80" viewBox="-40 -40 80 80">
-    <!-- 十字线 -->
-    <line class="ch-line" x1="-36" y1="0" x2="-12" y2="0"/>
-    <line class="ch-line" x1="12" y1="0" x2="36" y2="0"/>
-    <line class="ch-line" x1="0" y1="-36" x2="0" y2="-12"/>
-    <line class="ch-line" x1="0" y1="12" x2="0" y2="36"/>
-    <!-- 双圈 -->
-    <circle class="ch-ring inner" cx="0" cy="0" r="10"/>
-    <circle class="ch-ring outer" cx="0" cy="0" r="20"/>
-    <!-- 四角标记 -->
-    <path class="ch-corner" d="M -26,-26 L -18,-26 M -26,-26 L -26,-18"/>
-    <path class="ch-corner" d="M 26,-26 L 18,-26 M 26,-26 L 26,-18"/>
-    <path class="ch-corner" d="M -26,26 L -18,26 M -26,26 L -26,18"/>
-    <path class="ch-corner" d="M 26,26 L 18,26 M 26,26 L 26,18"/>
-    <!-- 电台名称标签 -->
-    <g class="ch-label">
-      <rect x="-35" y="28" width="70" height="14" rx="2" fill="rgba(0,0,0,0.8)" stroke="#ff4757" stroke-width="0.5"/>
-      <text x="0" y="38" text-anchor="middle" fill="#ff4757" font-size="8" font-family="Courier New" font-weight="bold" id="chLabelText">TARGET</text>
-    </g>
-  </svg>
-`;
-mapPanel.style.position = 'relative';
-mapPanel.appendChild(crosshair);
-
-// ===== 地图缩放和平移 =====
-const worldMap = document.getElementById('worldMap');
-let mapView = { x: 0, y: 0, w: 800, h: 400 };
-let isDragging = false;
-let dragStart = { x: 0, y: 0, vx: 0, vy: 0 };
-
-function updateMapView() {
-  worldMap.setAttribute('viewBox', `${mapView.x} ${mapView.y} ${mapView.w} ${mapView.h}`);
 }
 
-// 滚轮缩放
-worldMap.addEventListener('wheel', (e) => {
-  e.preventDefault();
-  const scale = e.deltaY > 0 ? 1.2 : 0.8;
-  const newW = Math.max(100, Math.min(800, mapView.w * scale));
-  const newH = newW / 2;
-  // 以鼠标位置为中心缩放
-  const rect = worldMap.getBoundingClientRect();
-  const mx = (e.clientX - rect.left) / rect.width * mapView.w + mapView.x;
-  const my = (e.clientY - rect.top) / rect.height * mapView.h + mapView.y;
-  mapView.x = mx - (mx - mapView.x) * (newW / mapView.w);
-  mapView.y = my - (my - mapView.y) * (newH / mapView.h);
-  mapView.w = newW;
-  mapView.h = newH;
-  updateMapView();
-  // 更新瞄准镜位置
-  if (currentStation) moveCrosshair(currentStation.id);
-}, { passive: false });
-
-// 拖拽平移
-worldMap.addEventListener('mousedown', (e) => {
-  isDragging = true;
-  dragStart = { x: e.clientX, y: e.clientY, vx: mapView.x, vy: mapView.y };
-  worldMap.style.cursor = 'grabbing';
-});
-window.addEventListener('mousemove', (e) => {
-  if (!isDragging) return;
-  const rect = worldMap.getBoundingClientRect();
-  const dx = (e.clientX - dragStart.x) / rect.width * mapView.w;
-  const dy = (e.clientY - dragStart.y) / rect.height * mapView.h;
-  mapView.x = dragStart.vx - dx;
-  mapView.y = dragStart.vy - dy;
-  updateMapView();
-  if (currentStation) moveCrosshair(currentStation.id);
-});
-window.addEventListener('mouseup', () => {
-  isDragging = false;
-  worldMap.style.cursor = 'grab';
-});
-worldMap.style.cursor = 'grab';
-
-// 双击重置
-worldMap.addEventListener('dblclick', () => {
-  mapView = { x: 0, y: 0, w: 800, h: 400 };
-  updateMapView();
-  if (currentStation) moveCrosshair(currentStation.id);
-});
-
-// ===== 移动端触摸交互 =====
-let touchState = {
-  mode: null, // 'pan' | 'pinch'
-  startDist: 0,
-  startView: null,
-  startCenter: null,
-  lastTap: 0
-};
-
-function getTouchDist(touches) {
-  const dx = touches[0].clientX - touches[1].clientX;
-  const dy = touches[0].clientY - touches[1].clientY;
-  return Math.sqrt(dx*dx + dy*dy);
-}
-
-function getTouchCenter(touches) {
-  return {
-    x: (touches[0].clientX + touches[1].clientX) / 2,
-    y: (touches[0].clientY + touches[1].clientY) / 2
-  };
-}
-
-worldMap.addEventListener('touchstart', (e) => {
-  e.preventDefault();
-  if (e.touches.length === 1) {
-    // 单指：检测双击或开始平移
-    const now = Date.now();
-    if (now - touchState.lastTap < 300) {
-      // 双击放大
-      const rect = worldMap.getBoundingClientRect();
-      const mx = (e.touches[0].clientX - rect.left) / rect.width * mapView.w + mapView.x;
-      const my = (e.touches[0].clientY - rect.top) / rect.height * mapView.h + mapView.y;
-      const newW = Math.max(100, mapView.w * 0.5);
-      const newH = newW / 2;
-      mapView.x = mx - newW / 2;
-      mapView.y = my - newH / 2;
-      mapView.w = newW;
-      mapView.h = newH;
-      updateMapView();
-      if (currentStation) moveCrosshair(currentStation.id);
-      touchState.lastTap = 0;
-    } else {
-      touchState.lastTap = now;
-      touchState.mode = 'pan';
-      dragStart = {
-        x: e.touches[0].clientX,
-        y: e.touches[0].clientY,
-        vx: mapView.x,
-        vy: mapView.y
-      };
+async function initGlobe() {
+  const container = document.getElementById('globeContainer');
+  if (!container) return;
+  
+  try {
+    // 加载three.js和three-globe
+    await loadScript('https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js');
+    await loadScript('https://cdn.jsdelivr.net/npm/three-globe@2.31.0/dist/three-globe.min.js');
+    
+    const loading = document.getElementById('globeLoading');
+    if (loading) loading.style.display = 'none';
+    
+    const width = container.clientWidth;
+    const height = container.clientHeight;
+    
+    // 场景
+    globeScene = new THREE.Scene();
+    globeScene.background = new THREE.Color(0x0a1a0a);
+    
+    // 相机
+    globeCamera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+    globeCamera.position.z = 320;
+    
+    // 渲染器
+    globeRenderer = new THREE.WebGLRenderer({ canvas: document.getElementById('globeCanvas'), antialias: true, alpha: true });
+    globeRenderer.setSize(width, height);
+    globeRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    
+    // 灯光
+    globeScene.add(new THREE.AmbientLight(0x448844, 0.6));
+    const dirLight = new THREE.DirectionalLight(0x88ff88, 0.8);
+    dirLight.position.set(1, 1, 1);
+    globeScene.add(dirLight);
+    
+    // 创建地球
+    globeInstance = new ThreeGlobe({ waitForGlobeReady: false, animateIn: true })
+      .showAtmosphere(true)
+      .atmosphereColor('#4aff4a')
+      .atmosphereAltitude(0.2)
+      .showGraticules(true)
+      .globeMaterial(new THREE.MeshBasicMaterial({ color: 0x1a3a1a, wireframe: true, transparent: true, opacity: 0.8 }))
+      .pointsData(stations.filter(s => s.geo))
+      .pointLat(d => d.geo.lat)
+      .pointLng(d => d.geo.lon)
+      .pointColor(d => d.id === (currentStation && currentStation.id) ? '#ff4757' : '#4aff4a')
+      .pointAltitude(0.02)
+      .pointRadius(0.3)
+      .pointResolution(8);
+    
+    globeScene.add(globeInstance);
+    
+    // 星空背景
+    const starGeo = new THREE.BufferGeometry();
+    const starCount = 500;
+    const starPos = new Float32Array(starCount * 3);
+    for (let i = 0; i < starCount * 3; i++) {
+      starPos[i] = (Math.random() - 0.5) * 1000;
     }
-  } else if (e.touches.length === 2) {
-    // 双指：捏合缩放
-    touchState.mode = 'pinch';
-    touchState.startDist = getTouchDist(e.touches);
-    touchState.startView = { ...mapView };
-    touchState.startCenter = getTouchCenter(e.touches);
-  }
-}, { passive: false });
-
-worldMap.addEventListener('touchmove', (e) => {
-  e.preventDefault();
-  if (touchState.mode === 'pan' && e.touches.length === 1) {
-    const rect = worldMap.getBoundingClientRect();
-    const dx = (e.touches[0].clientX - dragStart.x) / rect.width * mapView.w;
-    const dy = (e.touches[0].clientY - dragStart.y) / rect.height * mapView.h;
-    mapView.x = dragStart.vx - dx;
-    mapView.y = dragStart.vy - dy;
-    updateMapView();
-    if (currentStation) moveCrosshair(currentStation.id);
-  } else if (touchState.mode === 'pinch' && e.touches.length === 2) {
-    const currentDist = getTouchDist(e.touches);
-    const scale = touchState.startDist / currentDist;
-    const newW = Math.max(100, Math.min(800, touchState.startView.w * scale));
-    const newH = newW / 2;
-    // 以双指中心为缩放中心
-    const rect = worldMap.getBoundingClientRect();
-    const cx = (touchState.startCenter.x - rect.left) / rect.width * touchState.startView.w + touchState.startView.x;
-    const cy = (touchState.startCenter.y - rect.top) / rect.height * touchState.startView.h + touchState.startView.y;
-    mapView.x = cx - (cx - touchState.startView.x) * (newW / touchState.startView.w);
-    mapView.y = cy - (cy - touchState.startView.y) * (newH / touchState.startView.h);
-    mapView.w = newW;
-    mapView.h = newH;
-    updateMapView();
-    if (currentStation) moveCrosshair(currentStation.id);
-  }
-}, { passive: false });
-
-worldMap.addEventListener('touchend', (e) => {
-  if (e.touches.length === 0) {
-    touchState.mode = null;
-  } else if (e.touches.length === 1) {
-    // 从双指变回单指，重置平移起点
-    touchState.mode = 'pan';
-    dragStart = {
-      x: e.touches[0].clientX,
-      y: e.touches[0].clientY,
-      vx: mapView.x,
-      vy: mapView.y
-    };
-  }
-});
-
-// 移动端提示文字更新
-const mapHint = worldMap.querySelector('text');
-if (mapHint && ('ontouchstart' in window)) {
-  mapHint.textContent = 'PINCH: ZOOM | DRAG: PAN | DBLTAP: ZOOM IN';
-}
-
-// 移动十字瞄准镜到指定点位（考虑缩放平移）
-function moveCrosshair(stationId) {
-  const point = document.querySelector(`.map-station[data-id="${stationId}"]`);
-  if (!point) { crosshair.classList.remove('active'); return; }
-  const svg = document.querySelector('.world-map');
-  const svgRect = svg.getBoundingClientRect();
-  const panelRect = mapPanel.getBoundingClientRect();
-  const transform = point.getAttribute('transform');
-  const match = transform.match(/translate\(([\d.]+),([\d.]+)\)/);
-  if (match) {
-    const x = parseFloat(match[1]);
-    const y = parseFloat(match[2]);
-    // 考虑当前viewBox的缩放和平移
-    const scaleX = svgRect.width / mapView.w;
-    const scaleY = svgRect.height / mapView.h;
-    const px = svgRect.left - panelRect.left + (x - mapView.x) * scaleX;
-    const py = svgRect.top - panelRect.top + (y - mapView.y) * scaleY;
-    crosshair.style.left = (px - 40) + 'px';
-    crosshair.style.top = (py - 40) + 'px';
-    crosshair.classList.add('active');
-    // 更新标签
-    const station = stations.find(s => s.id === stationId);
-    if (station) {
-      document.getElementById('chLabelText').textContent = station.name.substring(0, 12);
+    starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+    const stars = new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0x4a8a4a, size: 0.5, transparent: true, opacity: 0.6 }));
+    globeScene.add(stars);
+    
+    // 轨道控制
+    let isDragging = false;
+    let lastX = 0, lastY = 0;
+    let rotVelX = 0, rotVelY = 0;
+    let userRotX = 0, userRotY = 0;
+    
+    const canvas = document.getElementById('globeCanvas');
+    
+    function onDown(x, y) {
+      isDragging = true;
+      globeAutoRotate = false;
+      lastX = x; lastY = y;
+      canvas.style.cursor = 'grabbing';
     }
+    function onMove(x, y) {
+      if (!isDragging) return;
+      const dx = x - lastX;
+      const dy = y - lastY;
+      userRotY += dx * 0.005;
+      userRotX += dy * 0.005;
+      userRotX = Math.max(-Math.PI/2, Math.min(Math.PI/2, userRotX));
+      lastX = x; lastY = y;
+    }
+    function onUp() {
+      isDragging = false;
+      canvas.style.cursor = 'grab';
+      setTimeout(() => { globeAutoRotate = true; }, 3000);
+    }
+    
+    canvas.addEventListener('mousedown', e => onDown(e.clientX, e.clientY));
+    window.addEventListener('mousemove', e => onMove(e.clientX, e.clientY));
+    window.addEventListener('mouseup', onUp);
+    
+    // 触摸
+    canvas.addEventListener('touchstart', e => {
+      if (e.touches.length === 1) onDown(e.touches[0].clientX, e.touches[0].clientY);
+    }, { passive: true });
+    canvas.addEventListener('touchmove', e => {
+      if (e.touches.length === 1) onMove(e.touches[0].clientX, e.touches[0].clientY);
+    }, { passive: true });
+    canvas.addEventListener('touchend', onUp);
+    
+    // 滚轮缩放
+    canvas.addEventListener('wheel', e => {
+      e.preventDefault();
+      globeCamera.position.z = Math.max(150, Math.min(600, globeCamera.position.z + e.deltaY * 0.3));
+    }, { passive: false });
+    
+    // 点击检测
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+    canvas.addEventListener('click', e => {
+      const rect = canvas.getBoundingClientRect();
+      mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+      raycaster.setFromCamera(mouse, globeCamera);
+      const intersects = raycaster.intersectObjects(globeInstance.children, true);
+      if (intersects.length > 0) {
+        // 找到最近的点
+        let closest = null;
+        let minDist = Infinity;
+        stations.filter(s => s.geo).forEach(s => {
+          const coords = globeInstance.getCoords(s.geo.lat, s.geo.lon, 0.02);
+          const point = new THREE.Vector3(coords.x, coords.y, coords.z);
+          globeInstance.localToWorld(point);
+          const dist = point.distanceTo(intersects[0].point);
+          if (dist < minDist && dist < 10) {
+            minDist = dist;
+            closest = s;
+          }
+        });
+        if (closest) playStation(closest.id);
+      }
+    });
+    
+    // 动画循环
+    function animate() {
+      requestAnimationFrame(animate);
+      if (globeAutoRotate && !isDragging) {
+        userRotY += 0.001;
+      }
+      globeInstance.rotation.y = userRotY;
+      globeInstance.rotation.x = userRotX;
+      stars.rotation.y += 0.0002;
+      globeRenderer.render(globeScene, globeCamera);
+    }
+    animate();
+    
+    // 响应式
+    window.addEventListener('resize', () => {
+      const w = container.clientWidth;
+      const h = container.clientHeight;
+      globeCamera.aspect = w / h;
+      globeCamera.updateProjectionMatrix();
+      globeRenderer.setSize(w, h);
+    });
+    
+  } catch (err) {
+    console.error('Globe init failed:', err);
+    const loading = document.getElementById('globeLoading');
+    if (loading) loading.textContent = 'GEO MODE: 2D FALLBACK';
   }
 }
 
-document.querySelectorAll('.map-station').forEach(point => {
-  point.addEventListener('click', () => {
-    const id = point.dataset.id;
-    if (id) playStation(id);
-  });
-});
+// 播放时旋转地球到目标位置
+function focusGlobeOnStation(stationId) {
+  if (!globeInstance) return;
+  const station = stations.find(s => s.id === stationId);
+  if (!station || !station.geo) return;
+  // 旋转到目标经纬度
+  const targetRotY = -station.geo.lon * Math.PI / 180;
+  const targetRotX = station.geo.lat * Math.PI / 180;
+  globeAutoRotate = false;
+  // 平滑过渡
+  const startY = userRotY;
+  const startX = userRotX;
+  const duration = 1000;
+  const startTime = Date.now();
+  function animateRotation() {
+    const elapsed = Date.now() - startTime;
+    const t = Math.min(elapsed / duration, 1);
+    const ease = t < 0.5 ? 2*t*t : -1+(4-2*t)*t;
+    userRotY = startY + (targetRotY - startY) * ease;
+    userRotX = startX + (targetRotX - startX) * ease;
+    if (t < 1) requestAnimationFrame(animateRotation);
+    else setTimeout(() => { globeAutoRotate = true; }, 2000);
+  }
+  animateRotation();
+  // 更新点颜色
+  if (globeInstance) {
+    globeInstance.pointColor(d => d.id === stationId ? '#ff4757' : '#4aff4a');
+  }
+}
+
+// 初始化
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initGlobe);
+} else {
+  initGlobe();
+}
 
 /* ========== 休眠定时器 ========== */
 let sleepTimerId = null;
