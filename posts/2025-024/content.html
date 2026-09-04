@@ -1239,13 +1239,13 @@ async function initGlobe() {
     // 绿色科技感纹理（NASA Blue Marble + 自定义Shader映射）
     const textureLoader = new THREE.TextureLoader();
     const dayTexture = textureLoader.load('https://unpkg.com/three-globe@2.31.0/example/img/earth-blue-marble.jpg');
-    const bumpTexture = textureLoader.load('https://unpkg.com/three-globe@2.31.0/example/img/earth-topology.png');
+    const waterTexture = textureLoader.load('https://unpkg.com/three-globe@2.31.0/example/img/earth-water.png');
     
     // 绿色科技感Shader：把真实纹理映射成绿色调
     const greenTechMaterial = new THREE.ShaderMaterial({
       uniforms: {
         dayTexture: { value: dayTexture },
-        bumpTexture: { value: bumpTexture },
+        waterTexture: { value: waterTexture },
         lightDir: { value: new THREE.Vector3(1, 1, 1).normalize() },
         time: { value: 0 }
       },
@@ -1263,26 +1263,27 @@ async function initGlobe() {
       `,
       fragmentShader: `
         uniform sampler2D dayTexture;
-        uniform sampler2D bumpTexture;
+        uniform sampler2D waterTexture;
         uniform vec3 lightDir;
         uniform float time;
         varying vec2 vUv;
         varying vec3 vNormal;
         varying vec3 vViewPosition;
         void main() {
-          vec4 texColor = texture2D(dayTexture, vUv);
-          float brightness = dot(texColor.rgb, vec3(0.299, 0.587, 0.114));
+          // 用专门的海洋掩码纹理区分海陆（白色=海洋，黑色=陆地）
+          vec4 waterMask = texture2D(waterTexture, vUv);
+          float isWater = waterMask.r;  // 1.0=海洋, 0.0=陆地
           // 海陆二分：只有陆地和海洋两种颜色
           vec3 oceanColor = vec3(0.01, 0.04, 0.025);  // 海洋单一深绿
           vec3 landColor = vec3(0.15, 0.6, 0.25);     // 陆地单一亮绿
           vec3 color;
-          float landMask = smoothstep(0.39, 0.41, brightness);  // 海陆硬分界
+          float landMask = 1.0 - smoothstep(0.4, 0.6, isWater);  // 海陆硬分界
           color = mix(oceanColor, landColor, landMask);
           // 光照（只做整体明暗，不区分内部）
           float diff = max(dot(vNormal, lightDir), 0.0);
           color *= (0.35 + diff * 0.9);
           // 海岸线高亮（海陆交界处，明显的亮绿线）
-          float coast = smoothstep(0.02, 0.0, abs(brightness - 0.4));
+          float coast = smoothstep(0.15, 0.0, abs(isWater - 0.5));
           color += vec3(0.2, 0.8, 0.35) * coast * 0.8;
           // 精细经纬网格线（每15度一条，淡绿色）
           float lat = (vUv.y - 0.5) * 180.0;
