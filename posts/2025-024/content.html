@@ -1476,20 +1476,43 @@ async function initGlobe() {
         crosshairEl.style.top = y + 'px';
         crosshairEl.style.opacity = '1';
         connector.style.opacity = '1';
-        // 定长引线：固定长度70px，指向右上角(-45度)
+        // 定长引线：动态选择方向，确保标签不溢出容器
         const lineLen = 70;
-        const angle = -Math.PI / 4;  // 右上角45度
-        const endX = x + Math.cos(angle) * lineLen;
-        const endY = y + Math.sin(angle) * lineLen;
+        const labelW = 180;  // 标签预估宽度
+        const labelH = 45;
+        const cw = rect.width;
+        const ch = rect.height;
+        // 四个方向：右上、左上、右下、左下
+        const directions = [
+          { dx: 0.707, dy: -0.707 },  // 右上
+          { dx: -0.707, dy: -0.707 }, // 左上
+          { dx: 0.707, dy: 0.707 },   // 右下
+          { dx: -0.707, dy: 0.707 }   // 左下
+        ];
+        // 选第一个不溢出的方向
+        let endX = x + directions[0].dx * lineLen;
+        let endY = y + directions[0].dy * lineLen;
+        for (const d of directions) {
+          const ex = x + d.dx * lineLen;
+          const ey = y + d.dy * lineLen;
+          const labelX = ex + (d.dx > 0 ? 5 : -labelW - 5);
+          const labelY = ey - labelH / 2;
+          if (labelX >= 0 && labelX + labelW <= cw && labelY >= 0 && labelY + labelH <= ch) {
+            endX = ex;
+            endY = ey;
+            break;
+          }
+        }
         connectorLine.setAttribute('x1', x);
         connectorLine.setAttribute('y1', y);
         connectorLine.setAttribute('x2', endX);
         connectorLine.setAttribute('y2', endY);
         connectorDot.setAttribute('cx', endX);
         connectorDot.setAttribute('cy', endY);
-        // 浮动标签在引线末端
-        labelFO.setAttribute('x', endX + 5);
-        labelFO.setAttribute('y', endY - 25);
+        // 浮动标签在引线末端（根据方向决定在左还是右）
+        const labelOffsetX = (endX > x) ? 8 : -labelW - 8;
+        labelFO.setAttribute('x', endX + labelOffsetX);
+        labelFO.setAttribute('y', endY - labelH / 2);
         document.getElementById('floatName').textContent = currentStation.name;
         document.getElementById('floatMeta').textContent = 
           currentStation.format + ' | ' + currentStation.freq + 'MHz | ' + 
