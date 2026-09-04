@@ -2235,7 +2235,7 @@ if (document.readyState === 'loading') {
   fixMapPanel();
 }
 
-// 把地图面板移到body直接子级并固定在顶部导航栏下方
+// 把地图面板移到body直接子级并固定在顶部导航栏下方（实时跟随导航栏动画）
 function fixMapPanel() {
   const panel = document.querySelector('.map-panel');
   if (!panel || panel.classList.contains('fixed-top')) return;
@@ -2247,21 +2247,21 @@ function fixMapPanel() {
   // 移到body下并固定
   document.body.appendChild(panel);
   panel.classList.add('fixed-top');
-  // 动态设置top为顶部导航栏高度
-  function updatePosition() {
+  // 用requestAnimationFrame实时跟随导航栏位置（包括渐入渐出动画）
+  function followHeader() {
     const header = document.querySelector('.site-header-row');
-    const headerHeight = header ? header.offsetHeight : 0;
-    panel.style.top = headerHeight + 'px';
+    if (header) {
+      const rect = header.getBoundingClientRect();
+      panel.style.top = rect.bottom + 'px';
+    }
     if (window.innerWidth <= 768) {
       panel.style.maxWidth = (window.innerWidth - 16) + 'px';
     } else {
       panel.style.maxWidth = '720px';
     }
+    requestAnimationFrame(followHeader);
   }
-  updatePosition();
-  window.addEventListener('resize', updatePosition);
-  // 延迟再更新一次，确保字体加载后高度正确
-  setTimeout(updatePosition, 500);
+  followHeader();
 }
 
 /* ========== 休眠定时器 ========== */
