@@ -1518,10 +1518,43 @@ async function initGlobe() {
           currentStation.format + ' | ' + currentStation.freq + 'MHz | ' + 
           currentStation.geo.label + ' ' + currentStation.geo.lat.toFixed(1) + ',' + currentStation.geo.lon.toFixed(1);
       } else {
-        crosshairEl.style.opacity = '0.2';
+        // 背面：继续追踪，只是变灰
+        crosshairEl.style.opacity = '0.25';
         crosshairEl.style.left = x + 'px';
         crosshairEl.style.top = y + 'px';
-        connector.style.opacity = '0.3';
+        connector.style.opacity = '0.25';
+        // 背面也要更新引线和标签位置
+        const lineLen = 70;
+        const labelW = 180;
+        const labelH = 45;
+        const cw = rect.width;
+        const ch = rect.height;
+        const directions = [
+          { dx: 0.707, dy: -0.707 },
+          { dx: -0.707, dy: -0.707 },
+          { dx: 0.707, dy: 0.707 },
+          { dx: -0.707, dy: 0.707 }
+        ];
+        let endX = x + directions[0].dx * lineLen;
+        let endY = y + directions[0].dy * lineLen;
+        for (const d of directions) {
+          const ex = x + d.dx * lineLen;
+          const ey = y + d.dy * lineLen;
+          const labelX = ex + (d.dx > 0 ? 5 : -labelW - 5);
+          const labelY = ey - labelH / 2;
+          if (labelX >= 0 && labelX + labelW <= cw && labelY >= 0 && labelY + labelH <= ch) {
+            endX = ex; endY = ey; break;
+          }
+        }
+        connectorLine.setAttribute('x1', x);
+        connectorLine.setAttribute('y1', y);
+        connectorLine.setAttribute('x2', endX);
+        connectorLine.setAttribute('y2', endY);
+        connectorDot.setAttribute('cx', endX);
+        connectorDot.setAttribute('cy', endY);
+        const labelOffsetX = (endX > x) ? 8 : -labelW - 8;
+        labelFO.setAttribute('x', endX + labelOffsetX);
+        labelFO.setAttribute('y', endY - labelH / 2);
       }
     }
     
