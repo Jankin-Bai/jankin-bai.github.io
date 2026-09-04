@@ -659,18 +659,18 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 }
 @media (max-width: 640px) {
   /* 移动端：侧栏收起功能不生效，保持正常布局 */
-  .page-post.sidebar-collapsed .post-sidebar {
+  body.page-post.sidebar-collapsed .post-sidebar {
     width: auto;
     padding: var(--sp-6) var(--sp-5);
     overflow: visible;
   }
-  .page-post.sidebar-collapsed .post-sidebar .sidebar-content {
+  body.page-post.sidebar-collapsed .post-sidebar .sidebar-content {
     display: block;
   }
-  .page-post.sidebar-collapsed .post-sidebar::before {
+  body.page-post.sidebar-collapsed .post-sidebar::before {
     display: none;
   }
-  .page-post.sidebar-collapsed .post-article {
+  body.page-post.sidebar-collapsed .post-article {
     margin-left: 0;
   }
   .site-header { padding: var(--sp-6) 0 var(--sp-4); }
@@ -1981,20 +1981,19 @@ select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
 }
 
 /* 目录折叠时，整个侧栏收起变窄 */
-.page-post body.sidebar-collapsed .post-sidebar,
-.page-post.sidebar-collapsed .post-sidebar {
+body.page-post.sidebar-collapsed .post-sidebar {
   width: 48px;
   padding: var(--sp-3) 0;
   overflow: hidden;
 }
-.page-post.sidebar-collapsed .post-sidebar .sidebar-content {
+body.page-post.sidebar-collapsed .post-sidebar .sidebar-content {
   display: none;
 }
-.page-post.sidebar-collapsed .post-sidebar .sidebar-toggle-btn {
+body.page-post.sidebar-collapsed .post-sidebar .sidebar-toggle-btn {
   display: none;
 }
 /* 收起状态下显示展开按钮 */
-.page-post.sidebar-collapsed .post-sidebar::before {
+body.page-post.sidebar-collapsed .post-sidebar::before {
   content: "目录";
   writing-mode: vertical-rl;
   text-orientation: mixed;
@@ -2009,8 +2008,19 @@ select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
   letter-spacing: 0.2em;
 }
 /* 收起状态下主内容区域扩展 */
-.page-post.sidebar-collapsed .post-article {
+body.page-post.sidebar-collapsed .post-article {
   margin-left: 48px;
+}
+
+/* 文章目录：隐藏滚动条但保留滚动功能 */
+.post-toc {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.post-toc::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 /* ---------- 主页：PC端标签在左侧栏，手机端在顶部 ---------- */
