@@ -96,7 +96,7 @@
 .opt-material-row .value { color: #333; font-family: monospace; }
 
 .opt-canvas-area { flex: 1; position: relative; background: #1a1a2e; overflow: hidden; }
-#opt3d { display: block; width: 100%; height: 100%; }
+#opt3d { display: block; width: 100%; height: 100%; touch-action: none; }
 .opt-canvas-toolbar {
   position: absolute; top: 10px; left: 10px;
   display: flex; gap: 4px; background: rgba(255,255,255,0.95);
@@ -161,11 +161,70 @@
   font-size: 10px; color: #666;
 }
 
+/* 移动端浮动按钮 */
+.opt-mobile-fab {
+  display: none;
+  position: absolute;
+  z-index: 200;
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  background: #4a9eff;
+  color: #fff;
+  border: none;
+  font-size: 18px;
+  box-shadow: 0 4px 12px rgba(74,158,255,0.4);
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+}
+.opt-fab-left { bottom: 20px; left: 16px; }
+.opt-fab-right { bottom: 20px; right: 16px; background: #2ed573; box-shadow: 0 4px 12px rgba(46,213,115,0.4); }
+
+/* 移动端抽屉遮罩 */
+.opt-drawer-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 150;
+}
+.opt-drawer-overlay.show { display: block; }
+
+/* 手机端：抽屉式面板 */
 @media (max-width: 768px) {
-  .opt-main { flex-direction: column; height: auto; }
-  .opt-sidebar { width: 100%; max-height: 180px; border-right: none; border-bottom: 1px solid #e8ecf1; }
-  .opt-rightpanel { width: 100%; border-left: none; border-top: 1px solid #e8ecf1; }
-  .opt-canvas-area { height: 350px; }
+  .opt-main { position: relative; height: 70vh; min-height: 400px; }
+  .opt-sidebar {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 260px;
+    z-index: 160;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    box-shadow: 4px 0 16px rgba(0,0,0,0.2);
+  }
+  .opt-sidebar.show { transform: translateX(0); }
+  .opt-rightpanel {
+    position: absolute;
+    right: 0; top: 0; bottom: 0;
+    width: 240px;
+    z-index: 160;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    box-shadow: -4px 0 16px rgba(0,0,0,0.2);
+  }
+  .opt-rightpanel.show { transform: translateX(0); }
+  .opt-canvas-area { height: 100%; }
+  .opt-topbar-tabs { display: none; }
+  .opt-mobile-fab { display: flex; }
+  .opt-view-hint { font-size: 9px; padding: 4px 8px; }
+  .opt-canvas-info { font-size: 9px; padding: 4px 8px; }
+}
+
+/* 平板端：调整比例 */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .opt-sidebar { width: 180px; }
+  .opt-rightpanel { width: 150px; }
+  .opt-main { height: 520px; }
   .opt-topbar-tabs { display: none; }
 }
 </style>
@@ -182,6 +241,8 @@
       <button class="opt-tab">元件库</button>
     </div>
   </div>
+
+  <div class="opt-drawer-overlay" id="drawerOverlay" onclick="closeAllDrawers()"></div>
 
   <div class="opt-main">
     <div class="opt-sidebar">
@@ -205,12 +266,15 @@
         <button class="opt-tool-btn" title="重置视角" onclick="resetCamera()">⟳</button>
       </div>
       <canvas id="opt3d"></canvas>
-      <div class="opt-view-hint">🖱️ 拖拽旋转 | 滚轮缩放 | 右键平移</div>
+      <div class="opt-view-hint" id="viewHint">🖱️ 拖拽旋转 | 滚轮缩放 | 右键平移</div>
       <div class="opt-canvas-info">
         元件: <span id="infoElements">3</span> | 
         光线: <span id="infoRays">7</span> | 
         3D 实时光线追踪
       </div>
+      <!-- 移动端浮动按钮 -->
+      <button class="opt-mobile-fab opt-fab-left" onclick="toggleDrawer('left')" title="元件列表">📋</button>
+      <button class="opt-mobile-fab opt-fab-right" onclick="toggleDrawer('right')" title="系统参数">📊</button>
     </div>
 
     <div class="opt-rightpanel">
@@ -327,6 +391,17 @@
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
     controls.target.set(0, 0, 0);
+    // 触摸配置：单指旋转，双指缩放/平移
+    controls.touches = {
+      ONE: THREE.TOUCH.ROTATE,
+      TWO: THREE.TOUCH.DOLLY_PAN
+    };
+    // 限制俯仰角，避免翻到地面以下
+    controls.maxPolarAngle = Math.PI * 0.85;
+    controls.minPolarAngle = Math.PI * 0.1;
+    // 缩放范围
+    controls.minDistance = 3;
+    controls.maxDistance = 30;
 
     // 灯光
     const ambient = new THREE.AmbientLight(0xffffff, 0.6);
@@ -381,6 +456,27 @@
     camera.position.set(0, 4, 12);
     controls.target.set(0, 0, 0);
     controls.update();
+  };
+
+  // 移动端抽屉控制
+  window.toggleDrawer = function(side) {
+    const sidebar = document.querySelector('.opt-sidebar');
+    const rightpanel = document.querySelector('.opt-rightpanel');
+    const overlay = document.getElementById('drawerOverlay');
+    if (side === 'left') {
+      sidebar.classList.toggle('show');
+      rightpanel.classList.remove('show');
+    } else {
+      rightpanel.classList.toggle('show');
+      sidebar.classList.remove('show');
+    }
+    overlay.classList.toggle('show', sidebar.classList.contains('show') || rightpanel.classList.contains('show'));
+  };
+
+  window.closeAllDrawers = function() {
+    document.querySelector('.opt-sidebar').classList.remove('show');
+    document.querySelector('.opt-rightpanel').classList.remove('show');
+    document.getElementById('drawerOverlay').classList.remove('show');
   };
 
   // 波长转颜色
@@ -804,5 +900,20 @@
   renderElementList();
   init3D();
   render();
+
+  // 设备检测：修改操作提示
+  const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  if (isTouch) {
+    document.getElementById('viewHint').textContent = '👆 单指旋转 | 双指缩放/平移';
+  }
+
+  // 移动端选择元件后自动关闭抽屉
+  const originalToggle = window.toggleElement;
+  window.toggleElement = function(id) {
+    originalToggle(id);
+    if (window.innerWidth <= 768) {
+      setTimeout(() => closeAllDrawers(), 300);
+    }
+  };
 })();
 </script>
