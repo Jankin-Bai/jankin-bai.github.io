@@ -255,14 +255,16 @@
   border-radius: 8px;
   padding: 10px;
   margin-bottom: 12px;
-  position: fixed;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  max-width: 720px;
-  z-index: 1000;
   box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+.map-panel.fixed-top {
+  position: fixed !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: 100% !important;
+  max-width: 720px !important;
+  z-index: 50 !important;
+  margin: 0 !important;
 }
 
 .map-panel .panel-label {
@@ -2233,7 +2235,7 @@ if (document.readyState === 'loading') {
   fixMapPanel();
 }
 
-// 把地图面板移到body直接子级并固定在顶部（摆脱祖先transform影响）
+// 把地图面板移到body直接子级并固定在顶部导航栏下方
 function fixMapPanel() {
   const panel = document.querySelector('.map-panel');
   if (!panel || panel.classList.contains('fixed-top')) return;
@@ -2245,16 +2247,21 @@ function fixMapPanel() {
   // 移到body下并固定
   document.body.appendChild(panel);
   panel.classList.add('fixed-top');
-  // 手机端调整宽度
-  function updateWidth() {
+  // 动态设置top为顶部导航栏高度
+  function updatePosition() {
+    const header = document.querySelector('.site-header-row');
+    const headerHeight = header ? header.offsetHeight : 0;
+    panel.style.top = headerHeight + 'px';
     if (window.innerWidth <= 768) {
       panel.style.maxWidth = (window.innerWidth - 16) + 'px';
     } else {
       panel.style.maxWidth = '720px';
     }
   }
-  updateWidth();
-  window.addEventListener('resize', updateWidth);
+  updatePosition();
+  window.addEventListener('resize', updatePosition);
+  // 延迟再更新一次，确保字体加载后高度正确
+  setTimeout(updatePosition, 500);
 }
 
 /* ========== 休眠定时器 ========== */
