@@ -401,6 +401,60 @@
 }
 
 /* ---- 电台列表 ---- */
+.station-group {
+  margin-bottom: 6px;
+  border: 1px solid #1a3a1a;
+  border-radius: 4px;
+  overflow: hidden;
+  background: rgba(0, 10, 0, 0.5);
+}
+.station-group-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: linear-gradient(90deg, rgba(0,40,0,0.8), rgba(0,20,0,0.6));
+  cursor: pointer;
+  user-select: none;
+  border-bottom: 1px solid transparent;
+  transition: all 0.2s;
+}
+.station-group-header:hover {
+  background: linear-gradient(90deg, rgba(0,60,0,0.9), rgba(0,30,0,0.7));
+}
+.station-group.open .station-group-header {
+  border-bottom-color: #1a4a1a;
+}
+.group-arrow {
+  color: #2aff6a;
+  font-size: 10px;
+  transition: transform 0.2s;
+  width: 12px;
+}
+.group-name {
+  color: #4aff4a;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  flex: 1;
+}
+.group-count {
+  color: #2a6a2a;
+  font-family: 'Courier New', monospace;
+  font-size: 10px;
+  background: rgba(0,30,0,0.8);
+  padding: 2px 8px;
+  border-radius: 10px;
+  border: 1px solid #1a3a1a;
+}
+.station-group-content {
+  display: none;
+  padding: 8px;
+}
+.station-group.open .station-group-content {
+  display: grid;
+}
 .radio-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -745,7 +799,61 @@
   .radar-panel {
     margin: 0 auto;
   }
-  .radio-grid {
+  .station-group {
+  margin-bottom: 6px;
+  border: 1px solid #1a3a1a;
+  border-radius: 4px;
+  overflow: hidden;
+  background: rgba(0, 10, 0, 0.5);
+}
+.station-group-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: linear-gradient(90deg, rgba(0,40,0,0.8), rgba(0,20,0,0.6));
+  cursor: pointer;
+  user-select: none;
+  border-bottom: 1px solid transparent;
+  transition: all 0.2s;
+}
+.station-group-header:hover {
+  background: linear-gradient(90deg, rgba(0,60,0,0.9), rgba(0,30,0,0.7));
+}
+.station-group.open .station-group-header {
+  border-bottom-color: #1a4a1a;
+}
+.group-arrow {
+  color: #2aff6a;
+  font-size: 10px;
+  transition: transform 0.2s;
+  width: 12px;
+}
+.group-name {
+  color: #4aff4a;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  flex: 1;
+}
+.group-count {
+  color: #2a6a2a;
+  font-family: 'Courier New', monospace;
+  font-size: 10px;
+  background: rgba(0,30,0,0.8);
+  padding: 2px 8px;
+  border-radius: 10px;
+  border: 1px solid #1a3a1a;
+}
+.station-group-content {
+  display: none;
+  padding: 8px;
+}
+.station-group.open .station-group-content {
+  display: grid;
+}
+.radio-grid {
     grid-template-columns: 1fr;
   }
   .world-map {
@@ -1345,14 +1453,43 @@ const categoryNames = { cnr: '央广系列', local: '地方电台', hkmt: '港�
 function renderStations(category) {
   category = category || 'all';
   const list = document.getElementById('radioList');
+  // 按分类分组
+  const groups = {};
   const filtered = category === 'all' ? stations : stations.filter(s => s.category === category);
-  list.innerHTML = filtered.map(s =>
-    '<div class="radio-card ' + (currentStation && currentStation.id === s.id ? 'playing' : '') + '" data-id="' + s.id + '" onclick="playStation(\'' + s.id + '\')">' +
-    '<div class="radio-card-name">' + s.name + '</div>' +
-    '<div class="radio-card-desc">' + s.desc + '</div>' +
-    '<div class="radio-card-meta"><span class="radio-card-format">' + s.format + '</span><span>' + s.freq + ' MHz</span><span class="radio-card-lang">' + (s.language || '多语言') + '</span></div>' +
-    '</div>'
-  ).join('');
+  filtered.forEach(s => {
+    if (!groups[s.category]) groups[s.category] = [];
+    groups[s.category].push(s);
+  });
+  // 生成折叠面板
+  let html = '';
+  for (const cat in groups) {
+    const catStations = groups[cat];
+    const catName = categoryNames[cat] || cat;
+    const isOpen = (category === cat) ? 'open' : '';
+    html += '<div class="station-group ' + isOpen + '" data-category="' + cat + '">';
+    html += '<div class="station-group-header" onclick="toggleStationGroup(this)">';
+    html += '<span class="group-arrow">▶</span>';
+    html += '<span class="group-name">' + catName + '</span>';
+    html += '<span class="group-count">' + catStations.length + ' 台</span>';
+    html += '</div>';
+    html += '<div class="station-group-content">';
+    html += catStations.map(s =>
+      '<div class="radio-card ' + (currentStation && currentStation.id === s.id ? 'playing' : '') + '" data-id="' + s.id + '" onclick="playStation(\'' + s.id + '\')">' +
+      '<div class="radio-card-name">' + s.name + '</div>' +
+      '<div class="radio-card-desc">' + s.desc + '</div>' +
+      '<div class="radio-card-meta"><span class="radio-card-format">' + s.format + '</span><span>' + s.freq + ' MHz</span><span class="radio-card-lang">' + (s.language || '多语言') + '</span></div>' +
+      '</div>'
+    ).join('');
+    html += '</div></div>';
+  }
+  list.innerHTML = html;
+}
+
+function toggleStationGroup(header) {
+  const group = header.parentElement;
+  group.classList.toggle('open');
+  const arrow = header.querySelector('.group-arrow');
+  arrow.textContent = group.classList.contains('open') ? '▼' : '▶';
 }
 
 async function playStation(id) {
@@ -1513,6 +1650,16 @@ document.querySelectorAll('.category-btn').forEach(btn => {
     btn.classList.add('active');
     currentCategory = btn.dataset.category;
     renderStations(currentCategory);
+    // 点击分类按钮时自动展开对应分组
+    setTimeout(() => {
+      const group = document.querySelector('.station-group[data-category="' + currentCategory + '"]');
+      if (group) {
+        group.classList.add('open');
+        const arrow = group.querySelector('.group-arrow');
+        if (arrow) arrow.textContent = '▼';
+        group.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 50);
   });
 });
 
