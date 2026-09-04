@@ -465,7 +465,8 @@
   color: #555;
 }
 
-.radio-card-format {
+.radio-card-lang { color: #ffaa00; font-size: 9px; }
+    .radio-card-format {
   color: #8a6a3a;
 }
 
@@ -814,6 +815,7 @@
       <div class="info-row"><span class="info-label">STATUS</span><span class="info-value" id="infoStatus">IDLE</span></div>
       <div class="info-row"><span class="info-label">FORMAT</span><span class="info-value" id="infoFormat">--</span></div>
       <div class="info-row"><span class="info-label">CATEGORY</span><span class="info-value" id="infoCategory">--</span></div>
+      <div class="info-row"><span class="info-label">LANGUAGE</span><span class="info-value" id="infoLanguage">--</span></div>
       <div class="info-row"><span class="info-label">SLEEP TIMER</span><span class="info-value" id="infoSleep">OFF</span></div>
       <div class="info-row"><span class="info-label">VOLUME</span><span class="info-value" id="infoVolume">80%</span></div>
     </div>
@@ -946,66 +948,92 @@ document.getElementById('brandDate').textContent =
 // 电台数据
 const stations = [
   // ===== 央广系列 =====
-  { id: 'zgzs', name: '中国之声', desc: '中央人民广播电台新闻综合频率，全国覆盖', category: 'cnr', format: 'HLS', freq: '106.1', url: 'https://satellitepull.cnr.cn/live/wxzgzs/playlist.m3u8', geo: { lat: 39.9042, lon: 116.4074, label: '北京' } },
-  { id: 'jjzs', name: '经济之声', desc: '以财经资讯和生活服务为主的专业频率', category: 'cnr', format: 'HLS', freq: '96.6', url: 'https://satellitepull.cnr.cn/live/wxjjzs/playlist.m3u8', geo: { lat: 39.9042, lon: 116.4074, label: '' } },
-  { id: 'zhzs', name: '中华之声', desc: '面向港澳台地区的新闻综合频率', category: 'cnr', format: 'HLS', freq: '549', url: 'https://satellitepull.cnr.cn/live/wxzhzs/playlist.m3u8', geo: { lat: 39.9042, lon: 116.4074, label: '' } },
-  { id: 'wyzs', name: '文艺之声', desc: '文学、戏剧、曲艺等文艺节目', category: 'cnr', format: 'HLS', freq: '106.6', url: 'https://satellitepull.cnr.cn/live/wxwyzs/playlist.m3u8', geo: { lat: 39.9042, lon: 116.4074, label: '' } },
-  { id: 'jtgb', name: '中国交通广播', desc: '路况信息、交通资讯、出行服务', category: 'cnr', format: 'HLS', freq: '99.6', url: 'https://satellitepull.cnr.cn/live/wxzgjtgb/playlist.m3u8', geo: { lat: 39.9042, lon: 116.4074, label: '' } },
-  { id: 'xczs', name: '中国乡村之声', desc: '面向农村的农业资讯和民生服务', category: 'cnr', format: 'HLS', freq: '720', url: 'https://satellitepull.cnr.cn/live/wxxczs/playlist.m3u8', geo: { lat: 39.9042, lon: 116.4074, label: '' } },
-  { id: 'crihy', name: 'CRI中文环球', desc: '中国国际广播电台中文环球广播', category: 'cnr', format: 'HLS', freq: '---', url: 'http://sk.cri.cn/hyhq.m3u8', geo: { lat: 39.9042, lon: 116.4074, label: '' } },
-  { id: 'crinews', name: 'CRI NEWS Plus', desc: '中国国际广播电台新闻资讯 AM846', category: 'cnr', format: 'HLS', freq: '846', url: 'http://sk.cri.cn/am846.m3u8', geo: { lat: 39.9042, lon: 116.4074, label: '' } },
+  { id: 'zgzs', name: '中国之声', desc: '中央人民广播电台新闻综合频率，全国覆盖', category: 'cnr', language: '中文', format: 'HLS', freq: '106.1', url: 'https://satellitepull.cnr.cn/live/wxzgzs/playlist.m3u8', geo: { lat: 39.9042, lon: 116.4074, label: '北京' } },
+  { id: 'jjzs', name: '经济之声', desc: '以财经资讯和生活服务为主的专业频率', category: 'cnr', language: '中文', format: 'HLS', freq: '96.6', url: 'https://satellitepull.cnr.cn/live/wxjjzs/playlist.m3u8', geo: { lat: 39.9042, lon: 116.4074, label: '' } },
+  { id: 'zhzs', name: '中华之声', desc: '面向港澳台地区的新闻综合频率', category: 'cnr', language: '中文', format: 'HLS', freq: '549', url: 'https://satellitepull.cnr.cn/live/wxzhzs/playlist.m3u8', geo: { lat: 39.9042, lon: 116.4074, label: '' } },
+  { id: 'wyzs', name: '文艺之声', desc: '文学、戏剧、曲艺等文艺节目', category: 'cnr', language: '中文', format: 'HLS', freq: '106.6', url: 'https://satellitepull.cnr.cn/live/wxwyzs/playlist.m3u8', geo: { lat: 39.9042, lon: 116.4074, label: '' } },
+  { id: 'jtgb', name: '中国交通广播', desc: '路况信息、交通资讯、出行服务', category: 'cnr', language: '中文', format: 'HLS', freq: '99.6', url: 'https://satellitepull.cnr.cn/live/wxzgjtgb/playlist.m3u8', geo: { lat: 39.9042, lon: 116.4074, label: '' } },
+  { id: 'xczs', name: '中国乡村之声', desc: '面向农村的农业资讯和民生服务', category: 'cnr', language: '中文', format: 'HLS', freq: '720', url: 'https://satellitepull.cnr.cn/live/wxxczs/playlist.m3u8', geo: { lat: 39.9042, lon: 116.4074, label: '' } },
+  { id: 'crihy', name: 'CRI中文环球', desc: '中国国际广播电台中文环球广播', category: 'cnr', language: '中文', format: 'HLS', freq: '---', url: 'http://sk.cri.cn/hyhq.m3u8', geo: { lat: 39.9042, lon: 116.4074, label: '' } },
+  { id: 'crinews', name: 'CRI NEWS Plus', desc: '中国国际广播电台新闻资讯 AM846', category: 'cnr', language: '中文', format: 'HLS', freq: '846', url: 'http://sk.cri.cn/am846.m3u8', geo: { lat: 39.9042, lon: 116.4074, label: '' } },
   // ===== 地方电台 =====
-  { id: 'bjjt', name: '北京交通广播', desc: '北京广播电视台交通频率 FM103.9，路况出行', category: 'local', format: 'HLS', freq: '103.9', url: 'https://brtv-radiolive.rbc.cn/alive/fm1039.m3u8', geo: { lat: 39.9042, lon: 116.4074, label: '' } },
-  { id: 'bjxw', name: '北京新闻广播', desc: '北京广播电视台新闻频率 FM94.5，新闻资讯', category: 'local', format: 'HLS', freq: '94.5', url: 'https://brtv-radiolive.rbc.cn/alive/fm945.m3u8', geo: { lat: 39.9042, lon: 116.4074, label: '' } },
-  { id: 'szfy', name: '深圳飞扬971', desc: '深圳广播电影电视集团音乐频率 FM97.1', category: 'local', format: 'HLS', freq: '97.1', url: 'http://satellitepull.cnr.cn/live/wxszfy971/playlist.m3u8', geo: { lat: 22.5431, lon: 114.0579, label: '深圳' } },
-  { id: 'gdxw', name: '广东新闻广播', desc: '广东广播电视台新闻广播，时政民生资讯', category: 'local', format: 'HLS', freq: '648', url: 'http://satellitepull.cnr.cn/live/wxgdxwgb/playlist.m3u8', geo: { lat: 23.1291, lon: 113.2644, label: '' } },
-  { id: 'dycj', name: '第一财经广播', desc: '上海第一财经广播，专业财经资讯频率', category: 'local', format: 'HLS', freq: '97.7', url: 'http://satellitepull.cnr.cn/live/wx32dycjgb/playlist.m3u8', geo: { lat: 31.2304, lon: 121.4737, label: '上海' } },
+  { id: 'bjjt', name: '北京交通广播', desc: '北京广播电视台交通频率 FM103.9，路况出行', category: 'local', language: '中文', format: 'HLS', freq: '103.9', url: 'https://brtv-radiolive.rbc.cn/alive/fm1039.m3u8', geo: { lat: 39.9042, lon: 116.4074, label: '' } },
+  { id: 'bjxw', name: '北京新闻广播', desc: '北京广播电视台新闻频率 FM94.5，新闻资讯', category: 'local', language: '中文', format: 'HLS', freq: '94.5', url: 'https://brtv-radiolive.rbc.cn/alive/fm945.m3u8', geo: { lat: 39.9042, lon: 116.4074, label: '' } },
+  { id: 'szfy', name: '深圳飞扬971', desc: '深圳广播电影电视集团音乐频率 FM97.1', category: 'local', language: '中文', format: 'HLS', freq: '97.1', url: 'http://satellitepull.cnr.cn/live/wxszfy971/playlist.m3u8', geo: { lat: 22.5431, lon: 114.0579, label: '深圳' } },
+  { id: 'gdxw', name: '广东新闻广播', desc: '广东广播电视台新闻广播，时政民生资讯', category: 'local', language: '中文', format: 'HLS', freq: '648', url: 'http://satellitepull.cnr.cn/live/wxgdxwgb/playlist.m3u8', geo: { lat: 23.1291, lon: 113.2644, label: '' } },
+  { id: 'dycj', name: '第一财经广播', desc: '上海第一财经广播，专业财经资讯频率', category: 'local', language: '中文', format: 'HLS', freq: '97.7', url: 'http://satellitepull.cnr.cn/live/wx32dycjgb/playlist.m3u8', geo: { lat: 31.2304, lon: 121.4737, label: '上海' } },
   // ===== 港澳台 =====
-  { id: 'rthk1', name: '香港电台第一台', desc: '香港电台RTHK Radio 1，新闻时事综合频道', category: 'hkmt', format: 'HLS', freq: '---', url: 'https://rthkaudio1-lh.akamaihd.net/i/radio1_1@355864/master.m3u8', geo: { lat: 22.3193, lon: 114.1694, label: '香港' } },
-  { id: 'rthk2', name: '香港电台第二台', desc: '香港电台RTHK Radio 2，青年流行音乐频道', category: 'hkmt', format: 'HLS', freq: '---', url: 'https://rthkaudio2-lh.akamaihd.net/i/radio2_1@355865/master.m3u8', geo: { lat: 22.3193, lon: 114.1694, label: '' } },
-  { id: 'rthk3', name: '香港电台第三台', desc: '香港电台RTHK Radio 3，英文新闻资讯频道', category: 'hkmt', format: 'HLS', freq: '---', url: 'https://rthkaudio3-lh.akamaihd.net/i/radio3_1@355866/master.m3u8', geo: { lat: 22.3193, lon: 114.1694, label: '' } },
+  { id: 'rthk1', name: '香港电台第一台', desc: '香港电台RTHK Radio 1，新闻时事综合频道', category: 'hkmt', language: '中文', format: 'HLS', freq: '---', url: 'https://rthkaudio1-lh.akamaihd.net/i/radio1_1@355864/master.m3u8', geo: { lat: 22.3193, lon: 114.1694, label: '香港' } },
+  { id: 'rthk2', name: '香港电台第二台', desc: '香港电台RTHK Radio 2，青年流行音乐频道', category: 'hkmt', language: '中文', format: 'HLS', freq: '---', url: 'https://rthkaudio2-lh.akamaihd.net/i/radio2_1@355865/master.m3u8', geo: { lat: 22.3193, lon: 114.1694, label: '' } },
+  { id: 'rthk3', name: '香港电台第三台', desc: '香港电台RTHK Radio 3，英文新闻资讯频道', category: 'hkmt', language: '中文', format: 'HLS', freq: '---', url: 'https://rthkaudio3-lh.akamaihd.net/i/radio3_1@355866/master.m3u8', geo: { lat: 22.3193, lon: 114.1694, label: '' } },
   // ===== 音乐电台 =====
-  { id: 'yyzs', name: '音乐之声', desc: '流行音乐为主，伴随性音乐频率', category: 'music', format: 'HLS', freq: '90.0', url: 'https://satellitepull.cnr.cn/live/wxyyzs/playlist.m3u8', geo: { lat: 39.9042, lon: 116.4074, label: '' } },
-  { id: 'dszs', name: '经典音乐广播', desc: '经典老歌、古典音乐、爵士乐等', category: 'music', format: 'HLS', freq: '101.8', url: 'https://satellitepull.cnr.cn/live/wxdszs/playlist.m3u8', geo: { lat: 39.9042, lon: 116.4074, label: '' } },
-  { id: 'hitfm', name: 'CRI HitFM', desc: '中国国际广播电台劲曲调频，欧美流行音乐', category: 'music', format: 'HLS', freq: '88.7', url: 'http://satellitepull.cnr.cn/live/wxhitfm/playlist.m3u8', geo: { lat: 39.9042, lon: 116.4074, label: '' } },
-  { id: 'bjmusic', name: '北京音乐广播', desc: '北京广播电视台音乐频率 FM97.4，华语流行', category: 'music', format: 'HLS', freq: '97.4', url: 'https://brtv-radiolive.rbc.cn/alive/fm974.m3u8', geo: { lat: 39.9042, lon: 116.4074, label: '' } },
-  { id: 'bjwy', name: '北京文艺广播', desc: '北京广播电视台文艺频率 FM87.6，娱乐文艺', category: 'music', format: 'HLS', freq: '87.6', url: 'https://brtv-radiolive.rbc.cn/alive/fm876.m3u8', geo: { lat: 39.9042, lon: 116.4074, label: '' } },
-  { id: 'jsmusic', name: '江苏音乐广播', desc: '江苏广播电视台音乐频率 FM89.7，流行音乐', category: 'music', format: 'HLS', freq: '89.7', url: 'http://lzlive.vojs.cn/jAmO6Ng/92/live.m3u8', geo: { lat: 32.0603, lon: 118.7969, label: '南京' } },
-  { id: 'gdmusic', name: '广东音乐之声', desc: '广东广播电视台音乐之声，粤语流行音乐', category: 'music', format: 'HLS', freq: '99.3', url: 'https://satellitepull.cnr.cn/live/wxgdyyzs/playlist.m3u8', geo: { lat: 23.1291, lon: 113.2644, label: '广州' } },
+  { id: 'yyzs', name: '音乐之声', desc: '流行音乐为主，伴随性音乐频率', category: 'music', language: '中文', format: 'HLS', freq: '90.0', url: 'https://satellitepull.cnr.cn/live/wxyyzs/playlist.m3u8', geo: { lat: 39.9042, lon: 116.4074, label: '' } },
+  { id: 'dszs', name: '经典音乐广播', desc: '经典老歌、古典音乐、爵士乐等', category: 'music', language: '中文', format: 'HLS', freq: '101.8', url: 'https://satellitepull.cnr.cn/live/wxdszs/playlist.m3u8', geo: { lat: 39.9042, lon: 116.4074, label: '' } },
+  { id: 'hitfm', name: 'CRI HitFM', desc: '中国国际广播电台劲曲调频，欧美流行音乐', category: 'music', language: '中文', format: 'HLS', freq: '88.7', url: 'http://satellitepull.cnr.cn/live/wxhitfm/playlist.m3u8', geo: { lat: 39.9042, lon: 116.4074, label: '' } },
+  { id: 'bjmusic', name: '北京音乐广播', desc: '北京广播电视台音乐频率 FM97.4，华语流行', category: 'music', language: '中文', format: 'HLS', freq: '97.4', url: 'https://brtv-radiolive.rbc.cn/alive/fm974.m3u8', geo: { lat: 39.9042, lon: 116.4074, label: '' } },
+  { id: 'bjwy', name: '北京文艺广播', desc: '北京广播电视台文艺频率 FM87.6，娱乐文艺', category: 'music', language: '中文', format: 'HLS', freq: '87.6', url: 'https://brtv-radiolive.rbc.cn/alive/fm876.m3u8', geo: { lat: 39.9042, lon: 116.4074, label: '' } },
+  { id: 'jsmusic', name: '江苏音乐广播', desc: '江苏广播电视台音乐频率 FM89.7，流行音乐', category: 'music', language: '中文', format: 'HLS', freq: '89.7', url: 'http://lzlive.vojs.cn/jAmO6Ng/92/live.m3u8', geo: { lat: 32.0603, lon: 118.7969, label: '南京' } },
+  { id: 'gdmusic', name: '广东音乐之声', desc: '广东广播电视台音乐之声，粤语流行音乐', category: 'music', language: '中文', format: 'HLS', freq: '99.3', url: 'https://satellitepull.cnr.cn/live/wxgdyyzs/playlist.m3u8', geo: { lat: 23.1291, lon: 113.2644, label: '广州' } },
   // ===== 网络音乐 =====
-  { id: '500classic', name: '500首华语经典', desc: '精选500首华语经典歌曲，24小时循环播放', category: 'internet', format: 'HLS', freq: '---', url: 'http://ls.qingting.fm/live/3412131.m3u8?bitrate=64', geo: { lat: 39.0851, lon: 117.199, label: '网络' } },
+  { id: '500classic', name: '500首华语经典', desc: '精选500首华语经典歌曲，24小时循环播放', category: 'internet', language: '英语', format: 'HLS', freq: '---', url: 'http://ls.qingting.fm/live/3412131.m3u8?bitrate=64', geo: { lat: 39.0851, lon: 117.199, label: '网络' } },
   // ===== 新加坡 =====
-  { id: 'sg_yes933', name: 'YES 933', desc: '新加坡新传媒YES 933，华语流行音乐频率', category: 'singapore', format: 'AAC', freq: '93.3', url: 'http://playerservices.streamtheworld.com/api/livestream-redirect/YES933AAC.aac', geo: { lat: 1.3521, lon: 103.8198, label: '新加坡' } },
-  { id: 'sg_class95', name: 'Class 95', desc: '新加坡新传媒Class 95，英文成人当代音乐', category: 'singapore', format: 'AAC', freq: '95.0', url: 'http://playerservices.streamtheworld.com/api/livestream-redirect/CLASS95AAC.aac', geo: { lat: 1.3521, lon: 103.8198, label: '' } },
-  { id: 'sg_gold905', name: 'Gold 905', desc: '新加坡新传媒Gold 905，经典金曲频率', category: 'singapore', format: 'AAC', freq: '90.5', url: 'http://playerservices.streamtheworld.com/api/livestream-redirect/GOLD905AAC.aac', geo: { lat: 1.3521, lon: 103.8198, label: '' } },
-  { id: 'sg_symphony', name: 'Symphony 924', desc: '新加坡新传媒Symphony 924，古典音乐频率', category: 'singapore', format: 'AAC', freq: '92.4', url: 'http://playerservices.streamtheworld.com/api/livestream-redirect/SYMPHONY924AAC.aac', geo: { lat: 1.3521, lon: 103.8198, label: '' } },
+  { id: 'sg_yes933', name: 'YES 933', desc: '新加坡新传媒YES 933，华语流行音乐频率', category: 'singapore', language: '中文/英语', format: 'AAC', freq: '93.3', url: 'http://playerservices.streamtheworld.com/api/livestream-redirect/YES933AAC.aac', geo: { lat: 1.3521, lon: 103.8198, label: '新加坡' } },
+  { id: 'sg_class95', name: 'Class 95', desc: '新加坡新传媒Class 95，英文成人当代音乐', category: 'singapore', language: '中文/英语', format: 'AAC', freq: '95.0', url: 'http://playerservices.streamtheworld.com/api/livestream-redirect/CLASS95AAC.aac', geo: { lat: 1.3521, lon: 103.8198, label: '' } },
+  { id: 'sg_gold905', name: 'Gold 905', desc: '新加坡新传媒Gold 905，经典金曲频率', category: 'singapore', language: '中文/英语', format: 'AAC', freq: '90.5', url: 'http://playerservices.streamtheworld.com/api/livestream-redirect/GOLD905AAC.aac', geo: { lat: 1.3521, lon: 103.8198, label: '' } },
+  { id: 'sg_symphony', name: 'Symphony 924', desc: '新加坡新传媒Symphony 924，古典音乐频率', category: 'singapore', language: '中文/英语', format: 'AAC', freq: '92.4', url: 'http://playerservices.streamtheworld.com/api/livestream-redirect/SYMPHONY924AAC.aac', geo: { lat: 1.3521, lon: 103.8198, label: '' } },
   // ===== 国际广播 =====
-  { id: 'crihq', name: 'CRI环球资讯', desc: '中国国际广播电台环球资讯广播 FM90.5', category: 'international', format: 'HLS', freq: '90.5', url: 'http://sk.cri.cn/905.m3u8', geo: { lat: 39.9042, lon: 116.4074, label: '' } },
-  { id: 'nhzs', name: 'CRI南海之声', desc: '中国国际广播电台南海之声，面向南海及周边', category: 'international', format: 'HLS', freq: '101.0', url: 'https://sk.cri.cn/nhzs.m3u8', geo: { lat: 39.9042, lon: 116.4074, label: '' } },
-  { id: 'npr', name: 'NPR News', desc: '美国国家公共广播电台，新闻和文化节目', category: 'international', format: 'MP3', freq: '---', url: 'http://npr-ice.streamguys1.com/live.mp3', geo: { lat: 38.9072, lon: -77.0369, label: '华盛顿' } },
-  { id: 'kexp', name: 'KEXP Seattle', desc: '美国西雅图KEXP独立音乐电台，另类摇滚', category: 'international', format: 'MP3', freq: '90.3', url: 'https://kexp-mp3-128.streamguys1.com/kexp128.mp3', geo: { lat: 47.6062, lon: -122.3321, label: '西雅图' } },
-  { id: 'wnyc', name: 'WNYC', desc: '美国纽约公共广播电台，新闻谈话类节目', category: 'international', format: 'MP3', freq: '93.9', url: 'https://fm939.wnyc.org/wnycfm', geo: { lat: 40.7128, lon: -74.006, label: '纽约' } },
+  { id: 'crihq', name: 'CRI环球资讯', desc: '中国国际广播电台环球资讯广播 FM90.5', category: 'international', language: '多语言', format: 'HLS', freq: '90.5', url: 'http://sk.cri.cn/905.m3u8', geo: { lat: 39.9042, lon: 116.4074, label: '' } },
+  { id: 'nhzs', name: 'CRI南海之声', desc: '中国国际广播电台南海之声，面向南海及周边', category: 'international', language: '多语言', format: 'HLS', freq: '101.0', url: 'https://sk.cri.cn/nhzs.m3u8', geo: { lat: 39.9042, lon: 116.4074, label: '' } },
+  { id: 'npr', name: 'NPR News', desc: '美国国家公共广播电台，新闻和文化节目', category: 'international', language: '多语言', format: 'MP3', freq: '---', url: 'http://npr-ice.streamguys1.com/live.mp3', geo: { lat: 38.9072, lon: -77.0369, label: '华盛顿' } },
+  { id: 'kexp', name: 'KEXP Seattle', desc: '美国西雅图KEXP独立音乐电台，另类摇滚', category: 'international', language: '多语言', format: 'MP3', freq: '90.3', url: 'https://kexp-mp3-128.streamguys1.com/kexp128.mp3', geo: { lat: 47.6062, lon: -122.3321, label: '西雅图' } },
+  { id: 'wnyc', name: 'WNYC', desc: '美国纽约公共广播电台，新闻谈话类节目', category: 'international', language: '多语言', format: 'MP3', freq: '93.9', url: 'https://fm939.wnyc.org/wnycfm', geo: { lat: 40.7128, lon: -74.006, label: '纽约' } },
   // ===== 氛围音乐 =====
-  { id: 'rp_main', name: 'Radio Paradise', desc: '美国Radio Paradise， eclectic混合音乐，320kbps AAC', category: 'ambient', format: 'AAC', freq: '---', url: 'https://stream.radioparadise.com/aac-320', geo: { lat: 1.2954, lon: 103.79, label: '' } },
-  { id: 'rp_rock', name: 'Radio Paradise Rock', desc: 'Radio Paradise摇滚频道，经典与现代摇滚', category: 'ambient', format: 'AAC', freq: '---', url: 'https://stream.radioparadise.com/rock-320', geo: { lat: 1.2954, lon: 103.79, label: '' } },
-  { id: 'soma_groove', name: 'SomaFM Groove Salad', desc: 'SomaFM氛围电子音乐，downtempo/chillout', category: 'ambient', format: 'MP3', freq: '---', url: 'https://ice1.somafm.com/groovesalad-128-mp3', geo: { lat: 37.8359, lon: -122.1689, label: '旧金山' } },
-  { id: 'soma_drone', name: 'SomaFM Drone Zone', desc: 'SomaFM无人机音乐，极简氛围电子', category: 'ambient', format: 'MP3', freq: '---', url: 'https://ice1.somafm.com/dronezone-128-mp3', geo: { lat: 37.8359, lon: -122.1689, label: '' } },
-  { id: 'soma_lush', name: 'SomaFM Lush', desc: 'SomaFM感性电子音乐，vocal ambient', category: 'ambient', format: 'MP3', freq: '---', url: 'https://ice1.somafm.com/lush-128-mp3', geo: { lat: 37.8359, lon: -122.1689, label: '' } },
-  { id: 'soma_space', name: 'SomaFM Space Station', desc: 'SomaFM太空音乐，氛围/太空电子', category: 'ambient', format: 'MP3', freq: '---', url: 'https://ice1.somafm.com/spacestation-128-mp3', geo: { lat: 37.8359, lon: -122.1689, label: '' } },
+  { id: 'rp_main', name: 'Radio Paradise', desc: '美国Radio Paradise， eclectic混合音乐，320kbps AAC', category: 'ambient', language: '纯音乐', format: 'AAC', freq: '---', url: 'https://stream.radioparadise.com/aac-320', geo: { lat: 1.2954, lon: 103.79, label: '' } },
+  { id: 'rp_rock', name: 'Radio Paradise Rock', desc: 'Radio Paradise摇滚频道，经典与现代摇滚', category: 'ambient', language: '纯音乐', format: 'AAC', freq: '---', url: 'https://stream.radioparadise.com/rock-320', geo: { lat: 1.2954, lon: 103.79, label: '' } },
+  { id: 'soma_groove', name: 'SomaFM Groove Salad', desc: 'SomaFM氛围电子音乐，downtempo/chillout', category: 'ambient', language: '纯音乐', format: 'MP3', freq: '---', url: 'https://ice1.somafm.com/groovesalad-128-mp3', geo: { lat: 37.8359, lon: -122.1689, label: '旧金山' } },
+  { id: 'soma_drone', name: 'SomaFM Drone Zone', desc: 'SomaFM无人机音乐，极简氛围电子', category: 'ambient', language: '纯音乐', format: 'MP3', freq: '---', url: 'https://ice1.somafm.com/dronezone-128-mp3', geo: { lat: 37.8359, lon: -122.1689, label: '' } },
+  { id: 'soma_lush', name: 'SomaFM Lush', desc: 'SomaFM感性电子音乐，vocal ambient', category: 'ambient', language: '纯音乐', format: 'MP3', freq: '---', url: 'https://ice1.somafm.com/lush-128-mp3', geo: { lat: 37.8359, lon: -122.1689, label: '' } },
+  { id: 'soma_space', name: 'SomaFM Space Station', desc: 'SomaFM太空音乐，氛围/太空电子', category: 'ambient', language: '纯音乐', format: 'MP3', freq: '---', url: 'https://ice1.somafm.com/spacestation-128-mp3', geo: { lat: 37.8359, lon: -122.1689, label: '' } },
   // ===== 俄语电台 =====
-  { id: 'ru_mayak', name: 'Радио Маяк', desc: '俄罗斯灯塔广播电台，新闻资讯综合频率，VGTRK官方', category: 'russian', format: 'MP3', freq: '103.4', url: 'https://icecast-vgtrk.cdnvideo.ru/mayakfm_mp3_128kbps', geo: { lat: 55.7558, lon: 37.6173, label: '莫斯科' } },
-  { id: 'ru_vesti', name: 'Вести FM', desc: '俄罗斯消息电台FM，新闻时政频率，VGTRK官方', category: 'russian', format: 'MP3', freq: '97.6', url: 'https://icecast-vgtrk.cdnvideo.ru/vestifm_mp3_192kbps', geo: { lat: 55.7558, lon: 37.6173, label: '' } },
-  { id: 'ru_nashe', name: 'Наше радио', desc: '俄罗斯摇滚音乐电台，俄语摇滚经典', category: 'russian', format: 'MP3', freq: '---', url: 'http://nashe.streamr.ru/nashe20-128.mp3', geo: { lat: 55.7487, lon: 37.6187, label: '' } },
-  { id: 'ru_record', name: 'Radio Record Gold', desc: '俄罗斯Record电台金曲频道，俄语流行经典', category: 'russian', format: 'AAC', freq: '---', url: 'https://radiorecord.hostingradio.ru/russiangold96.aacp', geo: { lat: 55.7487, lon: 37.6187, label: '' } },
-  { id: 'ru_relax', name: 'Relax FM Chillout', desc: '俄罗斯放松音乐电台，chillout/ambient氛围', category: 'russian', format: 'MP3', freq: '---', url: 'https://pub0201.101.ru/stream/trust/mp3/128/24', geo: { lat: 55.7558, lon: 37.6173, label: '' } },
+  { id: 'ru_mayak', name: 'Радио Маяк', desc: '俄罗斯灯塔广播电台，新闻资讯综合频率，VGTRK官方', category: 'russian', language: '俄语', format: 'MP3', freq: '103.4', url: 'https://icecast-vgtrk.cdnvideo.ru/mayakfm_mp3_128kbps', geo: { lat: 55.7558, lon: 37.6173, label: '莫斯科' } },
+  { id: 'ru_vesti', name: 'Вести FM', desc: '俄罗斯消息电台FM，新闻时政频率，VGTRK官方', category: 'russian', language: '俄语', format: 'MP3', freq: '97.6', url: 'https://icecast-vgtrk.cdnvideo.ru/vestifm_mp3_192kbps', geo: { lat: 55.7558, lon: 37.6173, label: '' } },
+  { id: 'ru_nashe', name: 'Наше радио', desc: '俄罗斯摇滚音乐电台，俄语摇滚经典', category: 'russian', language: '俄语', format: 'MP3', freq: '---', url: 'http://nashe.streamr.ru/nashe20-128.mp3', geo: { lat: 55.7487, lon: 37.6187, label: '' } },
+  { id: 'ru_record', name: 'Radio Record Gold', desc: '俄罗斯Record电台金曲频道，俄语流行经典', category: 'russian', language: '俄语', format: 'AAC', freq: '---', url: 'https://radiorecord.hostingradio.ru/russiangold96.aacp', geo: { lat: 55.7487, lon: 37.6187, label: '' } },
+  { id: 'ru_relax', name: 'Relax FM Chillout', desc: '俄罗斯放松音乐电台，chillout/ambient氛围', category: 'russian', language: '俄语', format: 'MP3', freq: '---', url: 'https://pub0201.101.ru/stream/trust/mp3/128/24', geo: { lat: 55.7558, lon: 37.6173, label: '' } },
   // ===== 阿拉伯语电台 =====
-  { id: 'ar_quran_mishary', name: 'Quran Mishary Alafasi', desc: '古兰经诵读电台，Mishary Rashid Alafasi诵读，24小时循环', category: 'arabic', format: 'MP3', freq: '---', url: 'https://qurango.net/radio/mishary_alafasi', geo: { lat: 43.6532, lon: -79.3832, label: '多伦多' } },
-  { id: 'ar_quran_tarateel', name: 'Quran Tarateel', desc: '古兰经诵读电台，精选多位诵经家，24小时循环', category: 'arabic', format: 'MP3', freq: '---', url: 'https://qurango.net/radio/tarateel', geo: { lat: 43.6532, lon: -79.3832, label: '' } },
-  { id: 'ar_quran_abdulbasit', name: 'Quran Abdulbasit', desc: '古兰经诵读电台，Abdulbasit Abdulsamad经典诵读', category: 'arabic', format: 'MP3', freq: '---', url: 'https://radio.mp3islam.com/listen/abdulbasit/radio.mp3', geo: { lat: 43.6532, lon: -79.3832, label: '' } },
-  { id: 'ar_orient', name: 'Orient Radio', desc: '阿拉伯东方音乐电台，阿拉伯流行/传统音乐', category: 'arabic', format: 'MP3', freq: '---', url: 'https://oriental-high.rautemusik.fm/?ref=radiobrowser', geo: { lat: 50.4777, lon: 12.3649, label: '' } },
+  { id: 'ar_quran_mishary', name: 'Quran Mishary Alafasi', desc: '古兰经诵读电台，Mishary Rashid Alafasi诵读，24小时循环', category: 'arabic', language: '阿拉伯语', format: 'MP3', freq: '---', url: 'https://qurango.net/radio/mishary_alafasi', geo: { lat: 43.6532, lon: -79.3832, label: '多伦多' } },
+  { id: 'ar_quran_tarateel', name: 'Quran Tarateel', desc: '古兰经诵读电台，精选多位诵经家，24小时循环', category: 'arabic', language: '阿拉伯语', format: 'MP3', freq: '---', url: 'https://qurango.net/radio/tarateel', geo: { lat: 43.6532, lon: -79.3832, label: '' } },
+  { id: 'ar_quran_abdulbasit', name: 'Quran Abdulbasit', desc: '古兰经诵读电台，Abdulbasit Abdulsamad经典诵读', category: 'arabic', language: '阿拉伯语', format: 'MP3', freq: '---', url: 'https://radio.mp3islam.com/listen/abdulbasit/radio.mp3', geo: { lat: 43.6532, lon: -79.3832, label: '' } },
+  { id: 'ar_orient', name: 'Orient Radio', desc: '阿拉伯东方音乐电台，阿拉伯流行/传统音乐', category: 'arabic', language: '阿拉伯语', format: 'MP3', freq: '---', url: 'https://oriental-high.rautemusik.fm/?ref=radiobrowser', geo: { lat: 50.4777, lon: 12.3649, label: '' } },
   // ===== 英语电台新增 =====
-  { id: 'en_skynews', name: 'Sky News Australia', desc: '澳大利亚天空新闻台，24小时英语新闻广播', category: 'international', format: 'AAC', freq: '---', url: 'https://playerservices.streamtheworld.com/api/livestream-redirect/NOVA_SKYNEWSAAC.aac', geo: { lat: -33.8688, lon: 151.2093, label: '悉尼' } },
-  { id: 'en_classical100', name: '100 Greatest Classical', desc: '100首最伟大古典音乐，24小时循环播放', category: 'ambient', format: 'MP3', freq: '---', url: 'https://az1.mediacp.eu/listen/100greatestclassicalmusic/radio.mp3', geo: { lat: 51.2705, lon: 6.8144, label: '德国' } },
+  { id: 'en_skynews', name: 'Sky News Australia', desc: '澳大利亚天空新闻台，24小时英语新闻广播', category: 'international', language: '多语言', format: 'AAC', freq: '---', url: 'https://playerservices.streamtheworld.com/api/livestream-redirect/NOVA_SKYNEWSAAC.aac', geo: { lat: -33.8688, lon: 151.2093, label: '悉尼' } },
+  { id: 'en_classical100', name: '100 Greatest Classical', desc: '100首最伟大古典音乐，24小时循环播放', category: 'ambient', language: '纯音乐', format: 'MP3', freq: '---', url: 'https://az1.mediacp.eu/listen/100greatestclassicalmusic/radio.mp3', geo: { lat: 51.2705, lon: 6.8144, label: '德国' } },
+
+  // ===== 非洲电台 =====
+  { id: 'jacaranda', name: 'Jacaranda FM 94.2', desc: '南非比勒陀利亚流行音乐电台，南非最大独立电台之一', category: 'africa', format: 'AAC', freq: '94.2', url: 'https://edge.iono.fm/xice/jacarandafm_live_medium.aac', language: '英语', geo: { lat: -25.7479, lon: 28.2293, label: '比勒陀利亚' } },
+  { id: 'kfm945', name: 'KFM 94.5', desc: '南非开普敦热门音乐电台，西开普省最受欢迎', category: 'africa', format: 'MP3', freq: '94.5', url: 'https://playerservices.streamtheworld.com/api/livestream-redirect/KFM945.mp3', language: '英语', geo: { lat: -33.9249, lon: 18.4241, label: '开普敦' } },
+  { id: 'radio702', name: 'Talk Radio 702', desc: '南非约翰内斯堡新闻谈话电台，高人气脱口秀', category: 'africa', format: 'MP3', freq: '702', url: 'http://28993.live.streamtheworld.com:3690/FM702_SC', language: '英语', geo: { lat: -26.2041, lon: 28.0473, label: '约翰内斯堡' } },
+  { id: 'wazobia', name: 'Wazobia FM Lagos', desc: '尼日利亚拉各斯最受欢迎皮钦语电台，娱乐搞笑', category: 'africa', format: 'MP3', freq: '95.1', url: 'https://wazobiafmlagos951-atunwadigital.streamguys1.com/wazobia', language: '英语/皮钦语', geo: { lat: 6.5244, lon: 3.3792, label: '拉各斯' } },
+  { id: 'metrofm', name: 'METRO FM Lagos', desc: '尼日利亚拉各斯都市音乐电台，Afrobeats与流行', category: 'africa', format: 'MP3', freq: '97.7', url: 'https://go.webgateready.com/metrofm/radio.mp3', language: '英语', geo: { lat: 6.5244, lon: 3.3792, label: '拉各斯' } },
+  { id: 'kameme', name: 'Kameme FM', desc: '肯尼亚内罗毕基库尤语电台，新闻与本土音乐', category: 'africa', format: 'AAC', freq: '101.1', url: 'https://kamemefm-atunwadigital.streamguys1.com/kamemefm', language: '基库尤语', geo: { lat: -1.2921, lon: 36.8219, label: '内罗毕' } },
+  { id: 'quran_egypt', name: '埃及古兰经广播', desc: '埃及开罗古兰经诵读，Mahmoud Khalil Al-Hussary', category: 'africa', format: 'MP3', freq: '---', url: 'https://qurango.net/radio/mahmoud_khalil_alhussary_warsh', language: '阿拉伯语', geo: { lat: 30.0444, lon: 31.2357, label: '开罗' } },
+  // ===== 印度电台 =====
+  { id: 'vividh', name: 'Vividh Bharti', desc: '全印广播电台娱乐频道，宝莱坞音乐与综艺', category: 'india', format: 'HLS', freq: '102.8', url: 'https://air.pc.cdn.bitgravity.com/air/live/pbaudio001/playlist.m3u8', language: '印地语', geo: { lat: 19.0760, lon: 72.8777, label: '孟买' } },
+  { id: 'bollywood90s', name: 'Nostalgic Bollywood 90s', desc: '印度宝莱坞90年代经典金曲怀旧电台', category: 'india', format: 'MP3', freq: '---', url: 'https://www.desizoneradio.com/relay3', language: '印地语', geo: { lat: 28.6139, lon: 77.2090, label: '新德里' } },
+  { id: 'airurdu', name: 'AIR Urdu', desc: '全印广播电台乌尔都语频道，新闻与文化节目', category: 'india', format: 'HLS', freq: '---', url: 'https://airhlspush.pc.cdn.bitgravity.com/httppush/hlspbaudio231/hlspbaudio231_Auto.m3u8', language: '乌尔都语', geo: { lat: 28.6139, lon: 77.2090, label: '新德里' } },
+  // ===== 南美电台 =====
+  { id: 'alphafm', name: 'Alpha FM 101.7', desc: '巴西圣保罗流行音乐电台，巴西最受欢迎FM之一', category: 'southamerica', format: 'AAC', freq: '101.7', url: 'https://playerservices.streamtheworld.com/api/livestream-redirect/ALPHAFMAAC.aac', language: '葡萄牙语', geo: { lat: -23.5505, lon: -46.6333, label: '圣保罗' } },
+  { id: 'antena1', name: 'Antena 1 FM 94.7', desc: '巴西圣保罗成人当代音乐电台，经典流行', category: 'southamerica', format: 'AAC', freq: '94.7', url: 'http://antena1.newradio.it/stream', language: '葡萄牙语', geo: { lat: -23.5505, lon: -46.6333, label: '圣保罗' } },
+  { id: 'radiomix', name: 'Rádio Mix FM 106.3', desc: '巴西圣保罗热门流行音乐电台，年轻人首选', category: 'southamerica', format: 'AAC', freq: '106.3', url: 'https://playerservices.streamtheworld.com/api/livestream-redirect/RADIOMIXFM_SC', language: '葡萄牙语', geo: { lat: -23.5505, lon: -46.6333, label: '圣保罗' } },
+  { id: 'la100', name: 'La 100 FM 99.9', desc: '阿根廷布宜诺斯艾利斯流行音乐电台，Grupo Clarín旗下', category: 'southamerica', format: 'MP3', freq: '99.9', url: 'https://playerservices.streamtheworld.com/api/livestream-redirect/LA100.mp3', language: '西班牙语', geo: { lat: -34.6037, lon: -58.3816, label: '布宜诺斯艾利斯' } },
+  { id: 'radiomitre', name: 'Radio Mitre AM 790', desc: '阿根廷布宜诺斯艾利斯新闻谈话电台，历史悠久', category: 'southamerica', format: 'AAC', freq: '790', url: 'http://playerservices.streamtheworld.com/api/livestream-redirect/RADIOMITREAAC.aac', language: '西班牙语', geo: { lat: -34.6037, lon: -58.3816, label: '布宜诺斯艾利斯' } },
+  { id: 'rockandpop', name: 'Rock & Pop FM 95.9', desc: '阿根廷布宜诺斯艾利斯摇滚流行音乐电台', category: 'southamerica', format: 'AAC', freq: '95.9', url: 'https://playerservices.streamtheworld.com/api/livestream-redirect/ROCKANDPOP_SC', language: '西班牙语', geo: { lat: -34.6037, lon: -58.3816, label: '布宜诺斯艾利斯' } },
+  { id: 'los40mx', name: 'Los 40 México', desc: '墨西哥城流行音乐电台，拉美最火40强榜单', category: 'southamerica', format: 'MP3', freq: '101.7', url: 'http://14553.live.streamtheworld.com:3690/LOS40_MEXICO_SC', language: '西班牙语', geo: { lat: 19.4326, lon: -99.1332, label: '墨西哥城' } },
+  { id: 'convoy', name: 'Convoy Network', desc: '墨西哥城新闻谈话网络电台，深度分析与访谈', category: 'southamerica', format: 'AAC', freq: '---', url: 'https://live.convoynetwork.com/stream', language: '西班牙语', geo: { lat: 19.4326, lon: -99.1332, label: '墨西哥城' } },
+  { id: 'alfa913', name: 'Alfa 91.3 FM', desc: '墨西哥城成人当代音乐电台，经典与流行', category: 'southamerica', format: 'AAC', freq: '91.3', url: 'https://playerservices.streamtheworld.com/api/livestream-redirect/ALFA913_SC', language: '西班牙语', geo: { lat: 19.4326, lon: -99.1332, label: '墨西哥城' } },
+  // ===== 澳洲电台 =====
+  { id: '3aw', name: '3AW 693 AM Melbourne', desc: '澳大利亚墨尔本新闻谈话电台，墨尔本最受欢迎AM台', category: 'australia', format: 'MP3', freq: '693', url: 'http://playerservices.streamtheworld.com/api/livestream-redirect/3AW.mp3', language: '英语', geo: { lat: -37.8136, lon: 144.9631, label: '墨尔本' } },
+  { id: 'fox1019', name: 'Fox FM 101.9', desc: '澳大利亚墨尔本流行音乐电台，Hit Network旗舰', category: 'australia', format: 'MP3', freq: '101.9', url: 'https://legacy.scahw.com.au/3fox_128', language: '英语', geo: { lat: -37.8136, lon: 144.9631, label: '墨尔本' } },
 ];
 
 const audio = document.getElementById('audioPlayer');
@@ -1020,7 +1048,7 @@ let currentStation = null;
 let isPlaying = false;
 let hlsInstance = null;
 
-const categoryNames = { cnr: '央广系列', local: '地方电台', hkmt: '港澳台', music: '音乐电台', internet: '网络音乐', singapore: '新加坡', international: '国际广播', ambient: '氛围音乐', russian: '俄语电台', arabic: '阿拉伯语', all: '全部' };
+const categoryNames = { cnr: '央广系列', local: '地方电台', hkmt: '港澳台', music: '音乐电台', internet: '网络音乐', singapore: '新加坡', international: '国际广播', ambient: '氛围音乐', russian: '俄语电台', arabic: '阿拉伯语', africa: '非洲电台', india: '印度电台', southamerica: '南美电台', australia: '澳洲电台', all: '全部' };
 
 function renderStations(category) {
   category = category || 'all';
@@ -1030,7 +1058,7 @@ function renderStations(category) {
     '<div class="radio-card ' + (currentStation && currentStation.id === s.id ? 'playing' : '') + '" data-id="' + s.id + '" onclick="playStation(\'' + s.id + '\')">' +
     '<div class="radio-card-name">' + s.name + '</div>' +
     '<div class="radio-card-desc">' + s.desc + '</div>' +
-    '<div class="radio-card-meta"><span class="radio-card-format">' + s.format + '</span><span>' + s.freq + ' MHz</span></div>' +
+    '<div class="radio-card-meta"><span class="radio-card-format">' + s.format + '</span><span>' + s.freq + ' MHz</span><span class="radio-card-lang">' + (s.language || '多语言') + '</span></div>' +
     '</div>'
   ).join('');
 }
@@ -1047,6 +1075,7 @@ async function playStation(id) {
   document.getElementById('displaySignal').textContent = 'SIGNAL: ████░░';
   document.getElementById('infoFormat').textContent = station.format;
   document.getElementById('infoCategory').textContent = categoryNames[station.category] || station.category;
+  document.getElementById('infoLanguage').textContent = station.language || '多语言';
 
   // 3D地球聚焦到播放位置
   if (typeof focusGlobeOnStation === 'function') focusGlobeOnStation(id);
