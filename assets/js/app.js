@@ -21,18 +21,15 @@
   function showProgress(year, percent) {
     const area = $('content-area');
     if (!area) return;
-    // 只创建一次，后续只更新内容（避免 innerHTML 重建导致闪烁）[frontend: 平滑过渡]
     let bar = area.querySelector('.loading-progress');
     if (!bar) {
       area.innerHTML = `
         <div class="loading-progress">
-          <div class="progress-year">正在扫描...</div>
           <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
           <div class="progress-text">发现文章中，请稍候</div>
         </div>`;
       bar = area.querySelector('.loading-progress');
     }
-    bar.querySelector('.progress-year').textContent = `正在扫描 ${year} 年...`;
     bar.querySelector('.progress-fill').style.width = percent + '%';
   }
   function hideLoading() {
@@ -43,7 +40,7 @@
   /* ---------- 数据加载 ---------- */
   // 先注册进度事件监听器（必须在 init() 之前，否则收不到事件）
   document.addEventListener('discover-start', () => {
-    showProgress('2025', 5);
+    showProgress('', 5);
   });
   document.addEventListener('discover-progress', (e) => {
     showProgress(e.detail.year, e.detail.percent);
@@ -224,31 +221,38 @@
       area.innerHTML = html;
       // 恢复月份折叠状态（重新渲染后不丢失）
       restoreCollapsedState();
-      // 重新设置无限滚动监听
-      setupLoadMoreObserver();
+      // 立即检查是否需要加载更多
+      triggerLoadMoreCheck();
     }
     const totalLabel = allPostsLoaded ? filtered.length : `${filtered.length}+`;
     $('stats').innerHTML = `共 <strong>${totalLabel}</strong> 条 · <strong>${tags.length}</strong> 标签`;
   }
 
-  /* ---------- 无限滚动：IntersectionObserver 监听加载提示 ---------- */
-  let loadMoreObserver = null;
-  function setupLoadMoreObserver() {
-    const hint = $('load-more-hint');
-    if (!hint) return;
-    if (loadMoreObserver) loadMoreObserver.disconnect();
-    loadMoreObserver = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
-        if (entry.isIntersecting) {
-          const filtered = getFiltered();
-          if (displayCount < filtered.length) {
-            displayCount = Math.min(displayCount + PAGE_SIZE, filtered.length);
-            renderMain();
-          }
+  /* ---------- 无限滚动：滚动事件 + 位置检测（更稳定） ---------- */
+  let loadMoreTicking = false;
+  function checkLoadMore() {
+    if (loadMoreTicking) return;
+    loadMoreTicking = true;
+    requestAnimationFrame(function() {
+      loadMoreTicking = false;
+      const hint = $('load-more-hint');
+      if (!hint) return;
+      const rect = hint.getBoundingClientRect();
+      // 提示元素进入视口底部300px内时加载更多
+      if (rect.top < window.innerHeight + 300) {
+        const filtered = getFiltered();
+        if (displayCount < filtered.length) {
+          displayCount = Math.min(displayCount + PAGE_SIZE, filtered.length);
+          renderMain();
         }
-      });
-    }, { rootMargin: '200px 0px', threshold: 0.01 });
-    loadMoreObserver.observe(hint);
+      }
+    });
+  }
+  window.addEventListener('scroll', checkLoadMore, { passive: true });
+  window.addEventListener('resize', checkLoadMore);
+  // renderMain 后立即检查一次（防止提示元素一开始就在视口内）
+  function triggerLoadMoreCheck() {
+    setTimeout(checkLoadMore, 50);
   }
 
   /* ---------- 时间线月份折叠/展开（状态持久化，重新渲染不丢失） ---------- */
