@@ -1272,18 +1272,15 @@ async function initGlobe() {
         void main() {
           vec4 texColor = texture2D(dayTexture, vUv);
           float brightness = dot(texColor.rgb, vec3(0.299, 0.587, 0.114));
-          // 海陆硬区分：阈值0.4以下海洋，以上陆地
-          vec3 oceanColor = vec3(0.008, 0.03, 0.02);  // 深海近黑
-          vec3 landColor = vec3(0.12, 0.55, 0.22);    // 陆地亮绿
-          vec3 highLand = vec3(0.3, 0.9, 0.4);        // 高亮度地区
+          // 海陆二分：只有陆地和海洋两种颜色
+          vec3 oceanColor = vec3(0.01, 0.04, 0.025);  // 海洋单一深绿
+          vec3 landColor = vec3(0.15, 0.6, 0.25);     // 陆地单一亮绿
           vec3 color;
-          float landMask = smoothstep(0.38, 0.42, brightness);  // 海陆分界线（硬过渡）
+          float landMask = smoothstep(0.39, 0.41, brightness);  // 海陆硬分界
           color = mix(oceanColor, landColor, landMask);
-          // 陆地内部亮度变化
-          color = mix(color, highLand, landMask * smoothstep(0.6, 0.9, brightness));
-          // 光照
+          // 光照（只做整体明暗，不区分内部）
           float diff = max(dot(vNormal, lightDir), 0.0);
-          color *= (0.3 + diff * 1.0);
+          color *= (0.35 + diff * 0.9);
           // 海岸线高亮（海陆交界处，明显的亮绿线）
           float coast = smoothstep(0.02, 0.0, abs(brightness - 0.4));
           color += vec3(0.2, 0.8, 0.35) * coast * 0.8;
