@@ -95,7 +95,7 @@
 .opt-material-row .label { color: #999; }
 .opt-material-row .value { color: #333; font-family: monospace; }
 
-.opt-canvas-area { flex: 1; position: relative; background: #1a1a2e; overflow: hidden; }
+.opt-canvas-area { flex: 1; position: relative; background: #e8ecf1; overflow: hidden; }
 #opt3d { display: block; width: 100%; height: 100%; touch-action: none; }
 .opt-canvas-toolbar {
   position: absolute; top: 10px; left: 10px;
@@ -331,8 +331,8 @@
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <script>
 (function() {
   const canvas = document.getElementById('opt3d');
@@ -374,8 +374,8 @@
 
   function init3D() {
     scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x1a1a2e);
-    scene.fog = new THREE.Fog(0x1a1a2e, 20, 50);
+    scene.background = new THREE.Color(0xe8ecf1);
+    scene.fog = new THREE.Fog(0xe8ecf1, 25, 50);
 
     const w = area.clientWidth;
     const h = area.clientHeight;
@@ -415,7 +415,7 @@
     scene.add(pointLight);
 
     // 3D网格地面
-    const gridHelper = new THREE.GridHelper(30, 30, 0x2a2a4a, 0x222244);
+    const gridHelper = new THREE.GridHelper(30, 30, 0xb0b8c4, 0xd0d8e0);
     gridHelper.position.y = -3;
     scene.add(gridHelper);
 
@@ -424,7 +424,7 @@
       new THREE.Vector3(-15, 0, 0),
       new THREE.Vector3(15, 0, 0)
     ]);
-    const axisMat = new THREE.LineDashedMaterial({ color: 0x444466, dashSize: 0.3, gapSize: 0.2 });
+    const axisMat = new THREE.LineDashedMaterial({ color: 0x8899aa, dashSize: 0.3, gapSize: 0.2 });
     const axis = new THREE.Line(axisGeo, axisMat);
     axis.computeLineDistances();
     scene.add(axis);
@@ -556,12 +556,12 @@
 
         const lensGeo = new THREE.LatheGeometry(points, 32);
         const lensMat = new THREE.MeshPhysicalMaterial({
-          color: 0x88ccff,
+          color: 0x4a9eff,
           transparent: true,
-          opacity: 0.35,
+          opacity: 0.5,
           roughness: 0.1,
           metalness: 0,
-          transmission: 0.6,
+          transmission: 0.3,
           thickness: t,
           ior: n,
           side: THREE.DoubleSide
@@ -742,11 +742,11 @@
 
   function addRaySegment(start, end, color) {
     const geo = new THREE.BufferGeometry().setFromPoints([start, end]);
-    const mat = new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.85 });
+    const mat = new THREE.LineBasicMaterial({ color, transparent: true, opacity: 1.0, linewidth: 2 });
     const line = new THREE.Line(geo, mat);
     rayGroup.add(line);
     // 光晕（粗线）
-    const glowMat = new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.15 });
+    const glowMat = new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.2 });
     const glowLine = new THREE.Line(geo.clone(), glowMat);
     rayGroup.add(glowLine);
   }
@@ -898,8 +898,14 @@
 
   // 初始化
   renderElementList();
-  init3D();
-  render();
+  
+  // 检查Three.js是否加载成功
+  if (typeof THREE === 'undefined') {
+    area.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#666;font-size:14px;">3D引擎加载中，请刷新页面...</div>';
+  } else {
+    init3D();
+    render();
+  }
 
   // 设备检测：修改操作提示
   const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
