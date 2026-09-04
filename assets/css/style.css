@@ -2033,3 +2033,120 @@ select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
   font-size: var(--fs-sm);
   min-height: 36px;
 }
+
+/* ============================================================
+   Mermaid 图交互：平移/缩放/重置/全屏
+   ============================================================ */
+.mermaid-wrapper {
+  position: relative;
+  margin: var(--sp-5) 0;
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  background: var(--color-surface);
+}
+.mermaid-wrapper .mermaid {
+  margin: 0;
+  padding: var(--sp-4);
+  overflow: hidden;
+  cursor: grab;
+}
+.mermaid-wrapper .mermaid:active {
+  cursor: grabbing;
+}
+.mermaid-wrapper .mermaid svg {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+/* 控制按钮组 */
+.mermaid-controls {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity var(--transition);
+}
+.mermaid-wrapper:hover .mermaid-controls {
+  opacity: 1;
+}
+.mermaid-ctrl {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  font-size: 16px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background var(--transition), transform var(--transition);
+  font-family: var(--font-family-mono);
+}
+.mermaid-ctrl:hover {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  transform: scale(1.05);
+}
+.mermaid-ctrl:active {
+  transform: scale(0.95);
+}
+
+/* 全屏模式 */
+.mermaid-wrapper.fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  margin: 0;
+  border-radius: 0;
+  border: none;
+  background: var(--color-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.mermaid-wrapper.fullscreen .mermaid {
+  width: 100%;
+  height: 100%;
+  padding: var(--sp-8);
+}
+.mermaid-wrapper.fullscreen .mermaid svg {
+  max-width: 90vw;
+  max-height: 85vh;
+}
+.mermaid-wrapper.fullscreen .mermaid-controls {
+  opacity: 1;
+  bottom: 24px;
+  right: 24px;
+}
+.mermaid-wrapper.fullscreen .mermaid-ctrl {
+  width: 40px;
+  height: 40px;
+  font-size: 20px;
+}
+
+/* 操作提示 */
+.mermaid-wrapper::after {
+  content: '滚轮缩放 · 拖拽平移';
+  position: absolute;
+  top: 8px;
+  left: 12px;
+  font-size: 11px;
+  color: var(--color-text-muted);
+  opacity: 0;
+  transition: opacity var(--transition);
+  pointer-events: none;
+  font-family: var(--font-family-mono);
+}
+.mermaid-wrapper:hover::after {
+  opacity: 0.7;
+}

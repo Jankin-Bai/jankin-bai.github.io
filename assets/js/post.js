@@ -270,12 +270,15 @@
       } catch (e) { SiteUtils.warn && SiteUtils.warn('KaTeX 加载失败:', e.message); }
     }
 
-    // 按需加载 Mermaid
+    // 按需加载 Mermaid + svg-pan-zoom 交互
     if (content.includes('class="mermaid"')) {
       try {
         await loadScript('assets/js/vendor/mermaid.min.js');
         mermaid.initialize({ startOnLoad: false, theme: 'dark', securityLevel: 'loose' });
         await mermaid.run({ querySelector: '.mermaid' });
+        // 加载 svg-pan-zoom 并初始化交互
+        await loadScript('assets/js/vendor/svg-pan-zoom.min.js');
+        initMermaidPanZoom();
       } catch (e) { SiteUtils.warn && SiteUtils.warn('Mermaid 加载失败:', e.message); }
     }
 
@@ -284,6 +287,74 @@
     $('post-content').innerHTML = `<div class="content-error"><p>内容加载失败：${esc(e.message)}</p></div>`;
     const toc = $('post-toc');
     if (toc) toc.innerHTML = '<p class="post-toc-empty">暂无目录</p>';
+  }
+
+  /* ---------- Mermaid 图交互：平移/缩放/重置/全屏 ---------- */
+  function initMermaidPanZoom() {
+    var mermaidDivs = document.querySelectorAll('.mermaid');
+    mermaidDivs.forEach(function(div, index) {
+      var svg = div.querySelector('svg');
+      if (!svg) return;
+      
+      // 给 svg 设置 id（svg-pan-zoom 需要）
+      var svgId = 'mermaid-svg-' + index;
+      svg.id = svgId;
+      
+      // 包装容器
+      var wrapper = document.createElement('div');
+      wrapper.className = 'mermaid-wrapper';
+      div.parentNode.insertBefore(wrapper, div);
+      wrapper.appendChild(div);
+      
+      // 控制按钮组
+      var controls = document.createElement('div');
+      controls.className = 'mermaid-controls';
+      controls.innerHTML = 
+        '<button class="mermaid-ctrl" data-action="zoom-in" title="放大">+</button>' +
+        '<button class="mermaid-ctrl" data-action="zoom-out" title="缩小">−</button>' +
+        '<button class="mermaid-ctrl" data-action="reset" title="重置">⟳</button>' +
+        '<button class="mermaid-ctrl" data-action="fullscreen" title="全屏">⛶</button>';
+      wrapper.appendChild(controls);
+      
+      // 初始化 svg-pan-zoom
+      var panZoom = svgPanZoom('#' + svgId, {
+        zoomEnabled: true,
+        controlIconsEnabled: false,
+        fit: true,
+        center: true,
+        minZoom: 0.5,
+        maxZoom: 10,
+        zoomScaleSensitivity: 0.4,
+        panEnabled: true,
+        dblClickZoomEnabled: true,
+        mouseWheelZoomEnabled: true
+      });
+      
+      // 绑定控制按钮
+      controls.querySelectorAll('.mermaid-ctrl').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          var action = btn.dataset.action;
+          if (action === 'zoom-in') panZoom.zoomIn();
+          else if (action === 'zoom-out') panZoom.zoomOut();
+          else if (action === 'reset') panZoom.reset();
+          else if (action === 'fullscreen') toggleMermaidFullscreen(wrapper, panZoom);
+        });
+      });
+    });
+  }
+  
+  // 全屏查看 mermaid 图
+  function toggleMermaidFullscreen(wrapper, panZoom) {
+    if (wrapper.classList.contains('fullscreen')) {
+      wrapper.classList.remove('fullscreen');
+      document.body.style.overflow = '';
+    } else {
+      wrapper.classList.add('fullscreen');
+      document.body.style.overflow = 'hidden';
+    }
+    // 延迟 resize，等动画完成
+    setTimeout(function() { panZoom.resize(); panZoom.fit(); panZoom.center(); }, 100);
   }
 
   /* ---------- 文章目录 TOC 生成 ---------- */
