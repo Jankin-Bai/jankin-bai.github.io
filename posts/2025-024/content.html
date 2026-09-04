@@ -342,6 +342,15 @@
   fill: none;
 }
 
+.crosshair .ch-label rect {
+  fill: rgba(0,0,0,0.85);
+}
+
+.crosshair .ch-label text {
+  fill: #ff6b81;
+  font-family: 'Courier New', monospace;
+}
+
 @keyframes ch-ring-pulse {
   0%, 100% { opacity: 0.9; stroke-width: 1; }
   50% { opacity: 0.4; stroke-width: 0.5; }
@@ -794,9 +803,11 @@
   <!-- 世界地图 -->
   <div class="map-panel">
     <span class="panel-label">MAP</span>
-    <svg class="world-map" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid meet">
-      <!-- 真实世界地图背景 -->
-      <image href="https://raw.githubusercontent.com/Jankin-Bai/jankin-bai.github.io/main/images/radio/world_map.png" x="0" y="0" width="800" height="400" preserveAspectRatio="none"/>
+    <svg class="world-map" id="worldMap" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid meet">
+      <!-- 高分辨率真实世界地图背景 -->
+      <image href="https://raw.githubusercontent.com/Jankin-Bai/jankin-bai.github.io/main/images/radio/world_map_hd.png" x="0" y="0" width="800" height="400" preserveAspectRatio="none"/>
+      <!-- 缩放提示 -->
+      <text x="790" y="15" text-anchor="end" fill="#5a7a5a" font-size="8" font-family="Courier New">SCROLL: ZOOM | DRAG: PAN | DBLCLICK: RESET</text>
       <!-- 电台点位 -->
       <g id="mapStations">
         <!-- 北京（央广+北京台） -->
@@ -1227,46 +1238,113 @@ const mapPanel = document.querySelector('.map-panel');
 const crosshair = document.createElement('div');
 crosshair.className = 'crosshair';
 crosshair.innerHTML = `
-  <svg width="60" height="60" viewBox="-30 -30 60 60">
+  <svg width="80" height="80" viewBox="-40 -40 80 80">
     <!-- 十字线 -->
-    <line class="ch-line" x1="-28" y1="0" x2="-10" y2="0"/>
-    <line class="ch-line" x1="10" y1="0" x2="28" y2="0"/>
-    <line class="ch-line" x1="0" y1="-28" x2="0" y2="-10"/>
-    <line class="ch-line" x1="0" y1="10" x2="0" y2="28"/>
+    <line class="ch-line" x1="-36" y1="0" x2="-12" y2="0"/>
+    <line class="ch-line" x1="12" y1="0" x2="36" y2="0"/>
+    <line class="ch-line" x1="0" y1="-36" x2="0" y2="-12"/>
+    <line class="ch-line" x1="0" y1="12" x2="0" y2="36"/>
     <!-- 双圈 -->
-    <circle class="ch-ring inner" cx="0" cy="0" r="8"/>
-    <circle class="ch-ring outer" cx="0" cy="0" r="16"/>
+    <circle class="ch-ring inner" cx="0" cy="0" r="10"/>
+    <circle class="ch-ring outer" cx="0" cy="0" r="20"/>
     <!-- 四角标记 -->
-    <path class="ch-corner" d="M -20,-20 L -14,-20 M -20,-20 L -20,-14"/>
-    <path class="ch-corner" d="M 20,-20 L 14,-20 M 20,-20 L 20,-14"/>
-    <path class="ch-corner" d="M -20,20 L -14,20 M -20,20 L -20,14"/>
-    <path class="ch-corner" d="M 20,20 L 14,20 M 20,20 L 20,14"/>
+    <path class="ch-corner" d="M -26,-26 L -18,-26 M -26,-26 L -26,-18"/>
+    <path class="ch-corner" d="M 26,-26 L 18,-26 M 26,-26 L 26,-18"/>
+    <path class="ch-corner" d="M -26,26 L -18,26 M -26,26 L -26,18"/>
+    <path class="ch-corner" d="M 26,26 L 18,26 M 26,26 L 26,18"/>
+    <!-- 电台名称标签 -->
+    <g class="ch-label">
+      <rect x="-35" y="28" width="70" height="14" rx="2" fill="rgba(0,0,0,0.8)" stroke="#ff4757" stroke-width="0.5"/>
+      <text x="0" y="38" text-anchor="middle" fill="#ff4757" font-size="8" font-family="Courier New" font-weight="bold" id="chLabelText">TARGET</text>
+    </g>
   </svg>
 `;
 mapPanel.style.position = 'relative';
 mapPanel.appendChild(crosshair);
 
-// 移动十字瞄准镜到指定点位
+// ===== 地图缩放和平移 =====
+const worldMap = document.getElementById('worldMap');
+let mapView = { x: 0, y: 0, w: 800, h: 400 };
+let isDragging = false;
+let dragStart = { x: 0, y: 0, vx: 0, vy: 0 };
+
+function updateMapView() {
+  worldMap.setAttribute('viewBox', `${mapView.x} ${mapView.y} ${mapView.w} ${mapView.h}`);
+}
+
+// 滚轮缩放
+worldMap.addEventListener('wheel', (e) => {
+  e.preventDefault();
+  const scale = e.deltaY > 0 ? 1.2 : 0.8;
+  const newW = Math.max(100, Math.min(800, mapView.w * scale));
+  const newH = newW / 2;
+  // 以鼠标位置为中心缩放
+  const rect = worldMap.getBoundingClientRect();
+  const mx = (e.clientX - rect.left) / rect.width * mapView.w + mapView.x;
+  const my = (e.clientY - rect.top) / rect.height * mapView.h + mapView.y;
+  mapView.x = mx - (mx - mapView.x) * (newW / mapView.w);
+  mapView.y = my - (my - mapView.y) * (newH / mapView.h);
+  mapView.w = newW;
+  mapView.h = newH;
+  updateMapView();
+  // 更新瞄准镜位置
+  if (currentStation) moveCrosshair(currentStation.id);
+}, { passive: false });
+
+// 拖拽平移
+worldMap.addEventListener('mousedown', (e) => {
+  isDragging = true;
+  dragStart = { x: e.clientX, y: e.clientY, vx: mapView.x, vy: mapView.y };
+  worldMap.style.cursor = 'grabbing';
+});
+window.addEventListener('mousemove', (e) => {
+  if (!isDragging) return;
+  const rect = worldMap.getBoundingClientRect();
+  const dx = (e.clientX - dragStart.x) / rect.width * mapView.w;
+  const dy = (e.clientY - dragStart.y) / rect.height * mapView.h;
+  mapView.x = dragStart.vx - dx;
+  mapView.y = dragStart.vy - dy;
+  updateMapView();
+  if (currentStation) moveCrosshair(currentStation.id);
+});
+window.addEventListener('mouseup', () => {
+  isDragging = false;
+  worldMap.style.cursor = 'grab';
+});
+worldMap.style.cursor = 'grab';
+
+// 双击重置
+worldMap.addEventListener('dblclick', () => {
+  mapView = { x: 0, y: 0, w: 800, h: 400 };
+  updateMapView();
+  if (currentStation) moveCrosshair(currentStation.id);
+});
+
+// 移动十字瞄准镜到指定点位（考虑缩放平移）
 function moveCrosshair(stationId) {
   const point = document.querySelector(`.map-station[data-id="${stationId}"]`);
   if (!point) { crosshair.classList.remove('active'); return; }
   const svg = document.querySelector('.world-map');
   const svgRect = svg.getBoundingClientRect();
   const panelRect = mapPanel.getBoundingClientRect();
-  // 解析transform中的translate坐标
   const transform = point.getAttribute('transform');
   const match = transform.match(/translate\(([\d.]+),([\d.]+)\)/);
   if (match) {
     const x = parseFloat(match[1]);
     const y = parseFloat(match[2]);
-    // SVG坐标转像素（viewBox 800x400）
-    const scaleX = svgRect.width / 800;
-    const scaleY = svgRect.height / 400;
-    const px = svgRect.left - panelRect.left + x * scaleX;
-    const py = svgRect.top - panelRect.top + y * scaleY;
-    crosshair.style.left = (px - 30) + 'px';
-    crosshair.style.top = (py - 30) + 'px';
+    // 考虑当前viewBox的缩放和平移
+    const scaleX = svgRect.width / mapView.w;
+    const scaleY = svgRect.height / mapView.h;
+    const px = svgRect.left - panelRect.left + (x - mapView.x) * scaleX;
+    const py = svgRect.top - panelRect.top + (y - mapView.y) * scaleY;
+    crosshair.style.left = (px - 40) + 'px';
+    crosshair.style.top = (py - 40) + 'px';
     crosshair.classList.add('active');
+    // 更新标签
+    const station = stations.find(s => s.id === stationId);
+    if (station) {
+      document.getElementById('chLabelText').textContent = station.name.substring(0, 12);
+    }
   }
 }
 
