@@ -31,7 +31,6 @@
 .opt-tab.active { background: #e8f3ff; color: #4a9eff; font-weight: 500; }
 .opt-main { display: flex; height: 580px; }
 
-/* 左侧元件列表 */
 .opt-sidebar {
   width: 220px; background: #fff; border-right: 1px solid #e8ecf1;
   overflow-y: auto; flex-shrink: 0;
@@ -48,9 +47,7 @@
   border-radius: 4px; cursor: pointer; transition: all 0.2s;
 }
 .opt-add-btn:hover { border-color: #4a9eff; color: #4a9eff; }
-.opt-element-card {
-  border-bottom: 1px solid #f0f4f8; overflow: hidden;
-}
+.opt-element-card { border-bottom: 1px solid #f0f4f8; overflow: hidden; }
 .opt-element-header {
   display: flex; align-items: center; padding: 8px 12px;
   cursor: pointer; background: #fafbfc;
@@ -98,10 +95,8 @@
 .opt-material-row .label { color: #999; }
 .opt-material-row .value { color: #333; font-family: monospace; }
 
-/* 中间画布 */
-.opt-canvas-area { flex: 1; position: relative; background: #fafbfc; overflow: hidden; }
-#optCanvas { display: block; width: 100%; height: 100%; cursor: default; }
-#optCanvas.dragging { cursor: grabbing; }
+.opt-canvas-area { flex: 1; position: relative; background: #1a1a2e; overflow: hidden; }
+#opt3d { display: block; width: 100%; height: 100%; }
 .opt-canvas-toolbar {
   position: absolute; top: 10px; left: 10px;
   display: flex; gap: 4px; background: rgba(255,255,255,0.95);
@@ -115,32 +110,17 @@
 .opt-tool-btn:hover { background: #f0f4f8; }
 .opt-canvas-info {
   position: absolute; bottom: 10px; left: 10px;
-  background: rgba(255,255,255,0.95); padding: 6px 10px;
-  border-radius: 4px; font-size: 10px; color: #666;
+  background: rgba(255,255,255,0.9); padding: 6px 10px;
+  border-radius: 4px; font-size: 10px; color: #333;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1); font-family: monospace;
 }
 .opt-canvas-info span { color: #4a9eff; font-weight: 500; }
+.opt-view-hint {
+  position: absolute; top: 10px; right: 10px;
+  background: rgba(74,158,255,0.9); color: #fff;
+  padding: 5px 10px; border-radius: 4px; font-size: 10px;
+}
 
-/* 悬浮参数面板 */
-.opt-float-panel {
-  position: absolute; background: #fff; border-radius: 6px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.15); padding: 10px 12px;
-  min-width: 160px; z-index: 100; display: none;
-  border-left: 3px solid #4a9eff;
-}
-.opt-float-panel.show { display: block; }
-.opt-float-panel-title {
-  font-size: 11px; font-weight: 600; color: #1a1a2e;
-  margin-bottom: 6px; padding-bottom: 4px; border-bottom: 1px solid #f0f4f8;
-}
-.opt-float-panel .row {
-  display: flex; justify-content: space-between;
-  font-size: 10px; padding: 2px 0;
-}
-.opt-float-panel .row .label { color: #888; }
-.opt-float-panel .row .value { color: #4a9eff; font-family: monospace; }
-
-/* 右侧信息面板 */
 .opt-rightpanel {
   width: 180px; background: #fff; border-left: 1px solid #e8ecf1;
   padding: 10px; overflow-y: auto; flex-shrink: 0;
@@ -193,7 +173,7 @@
 <div class="opt-app">
   <div class="opt-topbar">
     <div class="opt-topbar-title">
-      <div class="logo">⚡</div>光学计算引擎
+      <div class="logo">⚡</div>光学计算引擎 <span style="font-size:10px;color:#999;margin-left:6px">3D</span>
     </div>
     <div class="opt-topbar-tabs">
       <button class="opt-tab active">光路模拟</button>
@@ -204,7 +184,6 @@
   </div>
 
   <div class="opt-main">
-    <!-- 左侧元件列表 -->
     <div class="opt-sidebar">
       <div class="opt-sidebar-header">
         <span>📋 系统元件</span>
@@ -218,27 +197,22 @@
       <div id="elementList"></div>
     </div>
 
-    <!-- 中间画布 -->
     <div class="opt-canvas-area">
       <div class="opt-canvas-toolbar">
-        <button class="opt-tool-btn" title="选择/拖拽">🖱️</button>
+        <button class="opt-tool-btn" title="旋转视角">🔄</button>
         <button class="opt-tool-btn" title="缩放">🔍</button>
-        <button class="opt-tool-btn" title="撤销">↩️</button>
-        <button class="opt-tool-btn" title="重做">↪️</button>
+        <button class="opt-tool-btn" title="平移">✋</button>
+        <button class="opt-tool-btn" title="重置视角" onclick="resetCamera()">⟳</button>
       </div>
-      <canvas id="optCanvas"></canvas>
-      <div class="opt-float-panel" id="floatPanel">
-        <div class="opt-float-panel-title" id="floatPanelTitle">元件参数</div>
-        <div id="floatPanelContent"></div>
-      </div>
+      <canvas id="opt3d"></canvas>
+      <div class="opt-view-hint">🖱️ 拖拽旋转 | 滚轮缩放 | 右键平移</div>
       <div class="opt-canvas-info">
         元件: <span id="infoElements">3</span> | 
         光线: <span id="infoRays">7</span> | 
-        拖拽元件移动位置
+        3D 实时光线追踪
       </div>
     </div>
 
-    <!-- 右侧信息 -->
     <div class="opt-rightpanel">
       <div class="opt-ray-info">
         <div class="opt-ray-info-title">📊 系统分析</div>
@@ -267,7 +241,7 @@
   </div>
 
   <div class="opt-footer">
-    <strong>操作：</strong>拖拽画布中元件移动位置 | 点击元件查看参数 | 左侧列表添加/删除/调节元件 | 所有计算基于 Snell 定律和透镜制造者方程
+    <strong>操作：</strong>鼠标拖拽旋转3D视角 | 滚轮缩放 | 右键平移 | 左侧列表添加/删除/调节元件 | 基于 Three.js + Snell 定律
   </div>
 
   <div class="opt-project-info">
@@ -282,24 +256,23 @@
       n₁ · sin(θ₁) = n₂ · sin(θ₂)
     </div>
     <div class="opt-tech-tags">
+      <span class="opt-tech-tag">Three.js</span>
+      <span class="opt-tech-tag">3D 光线追踪</span>
       <span class="opt-tech-tag">SolidWorks</span>
       <span class="opt-tech-tag">几何光学</span>
-      <span class="opt-tech-tag">光线追踪</span>
       <span class="opt-tech-tag">肖特玻璃库</span>
       <span class="opt-tech-tag">微信小程序</span>
-      <span class="opt-tech-tag">JavaScript</span>
-      <span class="opt-tech-tag">Canvas</span>
       <span class="opt-tech-tag">多元件系统</span>
     </div>
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/controls/OrbitControls.js"></script>
 <script>
 (function() {
-  const canvas = document.getElementById('optCanvas');
-  const ctx = canvas.getContext('2d');
+  const canvas = document.getElementById('opt3d');
   const area = canvas.parentElement;
-  const floatPanel = document.getElementById('floatPanel');
 
   // 肖特玻璃材料库
   const materials = {
@@ -311,29 +284,104 @@
     CAF2:  { name: 'CaF₂', nd: 1.4338, vd: 94.96, A: 0.8900, B: 0.0040 }
   };
 
-  // 全局状态
   let state = {
     wavelength: 550,
     specWidth: 0,
     rayCount: 7,
     angle: 0,
     selectedElement: null,
-    dragging: null,
-    dragOffsetX: 0,
     elements: []
   };
 
-  // 初始系统：光源 + 双凸透镜 + 接收屏
   function initElements() {
     state.elements = [
-      { id: 1, type: 'source', name: '标准光源', x: 80, y: 0, aperture: 30, color: '#ffd93d' },
-      { id: 2, type: 'lens', name: '双凸透镜', x: 280, y: 0, r1: 50, r2: -50, thickness: 8, aperture: 40, material: 'NBK7' },
-      { id: 3, type: 'screen', name: '像面接收屏', x: 480, y: 0, aperture: 60, color: '#4a9eff' }
+      { id: 1, type: 'source', name: '标准光源', x: -6, y: 0, z: 0, aperture: 2, color: 0xffd93d },
+      { id: 2, type: 'lens', name: '双凸透镜', x: 0, y: 0, z: 0, r1: 3, r2: -3, thickness: 0.8, aperture: 3, material: 'NBK7' },
+      { id: 3, type: 'screen', name: '像面接收屏', x: 6, y: 0, z: 0, aperture: 4, color: 0x2ed573 }
     ];
   }
   initElements();
-
   let nextId = 4;
+
+  // Three.js 场景
+  let scene, camera, renderer, controls;
+  let rayGroup, elementGroup;
+  let animationId;
+
+  function init3D() {
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x1a1a2e);
+    scene.fog = new THREE.Fog(0x1a1a2e, 20, 50);
+
+    const w = area.clientWidth;
+    const h = area.clientHeight;
+    camera = new THREE.PerspectiveCamera(45, w / h, 0.1, 100);
+    camera.position.set(0, 4, 12);
+
+    renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+    renderer.setSize(w, h);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+
+    controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.target.set(0, 0, 0);
+
+    // 灯光
+    const ambient = new THREE.AmbientLight(0xffffff, 0.6);
+    scene.add(ambient);
+    const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    dirLight.position.set(5, 10, 7);
+    dirLight.castShadow = true;
+    scene.add(dirLight);
+    const pointLight = new THREE.PointLight(0xffd93d, 1, 20);
+    pointLight.position.set(-6, 0, 0);
+    scene.add(pointLight);
+
+    // 3D网格地面
+    const gridHelper = new THREE.GridHelper(30, 30, 0x2a2a4a, 0x222244);
+    gridHelper.position.y = -3;
+    scene.add(gridHelper);
+
+    // 光轴
+    const axisGeo = new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(-15, 0, 0),
+      new THREE.Vector3(15, 0, 0)
+    ]);
+    const axisMat = new THREE.LineDashedMaterial({ color: 0x444466, dashSize: 0.3, gapSize: 0.2 });
+    const axis = new THREE.Line(axisGeo, axisMat);
+    axis.computeLineDistances();
+    scene.add(axis);
+
+    elementGroup = new THREE.Group();
+    rayGroup = new THREE.Group();
+    scene.add(elementGroup);
+    scene.add(rayGroup);
+
+    window.addEventListener('resize', onResize);
+    animate();
+  }
+
+  function onResize() {
+    const w = area.clientWidth;
+    const h = area.clientHeight;
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+    renderer.setSize(w, h);
+  }
+
+  function animate() {
+    animationId = requestAnimationFrame(animate);
+    controls.update();
+    renderer.render(scene, camera);
+  }
+
+  window.resetCamera = function() {
+    camera.position.set(0, 4, 12);
+    controls.target.set(0, 0, 0);
+    controls.update();
+  };
 
   // 波长转颜色
   function wavelengthToColor(wl) {
@@ -344,10 +392,9 @@
     else if (wl >= 510 && wl < 580) { r=(wl-510)/70; g=1; }
     else if (wl >= 580 && wl < 645) { r=1; g=-(wl-645)/65; }
     else if (wl >= 645) { r=1; }
-    return `rgb(${Math.round(r*255)},${Math.round(g*255)},${Math.round(b*255)})`;
+    return new THREE.Color(r, g, b);
   }
 
-  // 柯西公式
   function getN(material, wl) {
     const m = materials[material];
     if (!m) return 1.5;
@@ -355,161 +402,153 @@
     return m.A + m.B / (lu * lu);
   }
 
-  function resizeCanvas() {
-    canvas.width = area.clientWidth;
-    canvas.height = area.clientHeight;
-    render();
-  }
-  window.addEventListener('resize', resizeCanvas);
-
-  // 绘制网格
-  function drawGrid() {
-    ctx.strokeStyle = '#eef2f7';
-    ctx.lineWidth = 1;
-    for (let x = 0; x < canvas.width; x += 20) {
-      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+  // 构建3D元件
+  function buildElements() {
+    // 清除旧元件
+    while (elementGroup.children.length > 0) {
+      const child = elementGroup.children[0];
+      elementGroup.remove(child);
+      if (child.geometry) child.geometry.dispose();
+      if (child.material) {
+        if (Array.isArray(child.material)) child.material.forEach(m => m.dispose());
+        else child.material.dispose();
+      }
     }
-    for (let y = 0; y < canvas.height; y += 20) {
-      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+
+    state.elements.forEach(el => {
+      const group = new THREE.Group();
+      group.position.set(el.x, el.y, el.z);
+      group.userData = { elementId: el.id };
+
+      if (el.type === 'source') {
+        // 光源：发光球体 + 光晕
+        const sphereGeo = new THREE.SphereGeometry(0.3, 16, 16);
+        const sphereMat = new THREE.MeshStandardMaterial({
+          color: el.color, emissive: el.color, emissiveIntensity: 0.8
+        });
+        const sphere = new THREE.Mesh(sphereGeo, sphereMat);
+        group.add(sphere);
+        // 光晕
+        const glowGeo = new THREE.SphereGeometry(0.5, 16, 16);
+        const glowMat = new THREE.MeshBasicMaterial({
+          color: el.color, transparent: true, opacity: 0.2
+        });
+        group.add(new THREE.Mesh(glowGeo, glowMat));
+      } else if (el.type === 'lens') {
+        // 透镜：用旋转体生成双凸透镜
+        const n = getN(el.material, state.wavelength);
+        const r = Math.abs(el.r1);
+        const halfA = el.aperture / 2;
+        const t = el.thickness;
+
+        // 生成透镜轮廓点（用于LatheGeometry旋转）
+        const points = [];
+        const sag1 = r - Math.sqrt(Math.max(0, r*r - halfA*halfA));
+        const leftCenterX = -t/2 + r - sag1;
+        const rightCenterX = t/2 - r + sag1;
+
+        // 左表面（凸）
+        for (let y = halfA; y >= -halfA; y -= halfA/10) {
+          const x = leftCenterX - Math.sqrt(Math.max(0, r*r - y*y));
+          points.push(new THREE.Vector2(x, y));
+        }
+        // 右表面（凸）
+        for (let y = -halfA; y <= halfA; y += halfA/10) {
+          const x = rightCenterX + Math.sqrt(Math.max(0, r*r - y*y));
+          points.push(new THREE.Vector2(x, y));
+        }
+
+        const lensGeo = new THREE.LatheGeometry(points, 32);
+        const lensMat = new THREE.MeshPhysicalMaterial({
+          color: 0x88ccff,
+          transparent: true,
+          opacity: 0.35,
+          roughness: 0.1,
+          metalness: 0,
+          transmission: 0.6,
+          thickness: t,
+          ior: n,
+          side: THREE.DoubleSide
+        });
+        const lens = new THREE.Mesh(lensGeo, lensMat);
+        lens.castShadow = true;
+        group.add(lens);
+
+        // 透镜边缘线
+        const edgeGeo = new THREE.EdgesGeometry(lensGeo);
+        const edgeMat = new THREE.LineBasicMaterial({ color: 0x4a9eff, transparent: true, opacity: 0.6 });
+        group.add(new THREE.LineSegments(edgeGeo, edgeMat));
+
+        // 选中高亮
+        if (state.selectedElement === el.id) {
+          const boxGeo = new THREE.BoxGeometry(t + r*0.5, halfA*2 + 0.5, halfA*2 + 0.5);
+          const boxMat = new THREE.MeshBasicMaterial({ color: 0xff9f43, wireframe: true, transparent: true, opacity: 0.5 });
+          group.add(new THREE.Mesh(boxGeo, boxMat));
+        }
+      } else if (el.type === 'mirror') {
+        // 反射镜：45度倾斜的圆盘
+        const mirrorGeo = new THREE.CylinderGeometry(el.aperture/2, el.aperture/2, 0.15, 32);
+        const mirrorMat = new THREE.MeshStandardMaterial({
+          color: 0x333333, metalness: 0.9, roughness: 0.2,
+          side: THREE.DoubleSide
+        });
+        const mirror = new THREE.Mesh(mirrorGeo, mirrorMat);
+        mirror.rotation.z = Math.PI / 4; // 45度
+        mirror.castShadow = true;
+        group.add(mirror);
+        // 反射面高光
+        const faceGeo = new THREE.CircleGeometry(el.aperture/2, 32);
+        const faceMat = new THREE.MeshStandardMaterial({
+          color: 0xaaaaaa, metalness: 1, roughness: 0.1, side: THREE.DoubleSide
+        });
+        const face = new THREE.Mesh(faceGeo, faceMat);
+        face.rotation.z = Math.PI / 4;
+        face.rotation.y = Math.PI / 2;
+        group.add(face);
+
+        if (state.selectedElement === el.id) {
+          const boxGeo = new THREE.BoxGeometry(el.aperture + 0.5, el.aperture + 0.5, 0.5);
+          const boxMat = new THREE.MeshBasicMaterial({ color: 0xff9f43, wireframe: true, transparent: true, opacity: 0.5 });
+          group.add(new THREE.Mesh(boxGeo, boxMat));
+        }
+      } else if (el.type === 'screen') {
+        // 接收屏：半透明平面 + 边框
+        const screenGeo = new THREE.PlaneGeometry(0.2, el.aperture);
+        const screenMat = new THREE.MeshPhysicalMaterial({
+          color: el.color, transparent: true, opacity: 0.2,
+          side: THREE.DoubleSide, roughness: 0.5
+        });
+        group.add(new THREE.Mesh(screenGeo, screenMat));
+        // 边框
+        const frameGeo = new THREE.EdgesGeometry(new THREE.BoxGeometry(0.25, el.aperture + 0.1, 0.05));
+        const frameMat = new THREE.LineBasicMaterial({ color: el.color });
+        group.add(new THREE.LineSegments(frameGeo, frameMat));
+
+        if (state.selectedElement === el.id) {
+          const boxGeo = new THREE.BoxGeometry(0.5, el.aperture + 0.5, 0.5);
+          const boxMat = new THREE.MeshBasicMaterial({ color: 0xff9f43, wireframe: true, transparent: true, opacity: 0.5 });
+          group.add(new THREE.Mesh(boxGeo, boxMat));
+        }
+      }
+
+      elementGroup.add(group);
+    });
+  }
+
+  // 3D光线追踪
+  function traceRays3D() {
+    // 清除旧光线
+    while (rayGroup.children.length > 0) {
+      const child = rayGroup.children[0];
+      rayGroup.remove(child);
+      if (child.geometry) child.geometry.dispose();
+      if (child.material) child.material.dispose();
     }
-    // 光轴
-    ctx.strokeStyle = '#d0d8e0';
-    ctx.lineWidth = 1;
-    ctx.setLineDash([4, 4]);
-    ctx.beginPath();
-    ctx.moveTo(0, canvas.height / 2);
-    ctx.lineTo(canvas.width, canvas.height / 2);
-    ctx.stroke();
-    ctx.setLineDash([]);
-  }
 
-  // 绘制光源
-  function drawSource(el) {
-    const cy = canvas.height / 2 + el.y;
-    // 光晕
-    const grad = ctx.createRadialGradient(el.x, cy, 0, el.x, cy, 25);
-    grad.addColorStop(0, 'rgba(255, 217, 61, 0.6)');
-    grad.addColorStop(1, 'rgba(255, 217, 61, 0)');
-    ctx.fillStyle = grad;
-    ctx.beginPath(); ctx.arc(el.x, cy, 25, 0, Math.PI * 2); ctx.fill();
-    // 光源点
-    ctx.fillStyle = el.color;
-    ctx.beginPath(); ctx.arc(el.x, cy, 7, 0, Math.PI * 2); ctx.fill();
-    ctx.strokeStyle = '#ff9f43';
-    ctx.lineWidth = 2;
-    ctx.stroke();
-    // 标签
-    ctx.fillStyle = '#666';
-    ctx.font = '10px sans-serif';
-    ctx.fillText('光源', el.x - 10, cy + 22);
-  }
-
-  // 绘制透镜
-  function drawLens(el) {
-    const cy = canvas.height / 2 + el.y;
-    const r = Math.abs(el.r1);
-    const halfA = el.aperture / 2;
-    const t = el.thickness;
-    const n = getN(el.material, state.wavelength);
-
-    ctx.save();
-    // 透镜形状
-    ctx.fillStyle = `rgba(74, 158, 255, ${0.1 + (n-1)*0.2})`;
-    ctx.strokeStyle = '#4a9eff';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    const lcx = el.x - t/2 + r;
-    const rcx = el.x + t/2 - r;
-    const angle = Math.asin(Math.min(1, halfA / r));
-    ctx.arc(lcx, cy, r, -angle, angle, false);
-    ctx.arc(rcx, cy, r, Math.PI - angle, Math.PI + angle, true);
-    ctx.closePath();
-    ctx.fill();
-    ctx.stroke();
-    // 选中高亮
-    if (state.selectedElement === el.id) {
-      ctx.strokeStyle = '#ff9f43';
-      ctx.lineWidth = 2;
-      ctx.setLineDash([4, 3]);
-      ctx.strokeRect(el.x - t/2 - r - 5, cy - halfA - 5, 2*r + t + 10, 2*halfA + 10);
-      ctx.setLineDash([]);
-    }
-    // 标签
-    ctx.fillStyle = '#4a9eff';
-    ctx.font = '10px sans-serif';
-    ctx.fillText('L' + (state.elements.indexOf(el)), el.x - 5, cy - halfA - 8);
-    ctx.restore();
-  }
-
-  // 绘制反射镜
-  function drawMirror(el) {
-    const cy = canvas.height / 2 + el.y;
-    const halfA = el.aperture / 2;
-    ctx.save();
-    ctx.translate(el.x, cy);
-    ctx.rotate(-Math.PI / 4); // 45度
-    // 镜面
-    ctx.fillStyle = '#2a2a2a';
-    ctx.strokeStyle = '#555';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.ellipse(0, 0, halfA, 6, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.stroke();
-    // 反射面高光
-    ctx.strokeStyle = '#888';
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(-halfA + 4, -3);
-    ctx.lineTo(halfA - 4, -3);
-    ctx.stroke();
-    ctx.restore();
-    // 选中高亮
-    if (state.selectedElement === el.id) {
-      ctx.strokeStyle = '#ff9f43';
-      ctx.lineWidth = 2;
-      ctx.setLineDash([4, 3]);
-      ctx.strokeRect(el.x - halfA - 5, cy - halfA - 5, 2*halfA + 10, 2*halfA + 10);
-      ctx.setLineDash([]);
-    }
-    ctx.fillStyle = '#666';
-    ctx.font = '10px sans-serif';
-    ctx.fillText('反射镜', el.x - 15, cy + halfA + 15);
-  }
-
-  // 绘制接收屏
-  function drawScreen(el) {
-    const cy = canvas.height / 2 + el.y;
-    const halfA = el.aperture / 2;
-    ctx.save();
-    // 屏幕框
-    ctx.strokeStyle = '#2ed573';
-    ctx.lineWidth = 2;
-    ctx.fillStyle = 'rgba(46, 213, 115, 0.08)';
-    ctx.fillRect(el.x - 3, cy - halfA, 6, 2 * halfA);
-    ctx.strokeRect(el.x - 3, cy - halfA, 6, 2 * halfA);
-    // 选中高亮
-    if (state.selectedElement === el.id) {
-      ctx.strokeStyle = '#ff9f43';
-      ctx.lineWidth = 2;
-      ctx.setLineDash([4, 3]);
-      ctx.strokeRect(el.x - 8, cy - halfA - 5, 16, 2*halfA + 10);
-      ctx.setLineDash([]);
-    }
-    ctx.fillStyle = '#2ed573';
-    ctx.font = '10px sans-serif';
-    ctx.fillText('像面', el.x - 10, cy + halfA + 15);
-    ctx.restore();
-  }
-
-  // 光线追迹
-  function traceRays() {
-    const cy = canvas.height / 2;
     const source = state.elements.find(e => e.type === 'source');
     if (!source) return;
 
     const angleRad = state.angle * Math.PI / 180;
-    const rayCount = state.rayCount;
     const spread = source.aperture;
 
     let wavelengths = [state.wavelength];
@@ -524,81 +563,72 @@
     let lensCount = 0;
 
     wavelengths.forEach((wl, wi) => {
-      const color = state.specWidth > 0 ? wavelengthToColor(wl) : '#2ed573';
+      const color = state.specWidth > 0 ? wavelengthToColor(wl) : new THREE.Color(0x2ed573);
 
-      for (let i = 0; i < rayCount; i++) {
-        const offset = (i - (rayCount-1)/2) * (spread / Math.max(rayCount-1, 1));
-        let curX = source.x;
-        let curY = cy + source.y + offset;
-        let dirX = Math.cos(angleRad);
-        let dirY = Math.sin(angleRad);
+      for (let i = 0; i < state.rayCount; i++) {
+        const offset = (i - (state.rayCount-1)/2) * (spread / Math.max(state.rayCount-1, 1));
+        let curPos = new THREE.Vector3(source.x, source.y + offset, source.z);
+        let dir = new THREE.Vector3(Math.cos(angleRad), Math.sin(angleRad), 0).normalize();
 
-        // 按x排序的光学元件（排除光源）
         const optics = state.elements.filter(e => e.type !== 'source').sort((a,b) => a.x - b.x);
 
         for (const opt of optics) {
-          if (opt.x <= curX) continue;
+          if (opt.x <= curPos.x && opt.type !== 'mirror') continue;
 
-          // 计算与元件的交点
-          const t = (opt.x - curX) / dirX;
-          const hitY = curY + dirY * t;
-          const optCy = cy + opt.y;
+          // 计算与元件平面的交点
+          const t = (opt.x - curPos.x) / dir.x;
+          if (t < 0) continue;
+          const hitPos = curPos.clone().add(dir.clone().multiplyScalar(t));
 
-          // 绘制入射光线
+          // 绘制光线段
           const isReflected = (opt.type === 'mirror');
-          const rayColor = isReflected ? '#ffa502' : color;
-          drawRay(curX, curY, opt.x, hitY, rayColor, 0.7);
+          const rayColor = isReflected ? new THREE.Color(0xffa502) : color;
+          addRaySegment(curPos, hitPos, rayColor);
 
           if (opt.type === 'lens') {
-            // 透镜折射（近轴近似）
             const n = getN(opt.material, wl);
             const r = Math.abs(opt.r1);
             const f = r / (2 * (n - 1));
             if (wi === 0 && i === 0) { totalFocal += f; lensCount++; }
 
-            // 出射角度（向光轴偏折）
-            const height = hitY - optCy;
+            const height = hitPos.y - opt.y;
             const outAngle = Math.atan2(-height, f);
-            dirX = Math.cos(outAngle);
-            dirY = Math.sin(outAngle);
+            dir = new THREE.Vector3(Math.cos(outAngle), Math.sin(outAngle), 0).normalize();
           } else if (opt.type === 'mirror') {
-            // 45度反射镜：水平光变垂直，垂直光变水平
-            const newDirX = -dirY;
-            const newDirY = dirX;
-            dirX = newDirX;
-            dirY = newDirY;
+            // 45度反射：x方向变y方向
+            const newDir = new THREE.Vector3(-dir.y, dir.x, dir.z).normalize();
+            dir = newDir;
           } else if (opt.type === 'screen') {
-            // 在接收屏上画光点
-            ctx.fillStyle = rayColor;
-            ctx.beginPath();
-            ctx.arc(opt.x, hitY, 3, 0, Math.PI * 2);
-            ctx.fill();
+            // 接收屏上的光点
+            const dotGeo = new THREE.SphereGeometry(0.08, 8, 8);
+            const dotMat = new THREE.MeshBasicMaterial({ color: rayColor });
+            const dot = new THREE.Mesh(dotGeo, dotMat);
+            dot.position.copy(hitPos);
+            rayGroup.add(dot);
             break;
           }
 
-          curX = opt.x;
-          curY = hitY;
+          curPos = hitPos.clone();
         }
 
-        // 如果没有遇到接收屏，画到画布边缘
-        if (curX < canvas.width && dirX > 0) {
-          const endX = canvas.width;
-          const endY = curY + (endX - curX) * dirY / dirX;
-          drawRay(curX, curY, endX, endY, color, 0.5);
-        } else if (dirY !== 0) {
-          // 反射后垂直传播
-          const endY = dirY > 0 ? canvas.height : 0;
-          const endX = curX + (endY - curY) * dirX / dirY;
-          drawRay(curX, curY, endX, endY, '#ffa502', 0.5);
+        // 画到场景边界
+        if (dir.x > 0 && curPos.x < 15) {
+          const endPos = curPos.clone().add(dir.clone().multiplyScalar((15 - curPos.x) / dir.x));
+          addRaySegment(curPos, endPos, color);
+        } else if (Math.abs(dir.y) > 0.01) {
+          const endY = dir.y > 0 ? 8 : -8;
+          const t = (endY - curPos.y) / dir.y;
+          const endPos = curPos.clone().add(dir.clone().multiplyScalar(t));
+          addRaySegment(curPos, endPos, new THREE.Color(0xffa502));
         }
       }
     });
 
-    // 更新系统参数
+    // 更新参数
     if (lensCount > 0) {
       const avgF = totalFocal / lensCount;
-      document.getElementById('effl').textContent = avgF.toFixed(1) + ' mm';
-      document.getElementById('bfl').textContent = (avgF - 4).toFixed(1) + ' mm';
+      document.getElementById('effl').textContent = (avgF * 10).toFixed(1) + ' mm';
+      document.getElementById('bfl').textContent = ((avgF - 0.4) * 10).toFixed(1) + ' mm';
       const lens = state.elements.find(e => e.type === 'lens');
       if (lens) {
         const fn = avgF / lens.aperture;
@@ -607,7 +637,6 @@
       }
       document.getElementById('mag').textContent = '1:1';
     }
-    // 像质（模拟值）
     document.getElementById('spherical').textContent = '0.03 mm';
     document.getElementById('coma').textContent = '0.01 mm';
     document.getElementById('astig').textContent = '0.00 mm';
@@ -615,39 +644,20 @@
     document.getElementById('fieldcurv').textContent = '0.02 mm';
   }
 
-  function drawRay(x1, y1, x2, y2, color, alpha) {
-    ctx.strokeStyle = color;
-    ctx.lineWidth = 1.5;
-    ctx.globalAlpha = alpha;
-    ctx.beginPath();
-    ctx.moveTo(x1, y1);
-    ctx.lineTo(x2, y2);
-    ctx.stroke();
-    // 光晕
-    ctx.lineWidth = 4;
-    ctx.globalAlpha = alpha * 0.15;
-    ctx.beginPath();
-    ctx.moveTo(x1, y1);
-    ctx.lineTo(x2, y2);
-    ctx.stroke();
-    ctx.globalAlpha = 1;
+  function addRaySegment(start, end, color) {
+    const geo = new THREE.BufferGeometry().setFromPoints([start, end]);
+    const mat = new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.85 });
+    const line = new THREE.Line(geo, mat);
+    rayGroup.add(line);
+    // 光晕（粗线）
+    const glowMat = new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.15 });
+    const glowLine = new THREE.Line(geo.clone(), glowMat);
+    rayGroup.add(glowLine);
   }
 
   function render() {
-    ctx.fillStyle = '#fafbfc';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    drawGrid();
-
-    // 按类型绘制
-    state.elements.forEach(el => {
-      if (el.type === 'source') drawSource(el);
-      else if (el.type === 'lens') drawLens(el);
-      else if (el.type === 'mirror') drawMirror(el);
-      else if (el.type === 'screen') drawScreen(el);
-    });
-
-    traceRays();
-
+    buildElements();
+    traceRays3D();
     document.getElementById('infoElements').textContent = state.elements.length;
     document.getElementById('infoRays').textContent = state.rayCount;
     document.getElementById('rayCountInfo').textContent = state.rayCount;
@@ -657,11 +667,11 @@
     document.getElementById('elementCount').textContent = state.elements.length + '个';
   }
 
-  // 渲染左侧元件列表
+  // 左侧元件列表
   function renderElementList() {
     const list = document.getElementById('elementList');
     list.innerHTML = '';
-    state.elements.forEach((el, idx) => {
+    state.elements.forEach(el => {
       const card = document.createElement('div');
       card.className = 'opt-element-card' + (state.selectedElement === el.id ? ' expanded' : '');
       card.innerHTML = `
@@ -670,7 +680,7 @@
             ${el.type==='source'?'💡':el.type==='lens'?'🔍':el.type==='mirror'?'🪞':'▢'}
           </div>
           <span class="opt-element-name">${el.name}</span>
-          <span class="opt-element-pos">x=${el.x.toFixed(0)}</span>
+          <span class="opt-element-pos">x=${el.x.toFixed(1)}</span>
           ${el.type !== 'source' ? `<button class="opt-element-del" onclick="event.stopPropagation();deleteElement(${el.id})">×</button>` : ''}
         </div>
         <div class="opt-element-body">
@@ -704,28 +714,40 @@
               <div class="opt-material-row"><span class="label">V_d</span><span class="value">${materials[el.material].vd.toFixed(2)}</span></div>
             </div>
             <div class="opt-field" style="margin-top:6px">
-              <div class="opt-field-label">曲率半径 <span class="val">${Math.abs(el.r1)}mm</span></div>
-              <input type="range" min="20" max="150" value="${Math.abs(el.r1)}" oninput="updateElement(${el.id}, 'r1', this.value);updateElement(${el.id}, 'r2', -this.value)">
+              <div class="opt-field-label">曲率半径 <span class="val">${Math.abs(el.r1).toFixed(1)}</span></div>
+              <input type="range" min="1.5" max="8" step="0.1" value="${Math.abs(el.r1)}" oninput="updateElement(${el.id}, 'r1', parseFloat(this.value));updateElement(${el.id}, 'r2', -parseFloat(this.value))">
             </div>
             <div class="opt-field">
-              <div class="opt-field-label">厚度 <span class="val">${el.thickness}mm</span></div>
-              <input type="range" min="2" max="20" value="${el.thickness}" oninput="updateElement(${el.id}, 'thickness', this.value)">
+              <div class="opt-field-label">厚度 <span class="val">${el.thickness.toFixed(1)}</span></div>
+              <input type="range" min="0.2" max="2" step="0.1" value="${el.thickness}" oninput="updateElement(${el.id}, 'thickness', this.value)">
             </div>
             <div class="opt-field">
-              <div class="opt-field-label">口径 <span class="val">${el.aperture}mm</span></div>
-              <input type="range" min="10" max="80" value="${el.aperture}" oninput="updateElement(${el.id}, 'aperture', this.value)">
+              <div class="opt-field-label">口径 <span class="val">${el.aperture.toFixed(1)}</span></div>
+              <input type="range" min="1" max="5" step="0.1" value="${el.aperture}" oninput="updateElement(${el.id}, 'aperture', this.value)">
+            </div>
+            <div class="opt-field">
+              <div class="opt-field-label">位置 X <span class="val">${el.x.toFixed(1)}</span></div>
+              <input type="range" min="-10" max="10" step="0.1" value="${el.x}" oninput="updateElement(${el.id}, 'x', this.value)">
             </div>
           ` : ''}
           ${el.type === 'mirror' ? `
             <div class="opt-field">
-              <div class="opt-field-label">口径 <span class="val">${el.aperture}mm</span></div>
-              <input type="range" min="20" max="80" value="${el.aperture}" oninput="updateElement(${el.id}, 'aperture', this.value)">
+              <div class="opt-field-label">口径 <span class="val">${el.aperture.toFixed(1)}</span></div>
+              <input type="range" min="1" max="5" step="0.1" value="${el.aperture}" oninput="updateElement(${el.id}, 'aperture', this.value)">
+            </div>
+            <div class="opt-field">
+              <div class="opt-field-label">位置 X <span class="val">${el.x.toFixed(1)}</span></div>
+              <input type="range" min="-10" max="10" step="0.1" value="${el.x}" oninput="updateElement(${el.id}, 'x', this.value)">
             </div>
           ` : ''}
           ${el.type === 'screen' ? `
             <div class="opt-field">
-              <div class="opt-field-label">高度 <span class="val">${el.aperture}mm</span></div>
-              <input type="range" min="20" max="100" value="${el.aperture}" oninput="updateElement(${el.id}, 'aperture', this.value)">
+              <div class="opt-field-label">高度 <span class="val">${el.aperture.toFixed(1)}</span></div>
+              <input type="range" min="1" max="6" step="0.1" value="${el.aperture}" oninput="updateElement(${el.id}, 'aperture', this.value)">
+            </div>
+            <div class="opt-field">
+              <div class="opt-field-label">位置 X <span class="val">${el.x.toFixed(1)}</span></div>
+              <input type="range" min="-10" max="10" step="0.1" value="${el.x}" oninput="updateElement(${el.id}, 'x', this.value)">
             </div>
           ` : ''}
         </div>
@@ -734,18 +756,15 @@
     });
   }
 
-  // 全局函数（供HTML调用）
   window.toggleElement = function(id) {
     state.selectedElement = state.selectedElement === id ? null : id;
     renderElementList();
-    showFloatPanel(id);
     render();
   };
 
   window.deleteElement = function(id) {
     state.elements = state.elements.filter(e => e.id !== id);
     if (state.selectedElement === id) state.selectedElement = null;
-    hideFloatPanel();
     renderElementList();
     render();
   };
@@ -755,9 +774,10 @@
     const names = { lens: '双凸透镜', mirror: '平面反射镜', screen: '像面接收屏' };
     const newEl = {
       id: nextId++, type, name: names[type],
-      x: maxX + 120, y: 0,
-      r1: 50, r2: -50, thickness: 8, aperture: type==='screen' ? 60 : 40,
-      material: 'NBK7', color: type==='screen' ? '#2ed573' : '#666'
+      x: maxX + 3, y: 0, z: 0,
+      r1: 3, r2: -3, thickness: 0.8,
+      aperture: type==='screen' ? 4 : 3,
+      material: 'NBK7', color: type==='screen' ? 0x2ed573 : 0x666666
     };
     state.elements.push(newEl);
     state.selectedElement = newEl.id;
@@ -780,99 +800,9 @@
     render();
   };
 
-  // 悬浮参数面板
-  function showFloatPanel(id) {
-    const el = state.elements.find(e => e.id === id);
-    if (!el) { hideFloatPanel(); return; }
-    const canvasRect = canvas.getBoundingClientRect();
-    const areaRect = area.getBoundingClientRect();
-    floatPanel.style.left = (el.x - areaRect.left + 20) + 'px';
-    floatPanel.style.top = (canvas.height / 2 + el.y - areaRect.top - 60) + 'px';
-    document.getElementById('floatPanelTitle').textContent = el.name + ' 参数';
-    let html = '';
-    html += `<div class="row"><span class="label">位置 X</span><span class="value">${el.x.toFixed(0)} mm</span></div>`;
-    html += `<div class="row"><span class="label">位置 Y</span><span class="value">${el.y.toFixed(0)} mm</span></div>`;
-    if (el.type === 'lens') {
-      const n = getN(el.material, state.wavelength);
-      html += `<div class="row"><span class="label">材料</span><span class="value">${materials[el.material].name}</span></div>`;
-      html += `<div class="row"><span class="label">折射率 n</span><span class="value">${n.toFixed(4)}</span></div>`;
-      html += `<div class="row"><span class="label">曲率 R</span><span class="value">${Math.abs(el.r1)} mm</span></div>`;
-      html += `<div class="row"><span class="label">口径</span><span class="value">${el.aperture} mm</span></div>`;
-    } else if (el.type === 'mirror') {
-      html += `<div class="row"><span class="label">角度</span><span class="value">45°</span></div>`;
-      html += `<div class="row"><span class="label">口径</span><span class="value">${el.aperture} mm</span></div>`;
-    } else if (el.type === 'screen') {
-      html += `<div class="row"><span class="label">高度</span><span class="value">${el.aperture} mm</span></div>`;
-    }
-    document.getElementById('floatPanelContent').innerHTML = html;
-    floatPanel.classList.add('show');
-  }
-
-  function hideFloatPanel() {
-    floatPanel.classList.remove('show');
-  }
-
-  // 画布交互：点击选中 + 拖拽
-  let isDragging = false;
-  canvas.addEventListener('mousedown', e => {
-    const rect = canvas.getBoundingClientRect();
-    const mx = (e.clientX - rect.left) * (canvas.width / rect.width);
-    const my = (e.clientY - rect.top) * (canvas.height / rect.height);
-    const cy = canvas.height / 2;
-
-    // 找到点击的元件
-    for (let i = state.elements.length - 1; i >= 0; i--) {
-      const el = state.elements[i];
-      const dx = Math.abs(mx - el.x);
-      const dy = Math.abs(my - cy - el.y);
-      const hitRadius = el.type === 'source' ? 15 : el.aperture / 2 + 10;
-      if (dx < hitRadius && dy < hitRadius) {
-        state.dragging = el;
-        state.dragOffsetX = mx - el.x;
-        state.dragOffsetY = my - cy - el.y;
-        state.selectedElement = el.id;
-        isDragging = true;
-        canvas.classList.add('dragging');
-        renderElementList();
-        showFloatPanel(el.id);
-        render();
-        return;
-      }
-    }
-    // 点击空白处取消选中
-    state.selectedElement = null;
-    hideFloatPanel();
-    renderElementList();
-    render();
-  });
-
-  canvas.addEventListener('mousemove', e => {
-    if (!state.dragging) return;
-    const rect = canvas.getBoundingClientRect();
-    const mx = (e.clientX - rect.left) * (canvas.width / rect.width);
-    const my = (e.clientY - rect.top) * (canvas.height / rect.height);
-    state.dragging.x = Math.max(30, Math.min(canvas.width - 30, mx - state.dragOffsetX));
-    state.dragging.y = Math.max(-100, Math.min(100, my - canvas.height/2 - state.dragOffsetY));
-    render();
-  });
-
-  canvas.addEventListener('mouseup', () => {
-    if (state.dragging) {
-      showFloatPanel(state.dragging.id);
-      renderElementList();
-    }
-    state.dragging = null;
-    isDragging = false;
-    canvas.classList.remove('dragging');
-  });
-
-  canvas.addEventListener('mouseleave', () => {
-    state.dragging = null;
-    canvas.classList.remove('dragging');
-  });
-
   // 初始化
   renderElementList();
-  resizeCanvas();
+  init3D();
+  render();
 })();
 </script>
