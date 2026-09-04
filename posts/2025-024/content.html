@@ -828,22 +828,23 @@
       <div id="globeHint" style="position:absolute;bottom:4px;right:8px;color:#3a5a3a;font-family:Courier New;font-size:9px;pointer-events:none;">DRAG: ROTATE | SCROLL/PINCH: ZOOM | TAP: PLAY</div>
       <!-- 瞄准点+定长引线+浮动标签 -->
       <div id="globeCrosshair" style="position:absolute;pointer-events:none;opacity:0;transition:opacity 0.3s;z-index:10;transform:translate(-50%,-50%);">
-        <svg width="24" height="24" viewBox="-12 -12 24 24" style="overflow:visible;">
-          <line x1="-10" y1="0" x2="-4" y2="0" stroke="#ff4757" stroke-width="1.5"/>
-          <line x1="4" y1="0" x2="10" y2="0" stroke="#ff4757" stroke-width="1.5"/>
-          <line x1="0" y1="-10" x2="0" y2="-4" stroke="#ff4757" stroke-width="1.5"/>
-          <line x1="0" y1="4" x2="0" y2="10" stroke="#ff4757" stroke-width="1.5"/>
-          <circle cx="0" cy="0" r="3" fill="#ff4757" opacity="0.8"/>
+        <svg width="28" height="28" viewBox="-14 -14 28 28" style="overflow:visible;">
+          <line x1="-12" y1="0" x2="-5" y2="0" stroke="#ff9900" stroke-width="2.5"/>
+          <line x1="5" y1="0" x2="12" y2="0" stroke="#ff9900" stroke-width="2.5"/>
+          <line x1="0" y1="-12" x2="0" y2="-5" stroke="#ff9900" stroke-width="2.5"/>
+          <line x1="0" y1="5" x2="0" y2="12" stroke="#ff9900" stroke-width="2.5"/>
+          <circle cx="0" cy="0" r="4" fill="#ff9900" opacity="0.9"/>
+          <circle cx="0" cy="0" r="8" fill="none" stroke="#ff9900" stroke-width="1.5" opacity="0.6"/>
         </svg>
       </div>
       <!-- 定长引线+浮动标签（跟随瞄准点移动） -->
       <svg id="globeConnector" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9;opacity:0;transition:opacity 0.3s;overflow:visible;">
-        <line id="connectorLine" x1="0" y1="0" x2="0" y2="0" stroke="#ff4757" stroke-width="1" stroke-dasharray="4,3" opacity="0.8"/>
-        <circle id="connectorDot" cx="0" cy="0" r="3" fill="#ff4757"/>
+        <line id="connectorLine" x1="0" y1="0" x2="0" y2="0" stroke="#ff9900" stroke-width="2.5" opacity="0.95"/>
+        <circle id="connectorDot" cx="0" cy="0" r="4" fill="#ff9900" stroke="#fff" stroke-width="1"/>
         <foreignObject id="connectorLabelFO" x="0" y="0" width="140" height="50" style="overflow:visible;">
-          <div xmlns="http://www.w3.org/1999/xhtml" id="globeFloatLabel" style="background:rgba(0,15,0,0.92);border:1px solid #ff4757;border-radius:3px;padding:4px 8px;font-family:Courier New;white-space:nowrap;transform:translate(0,-50%);">
-            <div id="floatName" style="color:#ff6b81;font-size:10px;font-weight:bold;">---</div>
-            <div id="floatMeta" style="color:#5a8a5a;font-size:8px;margin-top:2px;">---</div>
+          <div xmlns="http://www.w3.org/1999/xhtml" id="globeFloatLabel" style="background:rgba(0,10,0,0.95);border:2px solid #ff9900;border-radius:4px;padding:5px 10px;font-family:Courier New;white-space:nowrap;transform:translate(0,-50%);box-shadow:0 0 10px rgba(255,153,0,0.5);">
+            <div id="floatName" style="color:#ffcc00;font-size:11px;font-weight:bold;">---</div>
+            <div id="floatMeta" style="color:#ffaa44;font-size:9px;margin-top:3px;">---</div>
           </div>
         </foreignObject>
       </svg>
