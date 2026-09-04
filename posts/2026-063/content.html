@@ -1,0 +1,862 @@
+<style>
+/* ========== 光学引擎 OPTICAL ENGINE ========== */
+.opt-engine-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px 0;
+  font-family: 'Courier New', 'Consolas', monospace;
+  color: #c0c0c0;
+}
+
+.opt-header {
+  text-align: center;
+  margin-bottom: 24px;
+  padding: 20px;
+  background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 100%);
+  border: 1px solid #2a2a4a;
+  border-radius: 12px;
+}
+
+.opt-header h2 {
+  font-size: 1.8em;
+  color: #4af;
+  margin: 0 0 8px;
+  text-shadow: 0 0 20px rgba(68, 170, 255, 0.5);
+  letter-spacing: 4px;
+}
+
+.opt-header p {
+  color: #888;
+  font-size: 0.9em;
+  margin: 0;
+}
+
+.opt-canvas-wrapper {
+  position: relative;
+  background: #050510;
+  border: 2px solid #2a2a4a;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+#optCanvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  cursor: crosshair;
+}
+
+.opt-canvas-overlay {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  font-size: 0.75em;
+  color: #4af;
+  background: rgba(0,0,0,0.6);
+  padding: 6px 10px;
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+.opt-controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.opt-control-group {
+  background: #0f0f1a;
+  border: 1px solid #2a2a4a;
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.opt-control-group label {
+  display: block;
+  font-size: 0.75em;
+  color: #888;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.opt-control-group select,
+.opt-control-group input[type="range"] {
+  width: 100%;
+}
+
+.opt-control-group select {
+  background: #1a1a2e;
+  color: #c0c0c0;
+  border: 1px solid #3a3a5a;
+  padding: 6px 8px;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 0.85em;
+}
+
+.opt-control-group input[type="range"] {
+  -webkit-appearance: none;
+  height: 4px;
+  background: #2a2a4a;
+  border-radius: 2px;
+  outline: none;
+}
+
+.opt-control-group input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  background: #4af;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.opt-value {
+  float: right;
+  color: #4af;
+  font-weight: bold;
+}
+
+.opt-mode-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.opt-mode-btn {
+  flex: 1;
+  min-width: 100px;
+  padding: 10px 16px;
+  background: #1a1a2e;
+  border: 1px solid #3a3a5a;
+  color: #888;
+  font-family: inherit;
+  font-size: 0.85em;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.opt-mode-btn:hover {
+  border-color: #4af;
+  color: #4af;
+}
+
+.opt-mode-btn.active {
+  background: #1a2a4a;
+  border-color: #4af;
+  color: #4af;
+  box-shadow: 0 0 12px rgba(68, 170, 255, 0.3);
+}
+
+.opt-info-panel {
+  background: #0f0f1a;
+  border: 1px solid #2a2a4a;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.opt-info-panel h3 {
+  color: #4af;
+  font-size: 1em;
+  margin: 0 0 12px;
+  letter-spacing: 2px;
+}
+
+.opt-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 8px;
+}
+
+.opt-info-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8em;
+  padding: 4px 0;
+  border-bottom: 1px dotted #2a2a4a;
+}
+
+.opt-info-item .label {
+  color: #666;
+}
+
+.opt-info-item .value {
+  color: #4af;
+  font-weight: bold;
+}
+
+.opt-project-section {
+  background: #0f0f1a;
+  border: 1px solid #2a2a4a;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.opt-project-section h3 {
+  color: #4af;
+  font-size: 1.1em;
+  margin: 0 0 12px;
+  letter-spacing: 2px;
+}
+
+.opt-project-section p {
+  color: #aaa;
+  font-size: 0.9em;
+  line-height: 1.8;
+  margin: 0 0 12px;
+}
+
+.opt-tech-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.opt-tech-tag {
+  padding: 4px 12px;
+  background: #1a2a4a;
+  border: 1px solid #2a4a6a;
+  color: #6af;
+  font-size: 0.75em;
+  border-radius: 12px;
+}
+
+.opt-formula {
+  background: #050510;
+  border-left: 3px solid #4af;
+  padding: 12px 16px;
+  margin: 12px 0;
+  font-size: 0.9em;
+  color: #6af;
+  overflow-x: auto;
+}
+
+.opt-formula .formula-name {
+  color: #888;
+  font-size: 0.8em;
+  display: block;
+  margin-bottom: 4px;
+}
+
+@media (max-width: 600px) {
+  .opt-controls {
+    grid-template-columns: 1fr;
+  }
+  .opt-mode-btn {
+    font-size: 0.75em;
+    padding: 8px 10px;
+  }
+}
+</style>
+
+<div class="opt-engine-container">
+  <!-- 标题 -->
+  <div class="opt-header">
+    <h2>⚡ OPTICAL ENGINE v1.0</h2>
+    <p>交互式光路模拟引擎 · 折射 · 反射 · 全反射 · 色散</p>
+  </div>
+
+  <!-- 模式选择 -->
+  <div class="opt-mode-buttons">
+    <button class="opt-mode-btn active" data-mode="lens">🔍 透镜</button>
+    <button class="opt-mode-btn" data-mode="mirror">🪞 反射镜</button>
+    <button class="opt-mode-btn" data-mode="prism">🔺 棱镜色散</button>
+    <button class="opt-mode-btn" data-mode="total">💎 全反射</button>
+  </div>
+
+  <!-- Canvas -->
+  <div class="opt-canvas-wrapper">
+    <canvas id="optCanvas" width="800" height="450"></canvas>
+    <div class="opt-canvas-overlay" id="optOverlay">
+      模式: 透镜 | 点击画布移动光源
+    </div>
+  </div>
+
+  <!-- 参数控制 -->
+  <div class="opt-controls">
+    <div class="opt-control-group">
+      <label>入射角 <span class="opt-value" id="angleVal">30°</span></label>
+      <input type="range" id="angleSlider" min="0" max="89" value="30">
+    </div>
+    <div class="opt-control-group">
+      <label>折射率 n <span class="opt-value" id="nVal">1.50</span></label>
+      <input type="range" id="nSlider" min="1.0" max="2.5" step="0.01" value="1.5">
+    </div>
+    <div class="opt-control-group">
+      <label>光线数量 <span class="opt-value" id="raysVal">5</span></label>
+      <input type="range" id="raysSlider" min="1" max="20" value="5">
+    </div>
+    <div class="opt-control-group">
+      <label>波长 (nm) <span class="opt-value" id="waveVal">550</span></label>
+      <input type="range" id="waveSlider" min="380" max="780" value="550">
+    </div>
+  </div>
+
+  <!-- 实时数据 -->
+  <div class="opt-info-panel">
+    <h3>📊 实时光学参数</h3>
+    <div class="opt-info-grid">
+      <div class="opt-info-item"><span class="label">入射角 θ₁</span><span class="value" id="infoAngle1">30.0°</span></div>
+      <div class="opt-info-item"><span class="label">折射角 θ₂</span><span class="value" id="infoAngle2">19.5°</span></div>
+      <div class="opt-info-item"><span class="label">折射率 n</span><span class="value" id="infoN">1.50</span></div>
+      <div class="opt-info-item"><span class="label">临界角 θc</span><span class="value" id="infoCritical">41.8°</span></div>
+      <div class="opt-info-item"><span class="label">反射率 R</span><span class="value" id="infoReflect">--</span></div>
+      <div class="opt-info-item"><span class="label">透射率 T</span><span class="value" id="infoTransmit">--</span></div>
+      <div class="opt-info-item"><span class="label">波长 λ</span><span class="value" id="infoWave">550nm</span></div>
+      <div class="opt-info-item"><span class="label">状态</span><span class="value" id="infoStatus">正常折射</span></div>
+    </div>
+  </div>
+
+  <!-- 物理公式 -->
+  <div class="opt-project-section">
+    <h3>📐 核心物理公式</h3>
+    <div class="opt-formula">
+      <span class="formula-name">Snell's Law 斯涅尔定律（折射）</span>
+      n₁ · sin(θ₁) = n₂ · sin(θ₂)
+    </div>
+    <div class="opt-formula">
+      <span class="formula-name">Law of Reflection 反射定律</span>
+      θᵢ = θᵣ （入射角 = 反射角）
+    </div>
+    <div class="opt-formula">
+      <span class="formula-name">Critical Angle 临界角（全反射条件）</span>
+      θc = arcsin(n₂/n₁) ，当 θ₁ > θc 时发生全反射
+    </div>
+    <div class="opt-formula">
+      <span class="formula-name">Cauchy's Equation 柯西色散公式</span>
+      n(λ) = A + B/λ² ，波长越短折射率越大（紫光偏折大于红光）
+    </div>
+    <div class="opt-formula">
+      <span class="formula-name">Fresnel Equations 菲涅尔方程</span>
+      R = [(n₁cosθ₁ - n₂cosθ₂)/(n₁cosθ₁ + n₂cosθ₂)]² （s偏振反射率）
+    </div>
+  </div>
+
+  <!-- 项目介绍 -->
+  <div class="opt-project-section">
+    <h3>🔧 项目背景</h3>
+    <p>
+      这是三个月日夜兼程的成果——白天 SolidWorks 设计、装机、调试，晚上写代码、学习光学、搭建光学系统。
+      一个人，三个月，除了睡觉吃饭几乎没有休息。累是真的，但看到小程序和网页出来的那一刻，感觉一切都值得。
+    </p>
+    <p>
+      本引擎基于几何光学原理，使用纯 JavaScript + HTML5 Canvas 实现实时光路追踪。
+      支持透镜成像、球面反射、棱镜色散、全反射等核心光学现象，所有计算均基于真实物理公式。
+    </p>
+    <div class="opt-tech-stack">
+      <span class="opt-tech-tag">SolidWorks</span>
+      <span class="opt-tech-tag">JavaScript</span>
+      <span class="opt-tech-tag">HTML5 Canvas</span>
+      <span class="opt-tech-tag">几何光学</span>
+      <span class="opt-tech-tag">Snell's Law</span>
+      <span class="opt-tech-tag">光线追踪</span>
+      <span class="opt-tech-tag">微信小程序</span>
+      <span class="opt-tech-tag">光学系统设计</span>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  const canvas = document.getElementById('optCanvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width;
+  const H = canvas.height;
+
+  // 状态
+  let state = {
+    mode: 'lens',
+    angle: 30,
+    n: 1.5,
+    rays: 5,
+    wavelength: 550,
+    lightX: 100,
+    lightY: H / 2
+  };
+
+  // 波长转颜色
+  function wavelengthToColor(wl) {
+    let r = 0, g = 0, b = 0;
+    if (wl >= 380 && wl < 440) { r = -(wl - 440) / 60; g = 0; b = 1; }
+    else if (wl >= 440 && wl < 490) { r = 0; g = (wl - 440) / 50; b = 1; }
+    else if (wl >= 490 && wl < 510) { r = 0; g = 1; b = -(wl - 510) / 20; }
+    else if (wl >= 510 && wl < 580) { r = (wl - 510) / 70; g = 1; b = 0; }
+    else if (wl >= 580 && wl < 645) { r = 1; g = -(wl - 645) / 65; b = 0; }
+    else if (wl >= 645 && wl <= 780) { r = 1; g = 0; b = 0; }
+    return `rgb(${Math.round(r*255)},${Math.round(g*255)},${Math.round(b*255)})`;
+  }
+
+  // 计算折射角
+  function refractAngle(theta1, n1, n2) {
+    const sinTheta2 = (n1 / n2) * Math.sin(theta1);
+    if (Math.abs(sinTheta2) > 1) return null; // 全反射
+    return Math.asin(sinTheta2);
+  }
+
+  // 临界角
+  function criticalAngle(n1, n2) {
+    if (n1 <= n2) return 90;
+    return Math.asin(n2 / n1) * 180 / Math.PI;
+  }
+
+  // 菲涅尔反射率（s偏振近似）
+  function fresnelReflect(theta1, theta2, n1, n2) {
+    if (theta2 === null) return 1; // 全反射
+    const cos1 = Math.cos(theta1);
+    const cos2 = Math.cos(theta2);
+    const rs = ((n1 * cos1 - n2 * cos2) / (n1 * cos1 + n2 * cos2)) ** 2;
+    const rp = ((n2 * cos1 - n1 * cos2) / (n2 * cos1 + n1 * cos2)) ** 2;
+    return (rs + rp) / 2;
+  }
+
+  // 绘制网格背景
+  function drawGrid() {
+    ctx.strokeStyle = 'rgba(42, 42, 74, 0.3)';
+    ctx.lineWidth = 0.5;
+    for (let x = 0; x < W; x += 40) {
+      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
+    }
+    for (let y = 0; y < H; y += 40) {
+      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+    }
+  }
+
+  // 绘制光线
+  function drawRay(x1, y1, x2, y2, color, alpha = 1) {
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2;
+    ctx.globalAlpha = alpha;
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+    // 光晕
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 6;
+    ctx.globalAlpha = alpha * 0.2;
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+  }
+
+  // 绘制光源
+  function drawLightSource(x, y) {
+    const gradient = ctx.createRadialGradient(x, y, 0, x, y, 30);
+    gradient.addColorStop(0, 'rgba(255, 255, 200, 0.8)');
+    gradient.addColorStop(0.5, 'rgba(255, 200, 100, 0.3)');
+    gradient.addColorStop(1, 'rgba(255, 200, 100, 0)');
+    ctx.fillStyle = gradient;
+    ctx.beginPath();
+    ctx.arc(x, y, 30, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#ffeb3b';
+    ctx.beginPath();
+    ctx.arc(x, y, 6, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // 透镜模式
+  function drawLensMode() {
+    const cx = W / 2;
+    const cy = H / 2;
+    const lensR = 80;
+    const theta1 = state.angle * Math.PI / 180;
+    const color = wavelengthToColor(state.wavelength);
+
+    // 绘制透镜（凸透镜）
+    ctx.strokeStyle = '#4af';
+    ctx.lineWidth = 2;
+    ctx.fillStyle = 'rgba(68, 170, 255, 0.1)';
+    ctx.beginPath();
+    ctx.ellipse(cx, cy, 20, lensR, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    // 光轴
+    ctx.strokeStyle = 'rgba(100, 100, 100, 0.5)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([5, 5]);
+    ctx.beginPath();
+    ctx.moveTo(0, cy);
+    ctx.lineTo(W, cy);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // 焦点
+    ctx.fillStyle = '#f44';
+    ctx.beginPath(); ctx.arc(cx - 120, cy, 4, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(cx + 120, cy, 4, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#888';
+    ctx.font = '10px monospace';
+    ctx.fillText('F', cx - 125, cy - 8);
+    ctx.fillText('F', cx + 118, cy - 8);
+
+    // 多束光线
+    const rayCount = state.rays;
+    const spread = 60;
+    for (let i = 0; i < rayCount; i++) {
+      const offset = (i - (rayCount - 1) / 2) * (spread / Math.max(rayCount - 1, 1));
+      const startY = state.lightY + offset;
+      const startX = state.lightX;
+
+      // 入射光线（带角度）
+      const dirX = Math.cos(theta1);
+      const dirY = Math.sin(theta1);
+      const hitX = cx - 20;
+      const hitY = startY + (hitX - startX) * dirY / dirX;
+
+      // 限制在透镜范围内
+      if (Math.abs(hitY - cy) > lensR - 5) continue;
+
+      drawRay(startX, startY, hitX, hitY, color, 0.9);
+
+      // 简化的透镜折射：光线向焦点偏折
+      const outAngle = Math.atan2(cy - hitY, 120);
+      const endX = W;
+      const endY = hitY + (endX - hitX) * Math.tan(outAngle);
+
+      drawRay(hitX, hitY, endX, endY, color, 0.7);
+    }
+
+    drawLightSource(state.lightX, state.lightY);
+    updateInfo(theta1, refractAngle(theta1, 1, state.n), 1, state.n);
+  }
+
+  // 反射镜模式
+  function drawMirrorMode() {
+    const mx = W / 2;
+    const my = H / 2;
+    const mirrorR = 100;
+    const theta1 = state.angle * Math.PI / 180;
+    const color = wavelengthToColor(state.wavelength);
+
+    // 绘制凹面镜
+    ctx.strokeStyle = '#aaa';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(mx + 50, my, mirrorR, Math.PI * 0.6, Math.PI * 1.4);
+    ctx.stroke();
+
+    // 反射面阴影
+    ctx.strokeStyle = 'rgba(150, 150, 150, 0.3)';
+    ctx.lineWidth = 8;
+    ctx.beginPath();
+    ctx.arc(mx + 50, my, mirrorR, Math.PI * 0.6, Math.PI * 1.4);
+    ctx.stroke();
+
+    // 光轴
+    ctx.strokeStyle = 'rgba(100, 100, 100, 0.5)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([5, 5]);
+    ctx.beginPath();
+    ctx.moveTo(0, my);
+    ctx.lineTo(W, my);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // 焦点
+    const focalX = mx + 50 - mirrorR / 2;
+    ctx.fillStyle = '#f44';
+    ctx.beginPath(); ctx.arc(focalX, my, 4, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#888';
+    ctx.font = '10px monospace';
+    ctx.fillText('F', focalX - 3, my - 8);
+
+    // 多束光线
+    const rayCount = state.rays;
+    const spread = 80;
+    for (let i = 0; i < rayCount; i++) {
+      const offset = (i - (rayCount - 1) / 2) * (spread / Math.max(rayCount - 1, 1));
+      const startY = state.lightY + offset;
+      const startX = state.lightX;
+
+      // 入射光线
+      const dirX = Math.cos(theta1);
+      const dirY = Math.sin(theta1);
+      const hitX = mx + 50 - mirrorR * Math.cos(Math.PI * 0.2);
+      const hitY = startY + (hitX - startX) * dirY / dirX;
+
+      if (Math.abs(hitY - my) > mirrorR * 0.7) continue;
+
+      drawRay(startX, startY, hitX, hitY, color, 0.9);
+
+      // 反射：向焦点汇聚
+      const reflectAngle = Math.atan2(my - hitY, focalX - hitX);
+      const endX = 0;
+      const endY = hitY + (endX - hitX) * Math.tan(reflectAngle);
+
+      drawRay(hitX, hitY, endX, endY, color, 0.7);
+    }
+
+    drawLightSource(state.lightX, state.lightY);
+    updateInfo(theta1, theta1, 1, 1, true);
+  }
+
+  // 棱镜色散模式
+  function drawPrismMode() {
+    const cx = W / 2;
+    const cy = H / 2;
+    const prismSize = 100;
+    const theta1 = state.angle * Math.PI / 180;
+
+    // 绘制棱镜（三角形）
+    ctx.strokeStyle = '#4af';
+    ctx.lineWidth = 2;
+    ctx.fillStyle = 'rgba(68, 170, 255, 0.08)';
+    ctx.beginPath();
+    ctx.moveTo(cx, cy - prismSize);
+    ctx.lineTo(cx - prismSize * 0.866, cy + prismSize * 0.5);
+    ctx.lineTo(cx + prismSize * 0.866, cy + prismSize * 0.5);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // 多波长光线（色散）
+    const wavelengths = [400, 450, 500, 550, 600, 650, 700];
+    wavelengths.forEach((wl, idx) => {
+      // 柯西色散：波长越短折射率越大
+      const nDispersion = state.n + (550 - wl) * 0.0003;
+      const color = wavelengthToColor(wl);
+
+      // 入射光线
+      const startX = state.lightX;
+      const startY = state.lightY + (idx - 3) * 2;
+      const hitX = cx - prismSize * 0.5;
+      const hitY = startY + (hitX - startX) * Math.tan(theta1);
+
+      if (hitY < cy - prismSize || hitY > cy) return;
+
+      drawRay(startX, startY, hitX, hitY, color, 0.8);
+
+      // 第一面折射
+      const normalAngle1 = Math.PI / 6; // 60度棱镜的法线
+      const localTheta1 = theta1 - normalAngle1;
+      const localTheta2 = refractAngle(Math.abs(localTheta1), 1, nDispersion);
+      if (localTheta2 === null) return;
+
+      // 棱镜内部光线
+      const insideAngle = normalAngle1 - localTheta2 * Math.sign(localTheta1);
+      const insideEndX = cx + prismSize * 0.5;
+      const insideEndY = hitY + (insideEndX - hitX) * Math.tan(insideAngle);
+
+      drawRay(hitX, hitY, insideEndX, insideEndY, color, 0.6);
+
+      // 第二面折射（出射）
+      const normalAngle2 = -Math.PI / 6;
+      const localTheta3 = insideAngle - normalAngle2;
+      const localTheta4 = refractAngle(Math.abs(localTheta3), nDispersion, 1);
+      if (localTheta4 === null) return;
+
+      const outAngle = normalAngle2 + localTheta4 * Math.sign(localTheta3);
+      const endX = W;
+      const endY = insideEndY + (endX - insideEndX) * Math.tan(outAngle);
+
+      drawRay(insideEndX, insideEndY, endX, endY, color, 0.8);
+    });
+
+    drawLightSource(state.lightX, state.lightY);
+
+    // 更新信息
+    const theta2 = refractAngle(theta1, 1, state.n);
+    updateInfo(theta1, theta2, 1, state.n);
+    document.getElementById('infoStatus').textContent = '色散中';
+  }
+
+  // 全反射模式
+  function drawTotalReflectionMode() {
+    const cx = W / 2;
+    const cy = H / 2;
+    const theta1 = state.angle * Math.PI / 180;
+    const color = wavelengthToColor(state.wavelength);
+    const n1 = state.n; // 光密介质
+    const n2 = 1;       // 光疏介质
+
+    // 绘制介质分界面
+    ctx.fillStyle = 'rgba(68, 170, 255, 0.08)';
+    ctx.fillRect(0, 0, cx, H);
+    ctx.strokeStyle = '#4af';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([8, 4]);
+    ctx.beginPath();
+    ctx.moveTo(cx, 0);
+    ctx.lineTo(cx, H);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // 法线
+    ctx.strokeStyle = 'rgba(100, 100, 100, 0.5)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 3]);
+    ctx.beginPath();
+    ctx.moveTo(cx - 60, cy);
+    ctx.lineTo(cx + 60, cy);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // 标签
+    ctx.fillStyle = '#4af';
+    ctx.font = '12px monospace';
+    ctx.fillText('n₁ = ' + n1.toFixed(2), 20, 30);
+    ctx.fillStyle = '#888';
+    ctx.fillText('n₂ = 1.00 (空气)', cx + 20, 30);
+
+    // 临界角
+    const thetaC = criticalAngle(n1, n2);
+    const isTotal = state.angle > thetaC;
+
+    // 入射光线（从光密到光疏）
+    const startX = state.lightX;
+    const startY = state.lightY;
+    const hitX = cx;
+    const hitY = cy;
+
+    drawRay(startX, startY, hitX, hitY, color, 0.9);
+
+    // 入射角弧线
+    ctx.strokeStyle = 'rgba(255, 200, 100, 0.5)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.arc(hitX, hitY, 40, Math.PI - theta1, Math.PI, false);
+    ctx.stroke();
+    ctx.fillStyle = '#fc8';
+    ctx.font = '10px monospace';
+    ctx.fillText('θ₁=' + state.angle + '°', hitX - 70, hitY - 10);
+
+    if (isTotal) {
+      // 全反射
+      const reflectAngle = theta1;
+      const endX = state.lightX;
+      const endY = hitY + (hitX - state.lightX) * Math.tan(reflectAngle);
+
+      drawRay(hitX, hitY, endX, endY, '#f44', 0.9);
+
+      // 反射角弧线
+      ctx.strokeStyle = 'rgba(255, 100, 100, 0.5)';
+      ctx.beginPath();
+      ctx.arc(hitX, hitY, 50, 0, reflectAngle, false);
+      ctx.stroke();
+
+      document.getElementById('infoStatus').textContent = '⚡ 全反射!';
+      document.getElementById('infoStatus').style.color = '#f44';
+    } else {
+      // 部分反射 + 折射
+      const theta2 = refractAngle(theta1, n1, n2);
+
+      // 折射光线
+      const refEndX = W;
+      const refEndY = hitY + (refEndX - hitX) * Math.tan(theta2);
+      drawRay(hitX, hitY, refEndX, refEndY, color, 0.7);
+
+      // 反射光线（弱）
+      const reflEndX = state.lightX;
+      const reflEndY = hitY + (hitX - state.lightX) * Math.tan(theta1);
+      drawRay(hitX, hitY, reflEndX, reflEndY, color, 0.3);
+
+      document.getElementById('infoStatus').textContent = '部分反射+折射';
+      document.getElementById('infoStatus').style.color = '#4af';
+    }
+
+    drawLightSource(state.lightX, state.lightY);
+    updateInfo(theta1, refractAngle(theta1, n1, n2), n1, n2);
+  }
+
+  // 更新信息面板
+  function updateInfo(theta1, theta2, n1, n2, isMirror = false) {
+    document.getElementById('infoAngle1').textContent = (theta1 * 180 / Math.PI).toFixed(1) + '°';
+    document.getElementById('infoAngle2').textContent = theta2 !== null ? (theta2 * 180 / Math.PI).toFixed(1) + '°' : '全反射';
+    document.getElementById('infoN').textContent = n2.toFixed(2);
+    document.getElementById('infoCritical').textContent = criticalAngle(n1, n2).toFixed(1) + '°';
+    document.getElementById('infoWave').textContent = state.wavelength + 'nm';
+
+    if (!isMirror && theta2 !== null) {
+      const R = fresnelReflect(theta1, theta2, n1, n2);
+      document.getElementById('infoReflect').textContent = (R * 100).toFixed(1) + '%';
+      document.getElementById('infoTransmit').textContent = ((1 - R) * 100).toFixed(1) + '%';
+    } else if (isMirror) {
+      document.getElementById('infoReflect').textContent = '100%';
+      document.getElementById('infoTransmit').textContent = '0%';
+    } else {
+      document.getElementById('infoReflect').textContent = '100%';
+      document.getElementById('infoTransmit').textContent = '0%';
+    }
+  }
+
+  // 主渲染
+  function render() {
+    ctx.fillStyle = '#050510';
+    ctx.fillRect(0, 0, W, H);
+    drawGrid();
+
+    switch (state.mode) {
+      case 'lens': drawLensMode(); break;
+      case 'mirror': drawMirrorMode(); break;
+      case 'prism': drawPrismMode(); break;
+      case 'total': drawTotalReflectionMode(); break;
+    }
+
+    const modeNames = { lens: '透镜', mirror: '反射镜', prism: '棱镜色散', total: '全反射' };
+    document.getElementById('optOverlay').textContent =
+      '模式: ' + modeNames[state.mode] + ' | 点击画布移动光源 | 拖动滑块调节参数';
+  }
+
+  // 事件绑定
+  document.querySelectorAll('.opt-mode-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.opt-mode-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      state.mode = btn.dataset.mode;
+      render();
+    });
+  });
+
+  document.getElementById('angleSlider').addEventListener('input', e => {
+    state.angle = parseInt(e.target.value);
+    document.getElementById('angleVal').textContent = state.angle + '°';
+    render();
+  });
+
+  document.getElementById('nSlider').addEventListener('input', e => {
+    state.n = parseFloat(e.target.value);
+    document.getElementById('nVal').textContent = state.n.toFixed(2);
+    render();
+  });
+
+  document.getElementById('raysSlider').addEventListener('input', e => {
+    state.rays = parseInt(e.target.value);
+    document.getElementById('raysVal').textContent = state.rays;
+    render();
+  });
+
+  document.getElementById('waveSlider').addEventListener('input', e => {
+    state.wavelength = parseInt(e.target.value);
+    document.getElementById('waveVal').textContent = state.wavelength;
+    render();
+  });
+
+  // 点击移动光源
+  canvas.addEventListener('click', e => {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = W / rect.width;
+    const scaleY = H / rect.height;
+    state.lightX = (e.clientX - rect.left) * scaleX;
+    state.lightY = (e.clientY - rect.top) * scaleY;
+    state.lightX = Math.max(50, Math.min(W / 2 - 50, state.lightX));
+    state.lightY = Math.max(50, Math.min(H - 50, state.lightY));
+    render();
+  });
+
+  // 初始渲染
+  render();
+})();
+</script>

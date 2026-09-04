@@ -1,0 +1,14 @@
+{
+  "id": "2026-063",
+  "title": "相信光吗：交互式光学引擎演示",
+  "date": "2026-09-05T14:00:00",
+  "tags": ["tech", "works", "光学"],
+  "milestone": true,
+  "summary": "三个月日夜兼程打造的光学引擎：SolidWorks设计+装机调试+代码开发+光学系统搭建，可交互的光路模拟、折射反射、色散、全反射演示。",
+  "theme": "mono",
+  "image": "",
+  "links": [
+    {"text": "抖音视频", "url": "https://v.douyin.com/OfnojRMJfig/"}
+  ],
+  "format": "html"
+}
