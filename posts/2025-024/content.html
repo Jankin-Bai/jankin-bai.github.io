@@ -3,7 +3,7 @@
 .radio-container {
   max-width: 720px;
   margin: 0 auto;
-  padding: 16px 0;
+  padding: 260px 0 16px 0;
   font-family: 'Courier New', 'Consolas', monospace;
   color: #8a9a7b;
 }
@@ -255,9 +255,13 @@
   border-radius: 8px;
   padding: 10px;
   margin-bottom: 12px;
-  position: sticky;
+  position: fixed;
   top: 0;
-  z-index: 100;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 720px;
+  z-index: 1000;
   box-shadow: 0 4px 12px rgba(0,0,0,0.5);
 }
 
@@ -904,6 +908,10 @@
 }
 @media (min-width: 1024px) {
   .globe-container { max-height: 55vh; max-width: 55vh; }
+}
+@media (max-width: 768px) {
+  .radio-container { padding-top: 240px; }
+  .map-panel { max-width: calc(100% - 16px); }
 }
 </style>
 
