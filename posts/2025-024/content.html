@@ -844,8 +844,7 @@
         <foreignObject id="connectorLabelFO" x="0" y="0" width="250" height="100" style="overflow:visible;">
           <div xmlns="http://www.w3.org/1999/xhtml" id="globeFloatLabel" style="background:rgba(0,10,0,0.95);border:2px solid #ff9900;border-radius:4px;padding:6px 10px;font-family:Courier New;white-space:nowrap;transform:translate(0,-50%);box-shadow:0 0 10px rgba(255,153,0,0.5);display:inline-block;">
             <div id="floatName" style="color:#ffcc00;font-size:11px;font-weight:bold;">---</div>
-            <div id="floatFmt" style="color:#88ccff;font-size:9px;margin-top:3px;">---</div>
-            <div id="floatGeo" style="color:#ffaa44;font-size:9px;margin-top:2px;">---</div>
+            <div id="floatMeta" style="color:#ffaa44;font-size:9px;margin-top:3px;">---</div>
           </div>
         </foreignObject>
       </svg>
@@ -1492,10 +1491,9 @@ async function initGlobe() {
         labelFO.setAttribute('x', endX + 5);
         labelFO.setAttribute('y', endY - 25);
         document.getElementById('floatName').textContent = currentStation.name;
-        document.getElementById('floatFmt').textContent = 
-          currentStation.format + ' | ' + currentStation.freq + ' MHz';
-        document.getElementById('floatGeo').textContent = 
-          currentStation.geo.label + ' (' + currentStation.geo.lat.toFixed(2) + '°, ' + currentStation.geo.lon.toFixed(2) + '°)';
+        document.getElementById('floatMeta').textContent = 
+          currentStation.format + ' | ' + currentStation.freq + 'MHz | ' + 
+          currentStation.geo.label + ' ' + currentStation.geo.lat.toFixed(1) + ',' + currentStation.geo.lon.toFixed(1);
       } else {
         crosshairEl.style.opacity = '0.2';
         crosshairEl.style.left = x + 'px';
