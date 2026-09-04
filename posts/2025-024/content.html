@@ -2229,20 +2229,32 @@ if (document.readyState === 'loading') {
   updateHeaderHeight();
 }
 
-// 设置导航栏高度供地球sticky使用（只取正常状态高度，不跟随收缩动画）
+// 设置导航栏高度供地球sticky使用（等动画完成后取最终高度）
+let headerHeightSet = false;
 function updateHeaderHeight() {
   const header = document.querySelector('.site-header-row');
   if (header) {
     const h = header.offsetHeight;
-    if (h > 10) { // 只在导航栏正常显示时更新，收缩时不更新
+    if (h > 10) {
       document.documentElement.style.setProperty('--header-height', h + 'px');
+      headerHeightSet = true;
     }
   }
 }
+// 初始化时多次尝试，等字体/动画加载完成
 updateHeaderHeight();
-window.addEventListener('resize', updateHeaderHeight);
-setTimeout(updateHeaderHeight, 500);
+setTimeout(updateHeaderHeight, 300);
+setTimeout(updateHeaderHeight, 800);
 setTimeout(updateHeaderHeight, 1500);
+setTimeout(updateHeaderHeight, 3000);
+window.addEventListener('resize', updateHeaderHeight);
+// 导航栏动画完成后更新高度
+const headerEl = document.querySelector('.site-header-row');
+if (headerEl) {
+  headerEl.addEventListener('transitionend', () => {
+    setTimeout(updateHeaderHeight, 50);
+  });
+}
 
 /* ========== 休眠定时器 ========== */
 let sleepTimerId = null;
