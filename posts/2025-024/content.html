@@ -2092,9 +2092,17 @@ async function initGlobe() {
     
     let lastAnimTime = 0;
     let lastRenderTime = 0;
+    let pageVisible = true;
     const FRAME_INTERVAL = 1000 / 30; // 30fps
+    // 页面切后台时暂停渲染，防止发热
+    document.addEventListener('visibilitychange', () => {
+      pageVisible = !document.hidden;
+      if (pageVisible) { lastAnimTime = 0; lastRenderTime = 0; }
+    });
     function animate(timestamp) {
       requestAnimationFrame(animate);
+      // 页面不可见时完全跳过渲染
+      if (!pageVisible) return;
       // 计算时间差（毫秒）
       const delta = lastAnimTime ? (timestamp - lastAnimTime) : 16.7;
       lastAnimTime = timestamp;
