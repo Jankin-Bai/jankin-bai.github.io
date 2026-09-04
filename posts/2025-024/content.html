@@ -2228,40 +2228,60 @@ function focusGlobeOnStation(stationId) {
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => {
     initGlobe();
-    fixMapPanel();
+    initMapPanelSticky();
   });
 } else {
   initGlobe();
-  fixMapPanel();
+  initMapPanelSticky();
 }
 
-// 把地图面板移到body直接子级并固定在顶部导航栏下方（实时跟随导航栏动画）
-function fixMapPanel() {
+// 地球sticky效果：初始在文章正常位置，上滑碰到导航栏时吸附固定
+function initMapPanelSticky() {
   const panel = document.querySelector('.map-panel');
-  if (!panel || panel.classList.contains('fixed-top')) return;
-  // 创建占位元素，防止布局跳动
+  if (!panel) return;
+  // 创建占位元素（fixed时保持布局高度）
   const placeholder = document.createElement('div');
-  placeholder.style.height = panel.offsetHeight + 'px';
+  placeholder.style.display = 'none';
   placeholder.style.marginBottom = '12px';
   panel.parentNode.insertBefore(placeholder, panel);
-  // 移到body下并固定
-  document.body.appendChild(panel);
-  panel.classList.add('fixed-top');
-  // 用requestAnimationFrame实时跟随导航栏位置（包括渐入渐出动画）
-  function followHeader() {
+  
+  let isFixed = false;
+  
+  function updateSticky() {
     const header = document.querySelector('.site-header-row');
-    if (header) {
-      const rect = header.getBoundingClientRect();
-      panel.style.top = rect.bottom + 'px';
+    const headerBottom = header ? header.getBoundingClientRect().bottom : 0;
+    const panelRect = panel.getBoundingClientRect();
+    
+    // 当地球顶部碰到导航栏底部时，切换为fixed
+    const shouldFix = panelRect.top <= headerBottom && window.scrollY > 0;
+    
+    if (shouldFix && !isFixed) {
+      // 切换为fixed
+      placeholder.style.height = panel.offsetHeight + 'px';
+      placeholder.style.display = 'block';
+      panel.classList.add('fixed-top');
+      isFixed = true;
+    } else if (!shouldFix && isFixed) {
+      // 恢复正常文档流
+      placeholder.style.display = 'none';
+      panel.classList.remove('fixed-top');
+      panel.style.top = '';
+      isFixed = false;
     }
-    if (window.innerWidth <= 768) {
-      panel.style.maxWidth = (window.innerWidth - 16) + 'px';
-    } else {
-      panel.style.maxWidth = '720px';
+    
+    // fixed时实时跟随导航栏
+    if (isFixed) {
+      panel.style.top = headerBottom + 'px';
+      if (window.innerWidth <= 768) {
+        panel.style.maxWidth = (window.innerWidth - 16) + 'px';
+      } else {
+        panel.style.maxWidth = '720px';
+      }
     }
-    requestAnimationFrame(followHeader);
+    
+    requestAnimationFrame(updateSticky);
   }
-  followHeader();
+  updateSticky();
 }
 
 /* ========== 休眠定时器 ========== */
