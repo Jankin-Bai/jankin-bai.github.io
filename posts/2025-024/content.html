@@ -834,6 +834,26 @@
         <g class="map-station" data-id="soma_drone" transform="translate(395,196)"><circle r="3"/></g>
         <g class="map-station" data-id="soma_lush" transform="translate(388,200)"><circle r="3"/></g>
         <g class="map-station" data-id="soma_space" transform="translate(393,198)"><circle r="3"/></g>
+        <!-- 莫斯科（俄语电台） -->
+        <g class="map-station" data-id="ru_mayak" transform="translate(425,82)">
+          <circle r="5"/><text x="7" y="3">莫斯科</text>
+        </g>
+        <g class="map-station" data-id="ru_vesti" transform="translate(428,80)"><circle r="3"/></g>
+        <g class="map-station" data-id="ru_nashe" transform="translate(422,84)"><circle r="3"/></g>
+        <g class="map-station" data-id="ru_record" transform="translate(426,83)"><circle r="3"/></g>
+        <g class="map-station" data-id="ru_relax" transform="translate(424,81)"><circle r="3"/></g>
+        <!-- 中东（阿拉伯语电台） -->
+        <g class="map-station" data-id="ar_quran_mishary" transform="translate(560,130)">
+          <circle r="5"/><text x="7" y="3">中东</text>
+        </g>
+        <g class="map-station" data-id="ar_quran_tarateel" transform="translate(563,128)"><circle r="3"/></g>
+        <g class="map-station" data-id="ar_quran_abdulbasit" transform="translate(558,132)"><circle r="3"/></g>
+        <g class="map-station" data-id="ar_orient" transform="translate(561,131)"><circle r="3"/></g>
+        <!-- 悉尼（英语新电台） -->
+        <g class="map-station" data-id="en_skynews" transform="translate(700,200)">
+          <circle r="4"/><text x="6" y="3">悉尼</text>
+        </g>
+        <g class="map-station" data-id="en_classical100" transform="translate(410,195)"><circle r="3"/></g>
       </g>
     </svg>
   </div>
@@ -847,6 +867,8 @@
     <button class="category-btn" data-category="music">音乐电台</button>
     <button class="category-btn" data-category="internet">网络音乐</button>
     <button class="category-btn" data-category="singapore">新加坡</button>
+    <button class="category-btn" data-category="russian">俄语电台</button>
+    <button class="category-btn" data-category="arabic">阿拉伯语</button>
     <button class="category-btn" data-category="international">国际广播</button>
     <button class="category-btn" data-category="ambient">氛围音乐</button>
   </div>
@@ -977,6 +999,20 @@ const stations = [
   { id: 'soma_drone', name: 'SomaFM Drone Zone', desc: 'SomaFM无人机音乐，极简氛围电子', category: 'ambient', format: 'MP3', freq: '---', url: 'https://ice1.somafm.com/dronezone-128-mp3' },
   { id: 'soma_lush', name: 'SomaFM Lush', desc: 'SomaFM感性电子音乐，vocal ambient', category: 'ambient', format: 'MP3', freq: '---', url: 'https://ice1.somafm.com/lush-128-mp3' },
   { id: 'soma_space', name: 'SomaFM Space Station', desc: 'SomaFM太空音乐，氛围/太空电子', category: 'ambient', format: 'MP3', freq: '---', url: 'https://ice1.somafm.com/spacestation-128-mp3' },
+  // ===== 俄语电台 =====
+  { id: 'ru_mayak', name: 'Радио Маяк', desc: '俄罗斯灯塔广播电台，新闻资讯综合频率，VGTRK官方', category: 'russian', format: 'MP3', freq: '103.4', url: 'https://icecast-vgtrk.cdnvideo.ru/mayakfm_mp3_128kbps' },
+  { id: 'ru_vesti', name: 'Вести FM', desc: '俄罗斯消息电台FM，新闻时政频率，VGTRK官方', category: 'russian', format: 'MP3', freq: '97.6', url: 'https://icecast-vgtrk.cdnvideo.ru/vestifm_mp3_192kbps' },
+  { id: 'ru_nashe', name: 'Наше радио', desc: '俄罗斯摇滚音乐电台，俄语摇滚经典', category: 'russian', format: 'MP3', freq: '---', url: 'http://nashe.streamr.ru/nashe20-128.mp3' },
+  { id: 'ru_record', name: 'Radio Record Gold', desc: '俄罗斯Record电台金曲频道，俄语流行经典', category: 'russian', format: 'AAC', freq: '---', url: 'https://radiorecord.hostingradio.ru/russiangold96.aacp' },
+  { id: 'ru_relax', name: 'Relax FM Chillout', desc: '俄罗斯放松音乐电台，chillout/ambient氛围', category: 'russian', format: 'MP3', freq: '---', url: 'https://pub0201.101.ru/stream/trust/mp3/128/24' },
+  // ===== 阿拉伯语电台 =====
+  { id: 'ar_quran_mishary', name: 'Quran Mishary Alafasi', desc: '古兰经诵读电台，Mishary Rashid Alafasi诵读，24小时循环', category: 'arabic', format: 'MP3', freq: '---', url: 'https://qurango.net/radio/mishary_alafasi' },
+  { id: 'ar_quran_tarateel', name: 'Quran Tarateel', desc: '古兰经诵读电台，精选多位诵经家，24小时循环', category: 'arabic', format: 'MP3', freq: '---', url: 'https://qurango.net/radio/tarateel' },
+  { id: 'ar_quran_abdulbasit', name: 'Quran Abdulbasit', desc: '古兰经诵读电台，Abdulbasit Abdulsamad经典诵读', category: 'arabic', format: 'MP3', freq: '---', url: 'https://radio.mp3islam.com/listen/abdulbasit/radio.mp3' },
+  { id: 'ar_orient', name: 'Orient Radio', desc: '阿拉伯东方音乐电台，阿拉伯流行/传统音乐', category: 'arabic', format: 'MP3', freq: '---', url: 'https://oriental-high.rautemusik.fm/?ref=radiobrowser' },
+  // ===== 英语电台新增 =====
+  { id: 'en_skynews', name: 'Sky News Australia', desc: '澳大利亚天空新闻台，24小时英语新闻广播', category: 'international', format: 'AAC', freq: '---', url: 'https://playerservices.streamtheworld.com/api/livestream-redirect/NOVA_SKYNEWSAAC.aac' },
+  { id: 'en_classical100', name: '100 Greatest Classical', desc: '100首最伟大古典音乐，24小时循环播放', category: 'ambient', format: 'MP3', freq: '---', url: 'https://az1.mediacp.eu/listen/100greatestclassicalmusic/radio.mp3' },
 ];
 
 const audio = document.getElementById('audioPlayer');
@@ -991,7 +1027,7 @@ let currentStation = null;
 let isPlaying = false;
 let hlsInstance = null;
 
-const categoryNames = { cnr: '央广系列', local: '地方电台', hkmt: '港澳台', music: '音乐电台', internet: '网络音乐', singapore: '新加坡', international: '国际广播', ambient: '氛围音乐', all: '全部' };
+const categoryNames = { cnr: '央广系列', local: '地方电台', hkmt: '港澳台', music: '音乐电台', internet: '网络音乐', singapore: '新加坡', international: '国际广播', ambient: '氛围音乐', russian: '俄语电台', arabic: '阿拉伯语', all: '全部' };
 
 function renderStations(category) {
   category = category || 'all';
