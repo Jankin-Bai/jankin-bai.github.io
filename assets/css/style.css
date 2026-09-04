@@ -658,6 +658,21 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   .footer-cell-c2, .footer-cell-c3 { text-align: left; }
 }
 @media (max-width: 640px) {
+  /* 移动端：侧栏收起功能不生效，保持正常布局 */
+  .page-post.sidebar-collapsed .post-sidebar {
+    width: auto;
+    padding: var(--sp-6) var(--sp-5);
+    overflow: visible;
+  }
+  .page-post.sidebar-collapsed .post-sidebar .sidebar-content {
+    display: block;
+  }
+  .page-post.sidebar-collapsed .post-sidebar::before {
+    display: none;
+  }
+  .page-post.sidebar-collapsed .post-article {
+    margin-left: 0;
+  }
   .site-header { padding: var(--sp-6) 0 var(--sp-4); }
   .site-title { font-size: var(--fs-2xl); }
   .post-title { font-size: var(--fs-xl); }
@@ -952,6 +967,17 @@ select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
 }
 .post-toc:hover, .sidebar:hover, .dim-list:hover {
   scrollbar-color: color-mix(in srgb, var(--color-primary) 45%, transparent) transparent;
+}
+
+/* 文章侧栏：隐藏滚动条但保留滚动功能 */
+.post-sidebar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.post-sidebar::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 /* Widgets */
@@ -1952,6 +1978,39 @@ select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
 }
 .page-post .post-sidebar-section.toc-collapsed .post-toc {
   display: none;
+}
+
+/* 目录折叠时，整个侧栏收起变窄 */
+.page-post body.sidebar-collapsed .post-sidebar,
+.page-post.sidebar-collapsed .post-sidebar {
+  width: 48px;
+  padding: var(--sp-3) 0;
+  overflow: hidden;
+}
+.page-post.sidebar-collapsed .post-sidebar .sidebar-content {
+  display: none;
+}
+.page-post.sidebar-collapsed .post-sidebar .sidebar-toggle-btn {
+  display: none;
+}
+/* 收起状态下显示展开按钮 */
+.page-post.sidebar-collapsed .post-sidebar::before {
+  content: "目录";
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  font-size: var(--fs-sm);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  letter-spacing: 0.2em;
+}
+/* 收起状态下主内容区域扩展 */
+.page-post.sidebar-collapsed .post-article {
+  margin-left: 48px;
 }
 
 /* ---------- 主页：PC端标签在左侧栏，手机端在顶部 ---------- */

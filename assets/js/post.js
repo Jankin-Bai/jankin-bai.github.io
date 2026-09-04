@@ -452,9 +452,27 @@
   (function initTOCCollapse() {
     const tocSection = document.querySelector('.post-sidebar-section:has(.post-toc)');
     const tocTitle = tocSection ? tocSection.querySelector('.post-sidebar-title') : null;
-    if (!tocSection || !tocTitle) return;
+    const sidebar = document.querySelector('.post-sidebar');
+    const pagePost = document.querySelector('.page-post') || document.body;
+    if (!tocSection || !tocTitle || !sidebar) return;
+    
+    // 目录标题点击：折叠/展开目录，同时收起/展开侧栏
     tocTitle.addEventListener('click', function() {
-      tocSection.classList.toggle('toc-collapsed');
+      var isCollapsed = tocSection.classList.toggle('toc-collapsed');
+      if (isCollapsed) {
+        pagePost.classList.add('sidebar-collapsed');
+      } else {
+        pagePost.classList.remove('sidebar-collapsed');
+      }
+    });
+    
+    // 收起状态下，点击侧栏（竖条"目录"）展开
+    sidebar.addEventListener('click', function(e) {
+      if (pagePost.classList.contains('sidebar-collapsed')) {
+        pagePost.classList.remove('sidebar-collapsed');
+        tocSection.classList.remove('toc-collapsed');
+        e.stopPropagation();
+      }
     });
   })();
 
