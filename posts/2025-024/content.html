@@ -1205,19 +1205,37 @@ async function initGlobe() {
     globeRenderer.setSize(width, height);
     globeRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     
-    // 灯光
-    globeScene.add(new THREE.AmbientLight(0x448844, 0.6));
-    const dirLight = new THREE.DirectionalLight(0x88ff88, 0.8);
-    dirLight.position.set(1, 1, 1);
-    globeScene.add(dirLight);
+    // 灯光（模拟太阳+环境光）
+    globeScene.add(new THREE.AmbientLight(0x404060, 0.5));
+    const sunLight = new THREE.DirectionalLight(0xffffff, 1.2);
+    sunLight.position.set(5, 3, 5);
+    globeScene.add(sunLight);
+    const fillLight = new THREE.DirectionalLight(0x4488ff, 0.3);
+    fillLight.position.set(-5, -2, -5);
+    globeScene.add(fillLight);
     
     // 创建地球
+    // NASA Blue Marble 纹理（three-globe官方CDN）
+    const textureLoader = new THREE.TextureLoader();
+    const dayTexture = textureLoader.load('https://unpkg.com/three-globe@2.31.0/example/img/earth-blue-marble.jpg');
+    const bumpTexture = textureLoader.load('https://unpkg.com/three-globe@2.31.0/example/img/earth-topology.png');
+    const specularTexture = textureLoader.load('https://unpkg.com/three-globe@2.31.0/example/img/earth-water.png');
+    
     globeInstance = new ThreeGlobe({ waitForGlobeReady: true, animateIn: true })
       .showAtmosphere(true)
-      .atmosphereColor('#2a8a2a')
+      .atmosphereColor('#4a9aff')
       .atmosphereAltitude(0.15)
       .showGraticules(false)
-      .globeImageUrl('https://raw.githubusercontent.com/Jankin-Bai/jankin-bai.github.io/main/images/radio/world_map_hd.png')
+      .globeImageUrl('https://unpkg.com/three-globe@2.31.0/example/img/earth-blue-marble.jpg')
+      .bumpImageUrl('https://unpkg.com/three-globe@2.31.0/example/img/earth-topology.png')
+      .globeMaterial(new THREE.MeshPhongMaterial({
+        map: dayTexture,
+        bumpMap: bumpTexture,
+        bumpScale: 15,
+        specularMap: specularTexture,
+        specular: new THREE.Color(0x333333),
+        shininess: 15
+      }))
       .pointsData(stations.filter(s => s.geo))
       .pointLat(d => d.geo.lat)
       .pointLng(d => d.geo.lon)
