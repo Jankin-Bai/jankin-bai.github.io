@@ -577,7 +577,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 
 /* 博文侧栏 — 左侧 */
 /* 博文侧栏 — 左侧，top 由 JS 动态测量页眉高度 */
-.post-sidebar { grid-column: 1; grid-row: 2; padding: var(--sp-7) var(--sp-5) var(--sp-8); position: sticky; top: var(--header-height, 120px); max-height: calc(100vh - var(--header-height, 120px)); overflow-y: auto; background: var(--color-surface); border-right: 1px solid var(--color-border-light); }
+.post-sidebar { grid-column: 1; grid-row: 2; padding: var(--sp-7) var(--sp-5) var(--sp-8); position: fixed; left: 0; top: var(--header-height, 120px); width: 280px; height: calc(100vh - var(--header-height, 120px)); max-height: calc(100vh - var(--header-height, 120px)); overflow-y: auto; overflow-x: hidden; background: var(--color-surface); border-right: 1px solid var(--color-border-light); z-index: 50; transition: top var(--transition-slow), height var(--transition-slow); }
 .post-sidebar-section { margin-bottom: var(--sp-6); }
 .post-sidebar-title { font-size: var(--fs-xs); text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-text-muted); margin-bottom: var(--sp-3); font-weight: 600; }
 .post-sidebar-link { display: block; padding: 8px 0; font-size: var(--fs-sm); color: var(--color-text-secondary); }
@@ -1180,9 +1180,10 @@ select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
   transform: scale(0.95);
 }
 
-/* 阅读模式下，文章侧栏从阅读标题栏下方开始 sticky */
+/* 阅读模式下，文章侧栏保持 fixed 固定（CSDN风格），从阅读标题栏下方开始 */
 .page-post.reading-mode .post-sidebar {
   top: 42px;
+  height: calc(100vh - 42px);
   max-height: calc(100vh - 42px);
 }
 
