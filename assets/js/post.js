@@ -316,28 +316,44 @@
         '<button class="mermaid-ctrl" data-action="fullscreen" title="全屏">⛶</button>';
       wrapper.appendChild(controls);
       
-      // 初始化 svg-pan-zoom
-      var panZoom = svgPanZoom('#' + svgId, {
-        zoomEnabled: true,
-        controlIconsEnabled: false,
-        fit: true,
-        center: true,
-        minZoom: 0.5,
-        maxZoom: 10,
-        zoomScaleSensitivity: 0.4,
-        panEnabled: true,
-        dblClickZoomEnabled: true,
-        mouseWheelZoomEnabled: true
+      // 确保 SVG 有 viewBox（svg-pan-zoom 需要）
+      if (!svg.getAttribute('viewBox')) {
+        var bbox = svg.getBBox ? svg.getBBox() : {x:0, y:0, width: svg.clientWidth, height: svg.clientHeight};
+        svg.setAttribute('viewBox', bbox.x + ' ' + bbox.y + ' ' + bbox.width + ' ' + bbox.height);
+      }
+      svg.style.width = '100%';
+      svg.style.height = '100%';
+      
+      // 初始化 svg-pan-zoom（延迟一帧确保布局完成）
+      var panZoom;
+      requestAnimationFrame(function() {
+        panZoom = svgPanZoom('#' + svgId, {
+          zoomEnabled: true,
+          controlIconsEnabled: false,
+          fit: true,
+          center: true,
+          minZoom: 0.3,
+          maxZoom: 20,
+          zoomScaleSensitivity: 0.3,
+          panEnabled: true,
+          dblClickZoomEnabled: true,
+          mouseWheelZoomEnabled: true,
+          preventMouseEventsDefault: false
+        });
+        // 强制 fit + center
+        panZoom.fit();
+        panZoom.center();
       });
       
       // 绑定控制按钮
       controls.querySelectorAll('.mermaid-ctrl').forEach(function(btn) {
         btn.addEventListener('click', function(e) {
           e.stopPropagation();
+          if (!panZoom) return;
           var action = btn.dataset.action;
           if (action === 'zoom-in') panZoom.zoomIn();
           else if (action === 'zoom-out') panZoom.zoomOut();
-          else if (action === 'reset') panZoom.reset();
+          else if (action === 'reset') { panZoom.reset(); panZoom.fit(); panZoom.center(); }
           else if (action === 'fullscreen') toggleMermaidFullscreen(wrapper, panZoom);
         });
       });
@@ -353,8 +369,17 @@
       wrapper.classList.add('fullscreen');
       document.body.style.overflow = 'hidden';
     }
-    // 延迟 resize，等动画完成
-    setTimeout(function() { panZoom.resize(); panZoom.fit(); panZoom.center(); }, 100);
+    // 延迟 resize，等布局完成后多次尝试确保生效
+    var tryResize = function(times) {
+      if (times <= 0 || !panZoom) return;
+      try {
+        panZoom.resize();
+        panZoom.fit();
+        panZoom.center();
+      } catch(e) {}
+      setTimeout(function() { tryResize(times - 1); }, 100);
+    };
+    tryResize(5);
   }
 
   /* ---------- 文章目录 TOC 生成 ---------- */
