@@ -257,7 +257,7 @@
   margin-bottom: 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.5);
   position: sticky;
-  top: calc(var(--header-height, 60px) - 10px);
+  top: var(--header-height, 60px);
   z-index: 50;
 }
 
@@ -2229,11 +2229,13 @@ if (document.readyState === 'loading') {
   updateHeaderHeight();
 }
 
-// 持续同步导航栏高度到CSS变量（包括渐入渐出动画过程中）
+// 持续同步导航栏底部位置到CSS变量（包括border和动画过程中）
 function updateHeaderHeight() {
   const header = document.querySelector('.site-header-row');
   if (header) {
-    document.documentElement.style.setProperty('--header-height', header.offsetHeight + 'px');
+    // 用getBoundingClientRect().bottom获取实际底部位置（包括border）
+    const bottom = header.getBoundingClientRect().bottom;
+    document.documentElement.style.setProperty('--header-height', Math.max(0, bottom) + 'px');
   }
   requestAnimationFrame(updateHeaderHeight);
 }
