@@ -1812,12 +1812,15 @@ async function initGlobe() {
           // 精细经纬网格线（每15度一条，淡绿色）
           float lat = (vUv.y - 0.5) * 180.0;
           float lon = (vUv.x - 0.5) * 360.0;
-          float latLine = smoothstep(0.85, 1.0, 1.0 - abs(fract(lat / 15.0) - 0.5) * 2.0);
-          float lonLine = smoothstep(0.85, 1.0, 1.0 - abs(fract(lon / 15.0) - 0.5) * 2.0);
-          float grid = max(latLine, lonLine) * 0.15;
+          // 更细更锐利的经纬线（提高阈值+减小过渡范围）
+          float latDist = 1.0 - abs(fract(lat / 15.0) - 0.5) * 2.0;
+          float lonDist = 1.0 - abs(fract(lon / 15.0) - 0.5) * 2.0;
+          float latLine = smoothstep(0.96, 0.99, latDist);
+          float lonLine = smoothstep(0.96, 0.99, lonDist);
+          float grid = max(latLine, lonLine) * 0.35;
           // 经纬线只在海洋部分显示，陆地不显示
           grid *= isWater;
-          color += vec3(0.15, 0.6, 0.25) * grid;
+          color += vec3(0.2, 0.8, 0.35) * grid;
           // 扫描线效果
           float scan = smoothstep(0.95, 1.0, 1.0 - abs(fract(vUv.y * 100.0 + time * 0.08) - 0.5) * 2.0);
           color += vec3(0.05, 0.2, 0.1) * scan * 0.25;
