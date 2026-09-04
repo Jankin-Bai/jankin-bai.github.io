@@ -327,7 +327,11 @@
     if (content.includes('class="mermaid"')) {
       try {
         await loadScript('assets/js/vendor/mermaid.min.js');
-        mermaid.initialize({ startOnLoad: false, theme: 'dark', securityLevel: 'loose' });
+        // 根据当前页面主题动态选择mermaid主题，避免深色背景盖住文字
+        var currentTheme = document.documentElement.getAttribute('data-theme') || 'mono';
+        var isDarkTheme = ['mono', 'dark'].indexOf(currentTheme) !== -1;
+        var mermaidTheme = isDarkTheme ? 'dark' : 'default';
+        mermaid.initialize({ startOnLoad: false, theme: mermaidTheme, securityLevel: 'loose' });
         await mermaid.run({ querySelector: '.mermaid' });
         // 加载 svg-pan-zoom 并初始化交互
         await loadScript('assets/js/vendor/svg-pan-zoom.min.js');
