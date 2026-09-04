@@ -162,6 +162,87 @@
   display: none;
 }
 
+.player-error.show {
+  display: block;
+}
+
+/* 休眠定时器 */
+.sleep-timer {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(128, 128, 128, 0.2);
+}
+
+.sleep-timer-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85em;
+  color: var(--color-text-muted, #888);
+  margin-bottom: 8px;
+}
+
+.sleep-timer-remaining {
+  color: #3498db;
+  font-weight: bold;
+  font-family: 'Courier New', monospace;
+}
+
+.sleep-timer-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.sleep-btn {
+  padding: 5px 12px;
+  border: 1px solid rgba(128, 128, 128, 0.3);
+  border-radius: 16px;
+  background: transparent;
+  color: var(--color-text, #333);
+  font-size: 0.8em;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.sleep-btn:hover {
+  background: rgba(52, 152, 219, 0.1);
+  border-color: #3498db;
+}
+
+.sleep-btn.active {
+  background: #3498db;
+  color: #fff;
+  border-color: #3498db;
+}
+
+.sleep-custom-input {
+  width: 80px;
+  padding: 5px 8px;
+  border: 1px solid rgba(128, 128, 128, 0.3);
+  border-radius: 16px;
+  font-size: 0.8em;
+  background: transparent;
+  color: var(--color-text, #333);
+  text-align: center;
+}
+
+.sleep-custom-input:focus {
+  outline: none;
+  border-color: #3498db;
+}
+
+.sleep-cancel-btn {
+  color: #e74c3c;
+  border-color: rgba(231, 76, 60, 0.3);
+}
+
+.sleep-cancel-btn:hover {
+  background: rgba(231, 76, 60, 0.1);
+  border-color: #e74c3c;
+}
+
 /* 分类筛选 */
 .radio-categories {
   display: flex;
@@ -405,6 +486,22 @@
       </div>
     </div>
     <div class="player-error" id="playerError"></div>
+    <!-- 休眠定时器 -->
+    <div class="sleep-timer" id="sleepTimer">
+      <div class="sleep-timer-label">
+        <span>🌙 休眠定时</span>
+        <span class="sleep-timer-remaining" id="sleepRemaining" style="display:none"></span>
+      </div>
+      <div class="sleep-timer-buttons">
+        <button class="sleep-btn" data-minutes="5">5分</button>
+        <button class="sleep-btn" data-minutes="10">10分</button>
+        <button class="sleep-btn" data-minutes="15">15分</button>
+        <button class="sleep-btn" data-minutes="30">30分</button>
+        <input type="number" class="sleep-custom-input" id="sleepCustomInput" min="1" max="180" placeholder="自定义(分)">
+        <button class="sleep-btn sleep-custom-btn" onclick="setCustomSleepTimer()">设置</button>
+        <button class="sleep-btn sleep-cancel-btn" id="sleepCancelBtn" onclick="cancelSleepTimer()" style="display:none">取消</button>
+      </div>
+    </div>
     <audio id="audioPlayer" crossorigin="anonymous"></audio>
   </div>
 
@@ -706,6 +803,96 @@ document.querySelectorAll('.category-btn').forEach(btn => {
     currentCategory = btn.dataset.category;
     renderStations(currentCategory);
   });
+});
+
+/* ========== 休眠定时器 ========== */
+let sleepTimerId = null;
+let sleepEndTime = null;
+let sleepRemainingInterval = null;
+
+// 设置休眠定时器（分钟）
+function setSleepTimer(minutes) {
+  // 先清除已有定时器
+  cancelSleepTimer();
+  
+  if (!minutes || minutes <= 0) return;
+  
+  const ms = minutes * 60 * 1000;
+  sleepEndTime = Date.now() + ms;
+  
+  // 到时间后自动停止播放
+  sleepTimerId = setTimeout(() => {
+    stopPlay();
+    cancelSleepTimer();
+    showError('休眠时间到，已自动停止播放');
+    setTimeout(() => { playerError.style.display = 'none'; }, 3000);
+  }, ms);
+  
+  // 更新UI：高亮选中按钮
+  document.querySelectorAll('.sleep-btn[data-minutes]').forEach(btn => {
+    btn.classList.toggle('active', parseInt(btn.dataset.minutes) === minutes);
+  });
+  
+  // 显示剩余时间和取消按钮
+  document.getElementById('sleepRemaining').style.display = 'inline';
+  document.getElementById('sleepCancelBtn').style.display = 'inline-block';
+  updateSleepRemaining();
+  
+  // 每秒更新剩余时间
+  sleepRemainingInterval = setInterval(updateSleepRemaining, 1000);
+}
+
+// 自定义时间
+function setCustomSleepTimer() {
+  const input = document.getElementById('sleepCustomInput');
+  const minutes = parseInt(input.value);
+  if (isNaN(minutes) || minutes < 1 || minutes > 180) {
+    showError('请输入1-180之间的分钟数');
+    setTimeout(() => { playerError.style.display = 'none'; }, 2000);
+    return;
+  }
+  setSleepTimer(minutes);
+  input.value = '';
+}
+
+// 取消休眠定时器
+function cancelSleepTimer() {
+  if (sleepTimerId) {
+    clearTimeout(sleepTimerId);
+    sleepTimerId = null;
+  }
+  if (sleepRemainingInterval) {
+    clearInterval(sleepRemainingInterval);
+    sleepRemainingInterval = null;
+  }
+  sleepEndTime = null;
+  
+  // 重置UI
+  document.querySelectorAll('.sleep-btn[data-minutes]').forEach(btn => btn.classList.remove('active'));
+  document.getElementById('sleepRemaining').style.display = 'none';
+  document.getElementById('sleepCancelBtn').style.display = 'none';
+}
+
+// 更新剩余时间显示
+function updateSleepRemaining() {
+  if (!sleepEndTime) return;
+  const remaining = Math.max(0, sleepEndTime - Date.now());
+  const min = Math.floor(remaining / 60000);
+  const sec = Math.floor((remaining % 60000) / 1000);
+  document.getElementById('sleepRemaining').textContent = 
+    '剩余 ' + String(min).padStart(2, '0') + ':' + String(sec).padStart(2, '0');
+}
+
+// 绑定预设按钮点击事件
+document.querySelectorAll('.sleep-btn[data-minutes]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    setSleepTimer(parseInt(btn.dataset.minutes));
+  });
+});
+
+// 自定义输入框回车触发
+document.getElementById('sleepCustomInput').addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') setCustomSleepTimer();
 });
 
 // 初始化（DOM 就绪后立即执行，不依赖 hls.js）
