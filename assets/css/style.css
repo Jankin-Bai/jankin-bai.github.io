@@ -16,6 +16,49 @@ body {
   overflow-x: hidden;
 }
 
+/* 全局英文字体：Times New Roman（论文标准），中文回退到衬线体 */
+:root {
+  --font-family-paper: 'Times New Roman', 'Noto Serif SC', 'Source Han Serif SC', Georgia, serif;
+}
+/* 所有英文内容强制使用 Times New Roman */
+.post-content,
+.post-content p,
+.post-content li,
+.post-content span,
+.post-content a,
+.post-content blockquote,
+.post-content table,
+.post-content td,
+.post-content th,
+.post-content h1,
+.post-content h2,
+.post-content h3,
+.post-content h4,
+.post-content h5,
+.post-content h6,
+.timeline-card .card-title,
+.timeline-card .card-summary,
+.year-number,
+.site-title,
+.site-subtitle,
+.header-meta,
+.sidebar-title,
+.post-title,
+.post-meta,
+.toc-item,
+.load-more-hint,
+.empty-state {
+  font-family: 'Times New Roman', 'Noto Serif SC', 'Source Han Serif SC', Georgia, serif;
+}
+/* 代码块保持等宽字体 */
+.post-content pre,
+.post-content code,
+.post-content kbd,
+.post-content samp {
+  font-family: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+  font-size: 0.875rem; /* 14px (10.5pt) - 论文代码标准 */
+}
+
 /* 移动端搜索框最小宽度清零，防止小屏溢出 */
 @media (max-width: 640px) {
   .search-box {
@@ -36,9 +79,9 @@ body {
   --fs-base: 1rem;    /* 16px - 正文 */
   --fs-md: 1.125rem;  /* 18px - 摘要、引言 */
   --fs-lg: 1.25rem;   /* 20px - 卡片标题 */
-  --fs-xl: 1.5rem;    /* 24px - 小节标题 */
-  --fs-2xl: 1.875rem; /* 30px - 年份、文章标题 */
-  --fs-3xl: 2.25rem;  /* 36px - 站点标题 */
+  --fs-xl: 1.375rem;  /* 22px (16.5pt) - 小节标题（论文h3标准）*/
+  --fs-2xl: 1.5rem;   /* 24px (18pt) - 年份、文章标题（论文h2标准）*/
+  --fs-3xl: 1.75rem;  /* 28px (21pt) - 站点标题（论文h1标准）*/
   /* 间距系统（4px base） */
   --sp-1: 4px;
   --sp-2: 8px;
@@ -479,7 +522,14 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .post-summary { font-size: var(--fs-md); color: var(--color-text-secondary); line-height: 1.7; }
 .post-image { max-width: 42em; margin: 0 auto var(--sp-6); border-radius: var(--border-radius); overflow: hidden; }
 /* 修复：文章正文限制行宽 42em（约70个中文字）[RUI Ch.4: Keep line length in check] */
-.post-content { font-size: var(--fs-base); line-height: 1.9; color: var(--color-text); overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; min-width: 0; max-width: 42em; margin: 0 auto; }
+.post-content { font-size: var(--fs-base); line-height: 1.8; color: var(--color-text); overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; min-width: 0; max-width: 42em; margin: 0 auto; letter-spacing: 0.01em; }
+/* 论文标准标题字号 */
+.post-content h1 { font-size: var(--fs-3xl); font-weight: 700; margin: 2em 0 0.8em; line-height: 1.3; }
+.post-content h2 { font-size: var(--fs-2xl); font-weight: 700; margin: 1.8em 0 0.7em; line-height: 1.35; }
+.post-content h3 { font-size: var(--fs-xl); font-weight: 700; margin: 1.5em 0 0.6em; line-height: 1.4; }
+.post-content h4 { font-size: var(--fs-lg); font-weight: 700; margin: 1.3em 0 0.5em; line-height: 1.45; }
+.post-content p { margin: 0 0 1em; text-align: justify; }
+.post-content blockquote { font-size: var(--fs-base); font-style: italic; border-left: 3px solid var(--color-primary); padding-left: 1em; margin: 1.5em 0; color: var(--color-text-secondary); }
 .post-content img, .post-content iframe, .post-content video { max-width: 100%; height: auto; }
 .post-content pre { max-width: 100%; overflow-x: auto; }
 /* serif 学术主题：更宽的行高 */
