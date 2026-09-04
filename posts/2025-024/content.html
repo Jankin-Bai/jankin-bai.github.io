@@ -280,71 +280,71 @@
   transition: all 0.2s;
 }
 
-.map-station line {
-  stroke: #4aff4a;
-  stroke-width: 1.2;
-  transition: all 0.2s;
-}
-
-.map-station .station-heart {
+.map-station circle {
   fill: #4aff4a;
+  stroke: #2a5a2a;
+  stroke-width: 0.5;
   transition: all 0.2s;
-  filter: drop-shadow(0 0 2px rgba(74,255,74,0.5));
 }
 
-/* 定位圈（默认隐藏） */
-.map-station .target-ring {
+.map-station:hover circle {
+  fill: #7fff7f;
+  r: 5;
+  filter: drop-shadow(0 0 3px rgba(127,255,127,0.8));
+}
+
+.map-station.playing circle {
+  fill: #ff4757;
+  r: 4;
+  filter: drop-shadow(0 0 4px rgba(255,71,87,0.9));
+}
+
+/* 十字瞄准镜（独立元素，跟随播放位置） */
+.crosshair {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: 10;
+}
+
+.crosshair.active {
+  opacity: 1;
+}
+
+.crosshair svg {
+  overflow: visible;
+}
+
+.crosshair .ch-line {
+  stroke: #ff4757;
+  stroke-width: 1.2;
+  fill: none;
+}
+
+.crosshair .ch-ring {
   fill: none;
   stroke: #ff4757;
   stroke-width: 1;
-  opacity: 0;
-  transition: all 0.3s;
 }
 
-.map-station:hover line {
-  stroke: #7fff7f;
-  stroke-width: 1.8;
+.crosshair .ch-ring.inner {
+  animation: ch-ring-pulse 2s ease-in-out infinite;
 }
 
-.map-station:hover .station-heart {
-  fill: #7fff7f;
-  filter: drop-shadow(0 0 4px rgba(127,255,127,0.7));
+.crosshair .ch-ring.outer {
+  animation: ch-ring-pulse 2s ease-in-out infinite 0.5s;
 }
 
-/* 播放状态：红心 + 定位圈 */
-.map-station.playing line {
+.crosshair .ch-corner {
   stroke: #ff4757;
-  animation: cross-pulse 1.5s ease-in-out infinite;
+  stroke-width: 1.5;
+  fill: none;
 }
 
-.map-station.playing .station-heart {
-  fill: #ff4757;
-  animation: heart-pulse 1.5s ease-in-out infinite;
-  filter: drop-shadow(0 0 4px rgba(255,71,87,0.8));
-}
-
-.map-station.playing .target-ring {
-  opacity: 1;
-  animation: ring-expand 2s ease-out infinite;
-}
-
-.map-station.playing .target-ring.ring2 {
-  animation-delay: 1s;
-}
-
-@keyframes cross-pulse {
-  0%, 100% { stroke-width: 1.2; opacity: 1; }
-  50% { stroke-width: 2.5; opacity: 0.7; }
-}
-
-@keyframes heart-pulse {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.4); opacity: 0.6; }
-}
-
-@keyframes ring-expand {
-  0% { r: 6; opacity: 0.9; stroke-width: 1.5; }
-  100% { r: 18; opacity: 0; stroke-width: 0.5; }
+@keyframes ch-ring-pulse {
+  0%, 100% { opacity: 0.9; stroke-width: 1; }
+  50% { opacity: 0.4; stroke-width: 0.5; }
 }
 
 .map-station text {
@@ -1092,6 +1092,8 @@ async function playStation(id) {
   document.querySelectorAll('.map-station').forEach(el => el.classList.remove('playing'));
   const mapPoint = document.querySelector('.map-station[data-id="' + id + '"]');
   if (mapPoint) mapPoint.classList.add('playing');
+  // 移动十字瞄准镜
+  if (typeof moveCrosshair === 'function') moveCrosshair(id);
 
   if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
   audio.pause();
@@ -1154,6 +1156,7 @@ function stopPlay() {
   waveform.classList.add('paused');
   radarPanel.classList.add('paused');
   document.querySelectorAll('.map-station').forEach(el => el.classList.remove('playing'));
+  if (typeof crosshair !== 'undefined') crosshair.classList.remove('active');
   renderStations(currentCategory);
 }
 
@@ -1219,50 +1222,53 @@ document.querySelectorAll('.category-btn').forEach(btn => {
   });
 });
 
-// 将所有电台点位的圆点替换为十字红心+定位圈
-document.querySelectorAll('.map-station').forEach(point => {
-  const circle = point.querySelector('circle');
-  if (circle) {
-    const hasLabel = point.querySelector('text');
-    const ns = 'http://www.w3.org/2000/svg';
-    // 定位圈（两个，播放时显示）
-    const ring1 = document.createElementNS(ns, 'circle');
-    ring1.setAttribute('class', 'target-ring ring1');
-    ring1.setAttribute('r', '6');
-    ring1.setAttribute('cx', '0');
-    ring1.setAttribute('cy', '0');
-    const ring2 = document.createElementNS(ns, 'circle');
-    ring2.setAttribute('class', 'target-ring ring2');
-    ring2.setAttribute('r', '6');
-    ring2.setAttribute('cx', '0');
-    ring2.setAttribute('cy', '0');
-    // 十字线
-    const hLine = document.createElementNS(ns, 'line');
-    hLine.setAttribute('x1', '-7'); hLine.setAttribute('y1', '0');
-    hLine.setAttribute('x2', '7'); hLine.setAttribute('y2', '0');
-    hLine.setAttribute('stroke-width', '1.2');
-    const vLine = document.createElementNS(ns, 'line');
-    vLine.setAttribute('x1', '0'); vLine.setAttribute('y1', '-7');
-    vLine.setAttribute('x2', '0'); vLine.setAttribute('y2', '7');
-    vLine.setAttribute('stroke-width', '1.2');
-    // 红心
-    const heart = document.createElementNS(ns, 'path');
-    heart.setAttribute('d', 'M0,-1.5 C-2.5,-5 -6.5,-3.5 -6.5,0 C-6.5,3 0,6.5 0,6.5 C0,6.5 6.5,3 6.5,0 C6.5,-3.5 2.5,-5 0,-1.5 Z');
-    heart.setAttribute('class', 'station-heart');
-    // 有标签的点位用小十字
-    if (hasLabel) {
-      hLine.setAttribute('x1', '-5'); hLine.setAttribute('x2', '5');
-      vLine.setAttribute('y1', '-5'); vLine.setAttribute('y2', '5');
-      heart.setAttribute('transform', 'scale(0.7)');
-    }
-    point.insertBefore(ring1, circle);
-    point.insertBefore(ring2, circle);
-    point.insertBefore(hLine, circle);
-    point.insertBefore(vLine, circle);
-    point.insertBefore(heart, circle);
-    point.removeChild(circle);
+// 创建十字瞄准镜元素
+const mapPanel = document.querySelector('.map-panel');
+const crosshair = document.createElement('div');
+crosshair.className = 'crosshair';
+crosshair.innerHTML = `
+  <svg width="60" height="60" viewBox="-30 -30 60 60">
+    <!-- 十字线 -->
+    <line class="ch-line" x1="-28" y1="0" x2="-10" y2="0"/>
+    <line class="ch-line" x1="10" y1="0" x2="28" y2="0"/>
+    <line class="ch-line" x1="0" y1="-28" x2="0" y2="-10"/>
+    <line class="ch-line" x1="0" y1="10" x2="0" y2="28"/>
+    <!-- 双圈 -->
+    <circle class="ch-ring inner" cx="0" cy="0" r="8"/>
+    <circle class="ch-ring outer" cx="0" cy="0" r="16"/>
+    <!-- 四角标记 -->
+    <path class="ch-corner" d="M -20,-20 L -14,-20 M -20,-20 L -20,-14"/>
+    <path class="ch-corner" d="M 20,-20 L 14,-20 M 20,-20 L 20,-14"/>
+    <path class="ch-corner" d="M -20,20 L -14,20 M -20,20 L -20,14"/>
+    <path class="ch-corner" d="M 20,20 L 14,20 M 20,20 L 20,14"/>
+  </svg>
+`;
+mapPanel.style.position = 'relative';
+mapPanel.appendChild(crosshair);
+
+// 移动十字瞄准镜到指定点位
+function moveCrosshair(stationId) {
+  const point = document.querySelector(`.map-station[data-id="${stationId}"]`);
+  if (!point) { crosshair.classList.remove('active'); return; }
+  const svg = document.querySelector('.world-map');
+  const svgRect = svg.getBoundingClientRect();
+  const panelRect = mapPanel.getBoundingClientRect();
+  // 解析transform中的translate坐标
+  const transform = point.getAttribute('transform');
+  const match = transform.match(/translate\(([\d.]+),([\d.]+)\)/);
+  if (match) {
+    const x = parseFloat(match[1]);
+    const y = parseFloat(match[2]);
+    // SVG坐标转像素（viewBox 800x400）
+    const scaleX = svgRect.width / 800;
+    const scaleY = svgRect.height / 400;
+    const px = svgRect.left - panelRect.left + x * scaleX;
+    const py = svgRect.top - panelRect.top + y * scaleY;
+    crosshair.style.left = (px - 30) + 'px';
+    crosshair.style.top = (py - 30) + 'px';
+    crosshair.classList.add('active');
   }
-});
+}
 
 document.querySelectorAll('.map-station').forEach(point => {
   point.addEventListener('click', () => {
