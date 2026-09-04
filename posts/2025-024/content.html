@@ -1155,6 +1155,10 @@ async function playStation(id) {
       globeInstance.polygonAltitude(d => (d.properties.NAME === currentCountry ? 0.08 : 0.05));
     }
   }
+  // 自动高亮对应分类按钮
+  document.querySelectorAll('.category-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.category === station.category);
+  });
   playerStationName.textContent = station.name.toUpperCase();
   playerStationDesc.textContent = station.desc;
   document.getElementById('displayFreq').textContent = 'FREQ: ' + station.freq + ' MHz';
