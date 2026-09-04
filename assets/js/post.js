@@ -41,9 +41,34 @@
   const params = new URLSearchParams(window.location.search);
   const postId = params.get('id');
   const $ = id => document.getElementById(id);
+  
+  // DOM 创建辅助函数（替代 innerHTML，消除安全软件可疑行为特征）
+  function el(tag, attrs, children) {
+    var e = document.createElement(tag);
+    if (attrs) {
+      for (var k in attrs) {
+        if (k === 'className') e.className = attrs[k];
+        else if (k === 'text') e.textContent = attrs[k];
+        else if (k === 'html') e.innerHTML = attrs[k];  // 仅用于已知安全的静态HTML
+        else if (k.startsWith('on')) e.addEventListener(k.slice(2), attrs[k]);
+        else e.setAttribute(k, attrs[k]);
+      }
+    }
+    if (children) {
+      if (typeof children === 'string') e.textContent = children;
+      else if (Array.isArray(children)) children.forEach(function(c) { if (c) e.appendChild(c); });
+      else e.appendChild(children);
+    }
+    return e;
+  }
 
   if (!postId) {
-    document.body.innerHTML = '<div style="padding:60px;text-align:center;"><h2>未指定博文</h2><p><a href="index.html">返回首页</a></p></div>';
+    var wrap = el('div', {style: 'padding:60px;text-align:center;'});
+    wrap.appendChild(el('h2', {text: '未指定博文'}));
+    var p = el('p');
+    p.appendChild(el('a', {href: 'index.html', text: '返回首页'}));
+    wrap.appendChild(p);
+    document.body.appendChild(wrap);
     return;
   }
 
@@ -54,9 +79,14 @@
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     meta = await res.json();
   } catch (e) {
-    document.body.innerHTML = `<div style="padding:60px;text-align:center;">
-      <h2>博文不存在</h2><p>ID: ${esc(postId)}</p><p>${esc(e.message)}</p>
-      <p><a href="index.html">返回首页</a></p></div>`;
+    var wrap = el('div', {style: 'padding:60px;text-align:center;'});
+    wrap.appendChild(el('h2', {text: '博文不存在'}));
+    wrap.appendChild(el('p', {text: 'ID: ' + esc(postId)}));
+    wrap.appendChild(el('p', {text: esc(e.message)}));
+    var p = el('p');
+    p.appendChild(el('a', {href: 'index.html', text: '返回首页'}));
+    wrap.appendChild(p);
+    document.body.appendChild(wrap);
     return;
   }
 
@@ -86,42 +116,64 @@
     showHour: false, showZodiac: true
   });
 
-  $('post-date').innerHTML = `
-    <span class="post-date-gregorian">${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}</span>
-    <!-- 修复：移除硬编码括号，CSS .post-date-ganzhi::before/::after 统一添加 [hci: 干支弱化] -->
-    <span class="post-date-ganzhi">${esc(gz.short)} ${esc(gz.zodiac)}年</span>
-    ${meta.milestone ? '<span class="milestone-badge">★ 里程碑</span>' : ''}
-  `;
+  var dateEl = $('post-date');
+  dateEl.textContent = '';
+  dateEl.appendChild(el('span', {className: 'post-date-gregorian', text: d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0')}));
+  dateEl.appendChild(el('span', {className: 'post-date-ganzhi', text: esc(gz.short) + ' ' + esc(gz.zodiac) + '年'}));
+  if (meta.milestone) {
+    dateEl.appendChild(el('span', {className: 'milestone-badge', text: '★ 里程碑'}));
+  }
 
   /* ---------- 标签渲染函数（首屏先用默认颜色，不阻塞首屏） ---------- */
   function renderArticleTags(tagList) {
-    const allTagLink = `<a href="index.html" class="tag" style="--tag-color:var(--color-text-muted);--tag-bg:var(--color-surface-alt);">
-      <span class="tag-icon" aria-hidden="true">#</span>全部</a>`;
-    const articleTagLinks = meta.tags.map(tid => {
-      const tag = tagList.find(t => t.id === tid);
-      return tag ? `<a href="index.html?tag=${esc(tid)}" class="tag" style="--tag-color:${esc(tag.color)};--tag-bg:${esc(tag.colorLight)};">
-        <span class="tag-icon" aria-hidden="true">${esc(tag.icon)}</span>${esc(tag.name)}</a>` : `<a href="index.html?tag=${esc(tid)}" class="tag">#${esc(tid)}</a>`;
-    }).join('');
-    $('post-tags').innerHTML = allTagLink + articleTagLinks;
+    var container = $('post-tags');
+    container.textContent = '';
+    // "全部"标签
+    var allLink = el('a', {href: 'index.html', className: 'tag'});
+    allLink.style.setProperty('--tag-color', 'var(--color-text-muted)');
+    allLink.style.setProperty('--tag-bg', 'var(--color-surface-alt)');
+    allLink.appendChild(el('span', {className: 'tag-icon', 'aria-hidden': 'true', text: '#'}));
+    allLink.appendChild(document.createTextNode('全部'));
+    container.appendChild(allLink);
+    // 文章标签
+    meta.tags.forEach(function(tid) {
+      var tag = tagList.find(function(t) { return t.id === tid; });
+      var link = el('a', {href: 'index.html?tag=' + esc(tid), className: 'tag'});
+      if (tag) {
+        link.style.setProperty('--tag-color', esc(tag.color));
+        link.style.setProperty('--tag-bg', esc(tag.colorLight));
+        link.appendChild(el('span', {className: 'tag-icon', 'aria-hidden': 'true', text: esc(tag.icon)}));
+        link.appendChild(document.createTextNode(esc(tag.name)));
+      } else {
+        link.appendChild(document.createTextNode('#' + esc(tid)));
+      }
+      container.appendChild(link);
+    });
   }
   // 侧栏标签导航渲染函数
   function renderSidebarTags() {
-    const tagNav = $('post-tag-nav');
+    var tagNav = $('post-tag-nav');
     if (!tagNav) return;
-    const allLink = `<a href="index.html" class="post-tag-nav-item" style="--tag-color:var(--color-text-muted);">
-      <span aria-hidden="true">#</span><span>全部</span><span class="tag-count">${allPosts.length}</span></a>`;
-    const currentTags = tags.filter(t => t.active && meta.tags.includes(t.id));
-    const otherTags = tags.filter(t => t.active && !meta.tags.includes(t.id));
-    const tagLinks = [...currentTags, ...otherTags].map(t => {
-      const isActive = meta.tags.includes(t.id);
-      return `<a href="index.html?tag=${esc(t.id)}" class="post-tag-nav-item${isActive ? ' active' : ''}"
-              style="--tag-color:${esc(t.color)};">
-        <span aria-hidden="true">${esc(t.icon)}</span>
-        <span>${esc(t.name)}</span>
-        <span class="tag-count">${posts_count(t.id)}</span>
-      </a>`;
-    }).join('');
-    tagNav.innerHTML = allLink + tagLinks;
+    tagNav.textContent = '';
+    // "全部"标签
+    var allLink = el('a', {href: 'index.html', className: 'post-tag-nav-item'});
+    allLink.style.setProperty('--tag-color', 'var(--color-text-muted)');
+    allLink.appendChild(el('span', {'aria-hidden': 'true', text: '#'}));
+    allLink.appendChild(el('span', {text: '全部'}));
+    allLink.appendChild(el('span', {className: 'tag-count', text: String(allPosts.length)}));
+    tagNav.appendChild(allLink);
+    // 所有标签
+    var currentTags = tags.filter(function(t) { return t.active && meta.tags.includes(t.id); });
+    var otherTags = tags.filter(function(t) { return t.active && !meta.tags.includes(t.id); });
+    currentTags.concat(otherTags).forEach(function(t) {
+      var isActive = meta.tags.includes(t.id);
+      var link = el('a', {href: 'index.html?tag=' + esc(t.id), className: 'post-tag-nav-item' + (isActive ? ' active' : '')});
+      link.style.setProperty('--tag-color', esc(t.color));
+      link.appendChild(el('span', {'aria-hidden': 'true', text: esc(t.icon)}));
+      link.appendChild(el('span', {text: esc(t.name)}));
+      link.appendChild(el('span', {className: 'tag-count', text: String(posts_count(t.id))}));
+      tagNav.appendChild(link);
+    });
   }
   // 首屏立即渲染标签（无颜色，不等待全量扫描）
   renderArticleTags([]);
@@ -143,7 +195,8 @@
   }
 
   if (meta.image) {
-    $('post-image').innerHTML = `<img src="${esc(meta.image)}" alt="${esc(meta.title)}" referrerpolicy="no-referrer">`;
+    var imgEl = el('img', {src: esc(meta.image), alt: esc(meta.title), referrerpolicy: 'no-referrer'});
+    $('post-image').appendChild(imgEl);
   }
 
   /* ---------- 动态加载工具函数 ---------- */
@@ -284,9 +337,11 @@
 
     generateTOC();
   } catch (e) {
-    $('post-content').innerHTML = `<div class="content-error"><p>内容加载失败：${esc(e.message)}</p></div>`;
+    var errDiv = el('div', {className: 'content-error'});
+    errDiv.appendChild(el('p', {text: '内容加载失败：' + esc(e.message)}));
+    $('post-content').appendChild(errDiv);
     const toc = $('post-toc');
-    if (toc) toc.innerHTML = '<p class="post-toc-empty">暂无目录</p>';
+    if (toc) { toc.textContent = ''; toc.appendChild(el('p', {className: 'post-toc-empty', text: '暂无目录'})); }
   }
 
   /* ---------- Mermaid 图交互：平移/缩放/重置/全屏 ---------- */
@@ -309,11 +364,15 @@
       // 控制按钮组
       var controls = document.createElement('div');
       controls.className = 'mermaid-controls';
-      controls.innerHTML = 
-        '<button class="mermaid-ctrl" data-action="zoom-in" title="放大">+</button>' +
-        '<button class="mermaid-ctrl" data-action="zoom-out" title="缩小">−</button>' +
-        '<button class="mermaid-ctrl" data-action="reset" title="重置">⟳</button>' +
-        '<button class="mermaid-ctrl" data-action="fullscreen" title="全屏">⛶</button>';
+      var ctrlBtns = [
+        {action: 'zoom-in', title: '放大', text: '+'},
+        {action: 'zoom-out', title: '缩小', text: '−'},
+        {action: 'reset', title: '重置', text: '⟳'},
+        {action: 'fullscreen', title: '全屏', text: '⛶'}
+      ];
+      ctrlBtns.forEach(function(b) {
+        controls.appendChild(el('button', {className: 'mermaid-ctrl', 'data-action': b.action, title: b.title, text: b.text, type: 'button'}));
+      });
       wrapper.appendChild(controls);
       
       // 确保 SVG 有 viewBox（svg-pan-zoom 需要）
@@ -391,23 +450,27 @@
     // 扫描 h1-h4 标题（Markdown 文章可能有 h1-h4）
     const headings = contentEl.querySelectorAll('h1, h2, h3, h4');
     if (headings.length === 0) {
-      tocEl.innerHTML = '<p class="post-toc-empty">本文暂无目录</p>';
+      tocEl.textContent = '';
+      tocEl.appendChild(el('p', {className: 'post-toc-empty', text: '本文暂无目录'}));
       return;
     }
 
-    let tocHTML = '';
-    headings.forEach((heading, idx) => {
-      const level = heading.tagName.toLowerCase(); // h2 or h3
-      const text = heading.textContent.trim();
-      const id = `heading-${idx}`;
-      // 给标题添加 id（如果没有的话）
+    tocEl.textContent = '';
+    var tocFragment = document.createDocumentFragment();
+    headings.forEach(function(heading, idx) {
+      var level = heading.tagName.toLowerCase();
+      var text = heading.textContent.trim();
+      var id = 'heading-' + idx;
       if (!heading.id) heading.id = id;
-
-      tocHTML += `<a href="#${heading.id}" class="post-toc-item level-${level}" data-target="${heading.id}">
-        ${esc(text)}
-      </a>`;
+      var link = el('a', {
+        href: '#' + heading.id,
+        className: 'post-toc-item level-' + level,
+        'data-target': heading.id,
+        text: esc(text)
+      });
+      tocFragment.appendChild(link);
     });
-    tocEl.innerHTML = tocHTML;
+    tocEl.appendChild(tocFragment);
 
     // 目录点击平滑滚动
     tocEl.querySelectorAll('.post-toc-item').forEach(item => {
@@ -493,8 +556,16 @@
 
   // 相关链接
   if (meta.links && meta.links.length) {
-    $('post-links').innerHTML = '<h3>相关链接</h3><ul>' +
-      meta.links.map(l => `<li><a href="${esc(l.url)}" target="_blank" rel="noopener noreferrer">${esc(l.text)} ↗</a></li>`).join('') + '</ul>';
+    var linksEl = $('post-links');
+    linksEl.textContent = '';
+    linksEl.appendChild(el('h3', {text: '相关链接'}));
+    var ul = el('ul');
+    meta.links.forEach(function(l) {
+      var li = el('li');
+      li.appendChild(el('a', {href: esc(l.url), target: '_blank', rel: 'noopener noreferrer', text: esc(l.text) + ' ↗'}));
+      ul.appendChild(li);
+    });
+    linksEl.appendChild(ul);
   }
 
   // 上一篇/下一篇导航函数（在后台文章列表加载完成后调用）
@@ -504,14 +575,18 @@
         .slice()
         .sort((a, b) => new Date(b.date) - new Date(a.date));
       if (sorted.length > 0) {
-        const idx = sorted.findIndex(p => p.id === postId);
-        const prev = sorted[idx + 1]; // 更早的
-        const next = sorted[idx - 1]; // 更新的
-        $('post-nav').innerHTML = `
-          ${prev ? `<a href="post.html?id=${esc(prev.id)}" class="post-nav-prev">← ${esc(prev.title)}</a>` : '<span></span>'}
-          <a href="index.html" class="post-nav-home">🏠 首页</a>
-          ${next ? `<a href="post.html?id=${esc(next.id)}" class="post-nav-next">${esc(next.title)} →</a>` : '<span></span>'}
-        `;
+        var idx = sorted.findIndex(function(p) { return p.id === postId; });
+        var prev = sorted[idx + 1];
+        var next = sorted[idx - 1];
+        var navEl = $('post-nav');
+        navEl.textContent = '';
+        navEl.appendChild(prev
+          ? el('a', {href: 'post.html?id=' + esc(prev.id), className: 'post-nav-prev', text: '← ' + esc(prev.title)})
+          : el('span'));
+        navEl.appendChild(el('a', {href: 'index.html', className: 'post-nav-home', text: '🏠 首页'}));
+        navEl.appendChild(next
+          ? el('a', {href: 'post.html?id=' + esc(next.id), className: 'post-nav-next', text: esc(next.title) + ' →'})
+          : el('span'));
       }
     } catch (e) {
       SiteUtils.warn && SiteUtils.warn('文章导航加载失败:', e.message);
@@ -668,8 +743,11 @@
     var tocLinks = postToc.querySelectorAll('a');
     if (tocLinks.length > 0) {
       tocFab.hidden = false;
-      // 复制目录到模态框
-      tocModalList.innerHTML = postToc.innerHTML;
+      // 复制目录到模态框（用 cloneNode 替代 innerHTML）
+      tocModalList.textContent = '';
+      Array.prototype.forEach.call(postToc.children, function(child) {
+        tocModalList.appendChild(child.cloneNode(true));
+      });
       // 模态框内点击链接后关闭
       tocModalList.addEventListener('click', function(e) {
         if (e.target.tagName === 'A') {
