@@ -810,21 +810,37 @@
       <canvas id="globeCanvas" style="width:100%;height:100%;display:block;touch-action:none;cursor:grab;"></canvas>
       <div id="globeLoading" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#4a8a4a;font-family:Courier New;font-size:11px;letter-spacing:1px;">INITIALIZING 3D GLOBE...</div>
       <div id="globeHint" style="position:absolute;bottom:4px;right:8px;color:#3a5a3a;font-family:Courier New;font-size:9px;pointer-events:none;">DRAG: ROTATE | SCROLL/PINCH: ZOOM | TAP: PLAY</div>
-      <!-- 3D十字瞄准镜覆盖层 -->
+      <!-- 小瞄准点 -->
       <div id="globeCrosshair" style="position:absolute;pointer-events:none;opacity:0;transition:opacity 0.3s;z-index:10;transform:translate(-50%,-50%);">
-        <svg width="70" height="70" viewBox="-35 -35 70 70" style="overflow:visible;">
-          <line x1="-30" y1="0" x2="-12" y2="0" stroke="#ff4757" stroke-width="1.5"/>
-          <line x1="12" y1="0" x2="30" y2="0" stroke="#ff4757" stroke-width="1.5"/>
-          <line x1="0" y1="-30" x2="0" y2="-12" stroke="#ff4757" stroke-width="1.5"/>
-          <line x1="0" y1="12" x2="0" y2="30" stroke="#ff4757" stroke-width="1.5"/>
-          <circle cx="0" cy="0" r="8" fill="none" stroke="#ff4757" stroke-width="1" opacity="0.8"/>
-          <circle cx="0" cy="0" r="16" fill="none" stroke="#ff4757" stroke-width="0.8" opacity="0.5"/>
-          <path d="M -22,-22 L -15,-22 M -22,-22 L -22,-15" stroke="#ff4757" stroke-width="1.5" fill="none"/>
-          <path d="M 22,-22 L 15,-22 M 22,-22 L 22,-15" stroke="#ff4757" stroke-width="1.5" fill="none"/>
-          <path d="M -22,22 L -15,22 M -22,22 L -22,15" stroke="#ff4757" stroke-width="1.5" fill="none"/>
-          <path d="M 22,22 L 15,22 M 22,22 L 22,15" stroke="#ff4757" stroke-width="1.5" fill="none"/>
+        <svg width="24" height="24" viewBox="-12 -12 24 24" style="overflow:visible;">
+          <line x1="-10" y1="0" x2="-4" y2="0" stroke="#ff4757" stroke-width="1.5"/>
+          <line x1="4" y1="0" x2="10" y2="0" stroke="#ff4757" stroke-width="1.5"/>
+          <line x1="0" y1="-10" x2="0" y2="-4" stroke="#ff4757" stroke-width="1.5"/>
+          <line x1="0" y1="4" x2="0" y2="10" stroke="#ff4757" stroke-width="1.5"/>
+          <circle cx="0" cy="0" r="3" fill="#ff4757" opacity="0.8"/>
         </svg>
-        <div id="globeCrosshairLabel" style="position:absolute;top:38px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.85);border:1px solid #ff4757;padding:2px 8px;border-radius:3px;color:#ff6b81;font-family:Courier New;font-size:10px;white-space:nowrap;font-weight:bold;">TARGET</div>
+      </div>
+      <!-- 连接线SVG（全屏覆盖） -->
+      <svg id="globeConnector" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9;opacity:0;transition:opacity 0.3s;">
+        <line id="connectorLine" x1="0" y1="0" x2="0" y2="0" stroke="#ff4757" stroke-width="1" stroke-dasharray="4,3" opacity="0.7"/>
+      </svg>
+      <!-- 右上角信息面板 -->
+      <div id="globeInfoPanel" style="position:absolute;top:8px;right:8px;width:160px;background:rgba(0,15,0,0.92);border:1px solid #2a6a2a;border-radius:4px;padding:8px 10px;z-index:11;opacity:0;transition:opacity 0.3s;pointer-events:none;">
+        <div style="color:#4aff4a;font-family:Courier New;font-size:9px;letter-spacing:1px;border-bottom:1px solid #1a3a1a;padding-bottom:4px;margin-bottom:6px;">▣ TARGET LOCK</div>
+        <div id="infoName" style="color:#7fff7f;font-family:Courier New;font-size:11px;font-weight:bold;margin-bottom:4px;word-break:break-all;">---</div>
+        <div id="infoDesc" style="color:#5a8a5a;font-family:Courier New;font-size:9px;line-height:1.4;margin-bottom:6px;word-break:break-all;">---</div>
+        <div style="display:flex;justify-content:space-between;font-family:Courier New;font-size:9px;">
+          <span style="color:#4a8a4a;">FMT:</span><span id="infoFmt" style="color:#7fff7f;">---</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-family:Courier New;font-size:9px;">
+          <span style="color:#4a8a4a;">FREQ:</span><span id="infoFreq" style="color:#7fff7f;">---</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-family:Courier New;font-size:9px;">
+          <span style="color:#4a8a4a;">LAT:</span><span id="infoLat" style="color:#7fff7f;">---</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-family:Courier New;font-size:9px;">
+          <span style="color:#4a8a4a;">LON:</span><span id="infoLon" style="color:#7fff7f;">---</span>
+        </div>
       </div>
     </div>
   </div>
@@ -1225,7 +1241,8 @@ async function initGlobe() {
       uniforms: {
         dayTexture: { value: dayTexture },
         bumpTexture: { value: bumpTexture },
-        lightDir: { value: new THREE.Vector3(1, 1, 1).normalize() }
+        lightDir: { value: new THREE.Vector3(1, 1, 1).normalize() },
+        time: { value: 0 }
       },
       vertexShader: `
         varying vec2 vUv;
@@ -1243,6 +1260,7 @@ async function initGlobe() {
         uniform sampler2D dayTexture;
         uniform sampler2D bumpTexture;
         uniform vec3 lightDir;
+        uniform float time;
         varying vec2 vUv;
         varying vec3 vNormal;
         varying vec3 vViewPosition;
@@ -1250,10 +1268,10 @@ async function initGlobe() {
           vec4 texColor = texture2D(dayTexture, vUv);
           float brightness = dot(texColor.rgb, vec3(0.299, 0.587, 0.114));
           // 绿色科技感渐变：深海绿→陆地亮绿
-          vec3 deepOcean = vec3(0.02, 0.08, 0.04);
-          vec3 shallow = vec3(0.05, 0.2, 0.1);
-          vec3 land = vec3(0.1, 0.5, 0.2);
-          vec3 brightLand = vec3(0.3, 0.9, 0.4);
+          vec3 deepOcean = vec3(0.01, 0.05, 0.03);
+          vec3 shallow = vec3(0.03, 0.15, 0.08);
+          vec3 land = vec3(0.08, 0.45, 0.18);
+          vec3 brightLand = vec3(0.25, 0.85, 0.35);
           vec3 color;
           if (brightness < 0.35) {
             color = mix(deepOcean, shallow, brightness / 0.35);
@@ -1264,18 +1282,27 @@ async function initGlobe() {
           }
           // 光照
           float diff = max(dot(vNormal, lightDir), 0.0);
-          color *= (0.4 + diff * 0.8);
-          // 边缘发光（Fresnel）
-          vec3 viewDir = normalize(vViewPosition);
-          float fresnel = pow(1.0 - max(dot(vNormal, viewDir), 0.0), 2.0);
-          color += vec3(0.1, 0.4, 0.2) * fresnel * 0.5;
+          color *= (0.35 + diff * 0.9);
+          // 精细经纬网格线（每15度一条，淡绿色）
+          float lat = (vUv.y - 0.5) * 180.0;
+          float lon = (vUv.x - 0.5) * 360.0;
+          float latLine = smoothstep(0.8, 1.0, 1.0 - abs(fract(lat / 15.0) - 0.5) * 2.0);
+          float lonLine = smoothstep(0.8, 1.0, 1.0 - abs(fract(lon / 15.0) - 0.5) * 2.0);
+          float grid = max(latLine, lonLine) * 0.15;
+          color += vec3(0.1, 0.5, 0.2) * grid;
+          // 扫描线效果（横向细扫描线）
+          float scan = smoothstep(0.95, 1.0, 1.0 - abs(fract(vUv.y * 120.0 + time * 0.1) - 0.5) * 2.0);
+          color += vec3(0.05, 0.2, 0.1) * scan * 0.3;
+          // 大陆边缘高亮（亮度突变处）
+          float edge = abs(brightness - 0.4);
+          if (edge < 0.02) color += vec3(0.15, 0.6, 0.25) * 0.5;
           gl_FragColor = vec4(color, 1.0);
         }
       `
     });
     
     globeInstance = new ThreeGlobe({ waitForGlobeReady: true, animateIn: true })
-      .showAtmosphere(true)
+      .showAtmosphere(false)
       .atmosphereColor('#2aff6a')
       .atmosphereAltitude(0.15)
       .showGraticules(false)
@@ -1404,8 +1431,13 @@ async function initGlobe() {
     const crosshairLabel = document.getElementById('globeCrosshairLabel');
     
     function updateCrosshair() {
+      const connector = document.getElementById('globeConnector');
+      const connectorLine = document.getElementById('connectorLine');
+      const infoPanel = document.getElementById('globeInfoPanel');
       if (!currentStation || !currentStation.geo || !globeInstance) {
         crosshairEl.style.opacity = '0';
+        connector.style.opacity = '0';
+        infoPanel.style.opacity = '0';
         return;
       }
       // 计算目标点的3D坐标
@@ -1418,21 +1450,42 @@ async function initGlobe() {
       const rect = container.getBoundingClientRect();
       const x = (projected.x * 0.5 + 0.5) * rect.width;
       const y = (-projected.y * 0.5 + 0.5) * rect.height;
-      // 判断是否在地球背面（点到相机距离 > 地球半径）
+      // 判断是否在地球正面
       const camDist = globeCamera.position.distanceTo(point);
       const center = new THREE.Vector3(0, 0, 0);
       globeInstance.localToWorld(center);
       const centerDist = globeCamera.position.distanceTo(center);
       const isFront = camDist < centerDist + 5;
+      
       if (isFront && projected.z < 1) {
+        // 瞄准点
         crosshairEl.style.left = x + 'px';
         crosshairEl.style.top = y + 'px';
         crosshairEl.style.opacity = '1';
-        crosshairLabel.textContent = currentStation.name.substring(0, 14);
+        // 连接线（从瞄准点到面板左下角）
+        const panelRect = infoPanel.getBoundingClientRect();
+        const containerRect = container.getBoundingClientRect();
+        const panelX = panelRect.left - containerRect.left;
+        const panelY = panelRect.top - containerRect.top + panelRect.height / 2;
+        connectorLine.setAttribute('x1', x);
+        connectorLine.setAttribute('y1', y);
+        connectorLine.setAttribute('x2', panelX);
+        connectorLine.setAttribute('y2', panelY);
+        connector.style.opacity = '1';
+        // 信息面板
+        infoPanel.style.opacity = '1';
+        document.getElementById('infoName').textContent = currentStation.name;
+        document.getElementById('infoDesc').textContent = currentStation.desc.substring(0, 40);
+        document.getElementById('infoFmt').textContent = currentStation.format;
+        document.getElementById('infoFreq').textContent = currentStation.freq + ' MHz';
+        document.getElementById('infoLat').textContent = currentStation.geo.lat.toFixed(2) + '°';
+        document.getElementById('infoLon').textContent = currentStation.geo.lon.toFixed(2) + '°';
       } else {
-        crosshairEl.style.opacity = '0.3';
+        crosshairEl.style.opacity = '0.2';
         crosshairEl.style.left = x + 'px';
         crosshairEl.style.top = y + 'px';
+        connector.style.opacity = '0.2';
+        infoPanel.style.opacity = '0.5';
       }
     }
     
@@ -1444,6 +1497,7 @@ async function initGlobe() {
       globeInstance.rotation.y = userRotY;
       globeInstance.rotation.x = userRotX;
       stars.rotation.y += 0.0002;
+      if (greenTechMaterial) greenTechMaterial.uniforms.time.value += 0.016;
       updateCrosshair();
       globeRenderer.render(globeScene, globeCamera);
     }
