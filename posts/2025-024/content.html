@@ -281,35 +281,55 @@
 }
 
 .map-station line {
-  stroke: #ff4757;
+  stroke: #4aff4a;
   stroke-width: 1.2;
   transition: all 0.2s;
 }
 
 .map-station .station-heart {
-  fill: #ff4757;
+  fill: #4aff4a;
   transition: all 0.2s;
-  filter: drop-shadow(0 0 2px rgba(255,71,87,0.6));
+  filter: drop-shadow(0 0 2px rgba(74,255,74,0.5));
+}
+
+/* 定位圈（默认隐藏） */
+.map-station .target-ring {
+  fill: none;
+  stroke: #ff4757;
+  stroke-width: 1;
+  opacity: 0;
+  transition: all 0.3s;
 }
 
 .map-station:hover line {
-  stroke: #ff6b81;
+  stroke: #7fff7f;
   stroke-width: 1.8;
 }
 
 .map-station:hover .station-heart {
-  fill: #ff6b81;
-  filter: drop-shadow(0 0 4px rgba(255,107,129,0.8));
+  fill: #7fff7f;
+  filter: drop-shadow(0 0 4px rgba(127,255,127,0.7));
 }
 
+/* 播放状态：红心 + 定位圈 */
 .map-station.playing line {
-  stroke: #4aff4a;
+  stroke: #ff4757;
   animation: cross-pulse 1.5s ease-in-out infinite;
 }
 
 .map-station.playing .station-heart {
-  fill: #4aff4a;
+  fill: #ff4757;
   animation: heart-pulse 1.5s ease-in-out infinite;
+  filter: drop-shadow(0 0 4px rgba(255,71,87,0.8));
+}
+
+.map-station.playing .target-ring {
+  opacity: 1;
+  animation: ring-expand 2s ease-out infinite;
+}
+
+.map-station.playing .target-ring.ring2 {
+  animation-delay: 1s;
 }
 
 @keyframes cross-pulse {
@@ -320,6 +340,11 @@
 @keyframes heart-pulse {
   0%, 100% { transform: scale(1); opacity: 1; }
   50% { transform: scale(1.4); opacity: 0.6; }
+}
+
+@keyframes ring-expand {
+  0% { r: 6; opacity: 0.9; stroke-width: 1.5; }
+  100% { r: 18; opacity: 0; stroke-width: 0.5; }
 }
 
 .map-station text {
@@ -1194,32 +1219,44 @@ document.querySelectorAll('.category-btn').forEach(btn => {
   });
 });
 
-// 将所有电台点位的圆点替换为十字红心
+// 将所有电台点位的圆点替换为十字红心+定位圈
 document.querySelectorAll('.map-station').forEach(point => {
   const circle = point.querySelector('circle');
   if (circle) {
     const hasLabel = point.querySelector('text');
     const ns = 'http://www.w3.org/2000/svg';
+    // 定位圈（两个，播放时显示）
+    const ring1 = document.createElementNS(ns, 'circle');
+    ring1.setAttribute('class', 'target-ring ring1');
+    ring1.setAttribute('r', '6');
+    ring1.setAttribute('cx', '0');
+    ring1.setAttribute('cy', '0');
+    const ring2 = document.createElementNS(ns, 'circle');
+    ring2.setAttribute('class', 'target-ring ring2');
+    ring2.setAttribute('r', '6');
+    ring2.setAttribute('cx', '0');
+    ring2.setAttribute('cy', '0');
     // 十字线
     const hLine = document.createElementNS(ns, 'line');
     hLine.setAttribute('x1', '-7'); hLine.setAttribute('y1', '0');
     hLine.setAttribute('x2', '7'); hLine.setAttribute('y2', '0');
-    hLine.setAttribute('stroke', '#ff4757'); hLine.setAttribute('stroke-width', '1.2');
+    hLine.setAttribute('stroke-width', '1.2');
     const vLine = document.createElementNS(ns, 'line');
     vLine.setAttribute('x1', '0'); vLine.setAttribute('y1', '-7');
     vLine.setAttribute('x2', '0'); vLine.setAttribute('y2', '7');
-    vLine.setAttribute('stroke', '#ff4757'); vLine.setAttribute('stroke-width', '1.2');
+    vLine.setAttribute('stroke-width', '1.2');
     // 红心
     const heart = document.createElementNS(ns, 'path');
     heart.setAttribute('d', 'M0,-1.5 C-2.5,-5 -6.5,-3.5 -6.5,0 C-6.5,3 0,6.5 0,6.5 C0,6.5 6.5,3 6.5,0 C6.5,-3.5 2.5,-5 0,-1.5 Z');
-    heart.setAttribute('fill', '#ff4757');
     heart.setAttribute('class', 'station-heart');
-    // 有标签的点位用小十字，无标签的用大十字红心
+    // 有标签的点位用小十字
     if (hasLabel) {
       hLine.setAttribute('x1', '-5'); hLine.setAttribute('x2', '5');
       vLine.setAttribute('y1', '-5'); vLine.setAttribute('y2', '5');
       heart.setAttribute('transform', 'scale(0.7)');
     }
+    point.insertBefore(ring1, circle);
+    point.insertBefore(ring2, circle);
     point.insertBefore(hLine, circle);
     point.insertBefore(vLine, circle);
     point.insertBefore(heart, circle);
