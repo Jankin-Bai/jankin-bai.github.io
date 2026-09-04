@@ -1309,7 +1309,7 @@ async function initGlobe() {
       .pointsData(stations.filter(s => s.geo))
       .pointLat(d => d.geo.lat)
       .pointLng(d => d.geo.lon)
-      .pointColor(d => d.id === (currentStation && currentStation.id) ? '#ff4757' : '#4aff4a')
+      .pointColor(d => d.id === (currentStation && currentStation.id) ? '#ff4757' : '#00e5ff')
       .pointAltitude(0.05)
       .pointRadius(0.5)
       .pointResolution(16)
@@ -1317,8 +1317,8 @@ async function initGlobe() {
       .polygonsData([])
       .polygonCapColor(() => 'rgba(0,0,0,0)')
       .polygonSideColor(() => 'rgba(0,255,100,0.0)')
-      .polygonStrokeColor(() => '#1a4a1a')
-      .polygonAltitude(0.02);
+      .polygonStrokeColor(() => '#5aff5a')
+      .polygonAltitude(0.05);
     
     // 异步加载国家边界GeoJSON（Natural Earth 110m）
     fetch('https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_110m_admin_0_countries.geojson')
@@ -1565,7 +1565,7 @@ function focusGlobeOnStation(stationId) {
   }
   animateRotation();
   // 更新点颜色
-  globeInstance.pointColor(d => d.id === stationId ? '#ff4757' : '#4aff4a');
+  globeInstance.pointColor(d => d.id === stationId ? '#ff4757' : '#00e5ff');
 }
 
 // 初始化
