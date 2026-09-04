@@ -406,10 +406,6 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .timeline-container { position: relative; padding-left: 40px; }
 .timeline-axis { position: absolute; left: 12px; top: 0; bottom: 0; width: 3px; background: linear-gradient(to bottom, var(--timeline-color), var(--color-border)); border-radius: 2px; }
 .year-group { margin-bottom: var(--sp-7); }
-.year-header {
-  display: flex; align-items: baseline; gap: var(--sp-3); margin-bottom: var(--sp-5);
-  padding-bottom: var(--sp-3); border-bottom: 2px solid var(--timeline-color); position: relative;
-}
 .year-header::before {
   content: ''; position: absolute; left: -34px; top: 6px; width: 14px; height: 14px;
   border-radius: 50%; background: var(--timeline-color); border: 3px solid var(--color-bg);
@@ -1667,15 +1663,6 @@ select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
 .skeleton-year {
   margin-bottom: var(--sp-6);
 }
-.skeleton-year-header {
-  height: 28px;
-  width: 120px;
-  border-radius: 4px;
-  margin-bottom: var(--sp-4);
-  background: linear-gradient(90deg, var(--color-surface-alt) 25%, var(--color-border-light) 50%, var(--color-surface-alt) 75%);
-  background-size: 200% 100%;
-  animation: skeleton-shimmer 1.5s infinite;
-}
 
 .skeleton-card {
   position: relative;
@@ -1937,200 +1924,22 @@ select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
   opacity: 0.7;
 }
 
-/* ---------- 时间线月份折叠功能 ---------- */
-.year-header {
-  cursor: pointer;
-  user-select: none;
-  display: flex;
-  align-items: center;
-  gap: var(--sp-2);
-  transition: background var(--transition);
-  padding: var(--sp-2) var(--sp-3);
-  border-radius: var(--border-radius-sm);
-}
-.year-header:hover {
-  background: var(--color-surface-alt);
-}
-.year-header:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
-}
-.year-collapse-arrow {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-  flex-shrink: 0;
-  transition: transform var(--transition);
-  color: var(--color-text-muted);
-}
-.year-group.collapsed .year-collapse-arrow {
-  transform: rotate(-90deg);
-}
-/* 折叠状态：文章只显示标题，紧凑排列 */
-.year-group.collapsed .year-posts {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-.year-group.collapsed .timeline-card {
-  padding: 6px 12px;
-  min-height: auto;
-  border: none;
-  box-shadow: none;
-  background: transparent;
-}
-.year-group.collapsed .timeline-card:hover {
-  background: var(--color-surface-alt);
-}
-.year-group.collapsed .card-dot {
-  width: 6px;
-  height: 6px;
-  top: 14px;
-  left: -22px;
-}
-.year-group.collapsed .card-image,
-.year-group.collapsed .card-summary,
-.year-group.collapsed .card-tags,
-.year-group.collapsed .card-read-more,
-.year-group.collapsed .milestone-inline {
-  display: none !important;
-}
-.year-group.collapsed .card-header {
-  margin-bottom: 0;
-  flex: 0 0 auto;
-}
-.year-group.collapsed .card-date {
-  font-size: var(--fs-xs);
-  color: var(--color-text-muted);
-  min-width: 85px;
-}
-.year-group.collapsed .card-date .date-ganzhi {
-  display: none;
-}
-.year-group.collapsed .card-title {
-  font-size: var(--fs-sm);
-  font-weight: 400;
-  margin: 0;
-  line-height: 1.4;
-  display: inline;
-}
-.year-group.collapsed .year-header {
-  opacity: 0.85;
-}
-.year-group.collapsed .year-count::after {
-  content: " (仅标题)";
-  font-size: var(--fs-xs);
-}
-
-/* 全部折叠/展开按钮 */
-.collapse-all-btn {
-  margin-left: auto;
-  padding: 4px 12px;
-  font-size: var(--fs-xs);
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--border-radius-sm);
-  color: var(--color-text-secondary);
-  cursor: pointer;
-  transition: all var(--transition);
-  white-space: nowrap;
-  align-self: center;
-}
-.collapse-all-btn:hover {
-  color: var(--color-primary);
-  border-color: var(--color-primary);
-  background: var(--color-primary-light);
-}
+/* ---------- 顶部标签栏布局 ---------- */
 .timeline-tags {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: var(--sp-2);
+  margin-bottom: var(--sp-5);
+  padding: var(--sp-3) 0;
+  border-bottom: 1px solid var(--color-border-light);
 }
 .timeline-tags .dim-list {
   flex: 1;
   min-width: 0;
 }
 
-/* 折叠状态下，单张卡片展开为完整卡片 */
-.year-group.collapsed .timeline-card.card-expanded {
-  padding: var(--sp-4);
-  border: 1px solid var(--color-border);
-  border-radius: var(--border-radius);
-  background: var(--color-surface);
-  box-shadow: var(--card-shadow);
-  margin: 4px 0;
-}
-.year-group.collapsed .timeline-card.card-expanded:hover {
-  box-shadow: var(--card-shadow-hover);
-  background: var(--color-surface);
-}
-.year-group.collapsed .timeline-card.card-expanded .card-dot {
-  width: 10px;
-  height: 10px;
-  top: 24px;
-  left: -26px;
-}
-.year-group.collapsed .timeline-card.card-expanded .card-image,
-.year-group.collapsed .timeline-card.card-expanded .card-summary,
-.year-group.collapsed .timeline-card.card-expanded .card-tags,
-.year-group.collapsed .timeline-card.card-expanded .card-read-more,
-.year-group.collapsed .timeline-card.card-expanded .milestone-inline,
-.year-group.collapsed .timeline-card.card-expanded .card-date .date-ganzhi {
-  display: flex !important;
-}
-.year-group.collapsed .timeline-card.card-expanded .card-summary {
-  display: -webkit-box !important;
-}
-.year-group.collapsed .timeline-card.card-expanded .card-header {
-  margin-bottom: var(--sp-2);
-}
-.year-group.collapsed .timeline-card.card-expanded .card-date {
-  font-size: var(--fs-sm);
-  color: var(--color-text-secondary);
-  min-width: auto;
-}
-.year-group.collapsed .timeline-card.card-expanded .card-title {
-  font-size: var(--fs-md);
-  font-weight: 600;
-  margin-bottom: var(--sp-2);
-  display: block;
-}
-.year-group.collapsed .timeline-card.card-expanded .card-read-more {
-  color: var(--color-primary);
-  font-weight: 500;
-}
-/* 展开的卡片加一个提示标记 */
-.year-group.collapsed .timeline-card.card-expanded::after {
-  content: "点击进入";
-  position: absolute;
-  top: 8px;
-  right: 12px;
-  font-size: 10px;
-  color: var(--color-primary);
-  background: var(--color-primary-light);
-  padding: 2px 8px;
-  border-radius: 999px;
-  pointer-events: none;
-}
-
-/* ---------- 月份标题粘性定位（滚动时固定在顶部） ---------- */
-.year-header {
-  position: sticky;
-  top: var(--timeline-header-offset, 72px);
-  z-index: 20;
-  background: var(--color-bg);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border-bottom: 1px solid var(--color-border-light);
-}
-/* 主页顶部站点栏较高时，月份标题在其下方固定 */
-.page-home .year-header {
-  top: var(--timeline-header-offset, 80px);
-}
-/* 确保父容器不限制 sticky（不能用 contain:layout，会破坏图片懒加载） */
+/* ---------- 月份标题粘性定位 ---------- */
 .timeline-container {
   overflow: visible;
 }
