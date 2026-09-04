@@ -280,31 +280,53 @@
   transition: all 0.2s;
 }
 
-.map-station circle {
-  fill: #c04040;
-  stroke: #fff;
-  stroke-width: 1;
+.map-station line {
+  stroke: #ff4757;
+  stroke-width: 1.2;
+  transition: all 0.2s;
 }
 
-.map-station:hover circle {
-  fill: #ff6060;
-  r: 6;
+.map-station .station-heart {
+  fill: #ff4757;
+  transition: all 0.2s;
+  filter: drop-shadow(0 0 2px rgba(255,71,87,0.6));
 }
 
-.map-station.playing circle {
+.map-station:hover line {
+  stroke: #ff6b81;
+  stroke-width: 1.8;
+}
+
+.map-station:hover .station-heart {
+  fill: #ff6b81;
+  filter: drop-shadow(0 0 4px rgba(255,107,129,0.8));
+}
+
+.map-station.playing line {
+  stroke: #4aff4a;
+  animation: cross-pulse 1.5s ease-in-out infinite;
+}
+
+.map-station.playing .station-heart {
   fill: #4aff4a;
-  animation: map-pulse 1.5s ease-in-out infinite;
+  animation: heart-pulse 1.5s ease-in-out infinite;
 }
 
-@keyframes map-pulse {
-  0%, 100% { r: 4; opacity: 1; }
-  50% { r: 8; opacity: 0.6; }
+@keyframes cross-pulse {
+  0%, 100% { stroke-width: 1.2; opacity: 1; }
+  50% { stroke-width: 2.5; opacity: 0.7; }
+}
+
+@keyframes heart-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.4); opacity: 0.6; }
 }
 
 .map-station text {
-  fill: #8a9a8a;
+  fill: #a0b0a0;
   font-size: 8px;
   font-family: 'Courier New', monospace;
+  font-weight: bold;
 }
 
 /* ---- 分类筛选 ---- */
@@ -748,21 +770,8 @@
   <div class="map-panel">
     <span class="panel-label">MAP</span>
     <svg class="world-map" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid meet">
-      <defs>
-        <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-          <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(74,106,106,0.15)" stroke-width="0.5"/>
-        </pattern>
-      </defs>
-      <rect width="800" height="400" fill="url(#grid)"/>
-      <!-- 简化大陆轮廓 -->
-      <g fill="rgba(74,106,106,0.3)" stroke="#4a6a6a" stroke-width="1">
-        <path d="M 80,80 L 180,70 L 220,90 L 240,130 L 200,170 L 160,180 L 120,160 L 90,130 Z"/>
-        <path d="M 200,200 L 240,190 L 260,230 L 250,290 L 220,320 L 200,300 L 190,250 Z"/>
-        <path d="M 360,70 L 440,65 L 460,90 L 430,110 L 380,105 L 360,90 Z"/>
-        <path d="M 380,130 L 460,125 L 480,170 L 470,240 L 430,280 L 400,260 L 380,200 Z"/>
-        <path d="M 470,60 L 650,55 L 700,90 L 680,140 L 620,160 L 540,150 L 480,130 L 460,90 Z"/>
-        <path d="M 620,200 L 700,195 L 720,230 L 680,250 L 630,240 Z"/>
-      </g>
+      <!-- 真实世界地图背景 -->
+      <image href="https://raw.githubusercontent.com/Jankin-Bai/jankin-bai.github.io/main/images/radio/world_map.png" x="0" y="0" width="800" height="400" preserveAspectRatio="none"/>
       <!-- 电台点位 -->
       <g id="mapStations">
         <!-- 北京（央广+北京台） -->
@@ -1183,6 +1192,39 @@ document.querySelectorAll('.category-btn').forEach(btn => {
     currentCategory = btn.dataset.category;
     renderStations(currentCategory);
   });
+});
+
+// 将所有电台点位的圆点替换为十字红心
+document.querySelectorAll('.map-station').forEach(point => {
+  const circle = point.querySelector('circle');
+  if (circle) {
+    const hasLabel = point.querySelector('text');
+    const ns = 'http://www.w3.org/2000/svg';
+    // 十字线
+    const hLine = document.createElementNS(ns, 'line');
+    hLine.setAttribute('x1', '-7'); hLine.setAttribute('y1', '0');
+    hLine.setAttribute('x2', '7'); hLine.setAttribute('y2', '0');
+    hLine.setAttribute('stroke', '#ff4757'); hLine.setAttribute('stroke-width', '1.2');
+    const vLine = document.createElementNS(ns, 'line');
+    vLine.setAttribute('x1', '0'); vLine.setAttribute('y1', '-7');
+    vLine.setAttribute('x2', '0'); vLine.setAttribute('y2', '7');
+    vLine.setAttribute('stroke', '#ff4757'); vLine.setAttribute('stroke-width', '1.2');
+    // 红心
+    const heart = document.createElementNS(ns, 'path');
+    heart.setAttribute('d', 'M0,-1.5 C-2.5,-5 -6.5,-3.5 -6.5,0 C-6.5,3 0,6.5 0,6.5 C0,6.5 6.5,3 6.5,0 C6.5,-3.5 2.5,-5 0,-1.5 Z');
+    heart.setAttribute('fill', '#ff4757');
+    heart.setAttribute('class', 'station-heart');
+    // 有标签的点位用小十字，无标签的用大十字红心
+    if (hasLabel) {
+      hLine.setAttribute('x1', '-5'); hLine.setAttribute('x2', '5');
+      vLine.setAttribute('y1', '-5'); vLine.setAttribute('y2', '5');
+      heart.setAttribute('transform', 'scale(0.7)');
+    }
+    point.insertBefore(hLine, circle);
+    point.insertBefore(vLine, circle);
+    point.insertBefore(heart, circle);
+    point.removeChild(circle);
+  }
 });
 
 document.querySelectorAll('.map-station').forEach(point => {
