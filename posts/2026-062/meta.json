@@ -1,0 +1,14 @@
+{
+  "id": "2026-062",
+  "title": "当调试单元变成攻击武器：ARM Cortex-M FPB 安全漏洞深度拆解",
+  "date": "2026-09-04T20:00:00",
+  "tags": ["tech", "security", "嵌入式"],
+  "milestone": false,
+  "summary": "深度拆解 arXiv 论文《When Memory Mappings Attack》：ARM Cortex-M 的 FPB 调试单元如何绕过 MPU、RTOS 隔离等所有软件防护，实现任意代码执行和数据泄露。附雅思写作迁移。",
+  "theme": "mono",
+  "image": "",
+  "links": [
+    {"text": "论文原文 arXiv:2312.13189", "url": "https://arxiv.org/abs/2312.13189"}
+  ],
+  "format": "markdown"
+}
