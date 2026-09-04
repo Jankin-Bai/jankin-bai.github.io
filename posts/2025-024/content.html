@@ -1503,13 +1503,29 @@ function renderStations(category) {
     html += '</div></div>';
   }
   list.innerHTML = html;
+  // 恢复之前展开的分类
+  expandedCategories.forEach(cat => {
+    const group = list.querySelector('.station-group[data-category="' + cat + '"]');
+    if (group) {
+      group.classList.add('open');
+      const arrow = group.querySelector('.group-arrow');
+      if (arrow) arrow.textContent = '▼';
+    }
+  });
 }
 
 function toggleStationGroup(header) {
   const group = header.parentElement;
+  const cat = group.dataset.category;
   group.classList.toggle('open');
   const arrow = header.querySelector('.group-arrow');
   arrow.textContent = group.classList.contains('open') ? '▼' : '▶';
+  // 保存展开状态
+  if (group.classList.contains('open')) {
+    expandedCategories.add(cat);
+  } else {
+    expandedCategories.delete(cat);
+  }
 }
 
 async function playStation(id) {
@@ -1686,6 +1702,7 @@ document.querySelectorAll('.category-btn').forEach(btn => {
 // ===== 3D地球（three-globe） =====
 let globeInstance = null;
 let currentCountry = null;
+let expandedCategories = new Set();
 let globeScene = null;
 let globeCamera = null;
 let globeRenderer = null;
