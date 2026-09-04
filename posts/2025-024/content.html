@@ -1148,6 +1148,7 @@ let globeRenderer = null;
 let globeControls = null;
 let globeAutoRotate = true;
 let globeTargetRotation = null;
+let userRotX = 0, userRotY = 0;
 
 // 动态加载three-globe
 function loadScript(src) {
@@ -1197,10 +1198,16 @@ async function initGlobe() {
     // 创建地球
     globeInstance = new ThreeGlobe({ waitForGlobeReady: false, animateIn: true })
       .showAtmosphere(true)
-      .atmosphereColor('#4aff4a')
+      .atmosphereColor('#2a8a2a')
       .atmosphereAltitude(0.2)
       .showGraticules(true)
-      .globeMaterial(new THREE.MeshBasicMaterial({ color: 0x1a3a1a, wireframe: true, transparent: true, opacity: 0.8 }))
+      .globeMaterial(new THREE.MeshPhongMaterial({ 
+        color: 0x0d2a0d, 
+        wireframe: false, 
+        transparent: true, 
+        opacity: 0.9,
+        shininess: 10
+      }))
       .pointsData(stations.filter(s => s.geo))
       .pointLat(d => d.geo.lat)
       .pointLng(d => d.geo.lon)
@@ -1210,6 +1217,13 @@ async function initGlobe() {
       .pointResolution(8);
     
     globeScene.add(globeInstance);
+    
+    // 低密度线框轮廓层
+    const wireSphere = new THREE.Mesh(
+      new THREE.SphereGeometry(101, 24, 16),
+      new THREE.MeshBasicMaterial({ color: 0x2a6a2a, wireframe: true, transparent: true, opacity: 0.3 })
+    );
+    globeInstance.add(wireSphere);
     
     // 星空背景
     const starGeo = new THREE.BufferGeometry();
@@ -1226,8 +1240,6 @@ async function initGlobe() {
     let isDragging = false;
     let lastX = 0, lastY = 0;
     let rotVelX = 0, rotVelY = 0;
-    let userRotX = 0, userRotY = 0;
-    
     const canvas = document.getElementById('globeCanvas');
     
     function onDown(x, y) {
