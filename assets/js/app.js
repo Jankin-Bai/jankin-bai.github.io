@@ -79,8 +79,12 @@
         allPostsLoaded = true;
         renderTagFilter();
         renderMain();
-        SiteUtils.log && SiteUtils.log('✅ 后台全量扫描完成');
-      }).catch(() => {});
+        SiteUtils.log && SiteUtils.log('✅ 后台全量扫描完成，共' + posts.length + '篇');
+      }).catch(err => {
+        console.error('❌ 后台扫描失败:', err);
+        allPostsLoaded = true; // 标记为完成，避免一直显示"扫描中"
+        renderMain();
+      });
     }
   } catch (e) {
     const area = $('content-area');
