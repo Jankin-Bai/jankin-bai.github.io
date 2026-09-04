@@ -866,6 +866,13 @@
     <button class="category-btn" data-category="arabic">阿拉伯语</button>
     <button class="category-btn" data-category="international">国际广播</button>
     <button class="category-btn" data-category="ambient">氛围音乐</button>
+    <button class="category-btn" data-category="africa">非洲电台</button>
+    <button class="category-btn" data-category="india">印度电台</button>
+    <button class="category-btn" data-category="southamerica">南美电台</button>
+    <button class="category-btn" data-category="australia">澳洲电台</button>
+    <button class="category-btn" data-category="usa">美国电台</button>
+    <button class="category-btn" data-category="uk">英国电台</button>
+    <button class="category-btn" data-category="japan">日本电台</button>
   </div>
 
   <!-- 电台列表 -->
@@ -1062,6 +1069,39 @@ const stations = [
   { id: 'cumbiasinmor', name: 'Cumbias Inmortales Radio (Monterrey) - Online - www.cumbiasinmortales.com - Grupo Digital Retroland - Monterrey, Nuevo León', desc: '蒙特雷广播电台，西班牙语/葡萄牙语节目', category: 'southamerica', format: 'AAC', freq: '---', url: 'https://panel.retrolandigital.com/listen/cumbias_inmortales_radio/listen', language: '西班牙语', geo: { lat: 25.6866, lon: -100.3161, label: '蒙特雷' } },
   { id: 'beautifulins', name: 'BEAUTIFUL Instrumentals', desc: '墨西哥广播电台，西班牙语/葡萄牙语节目', category: 'southamerica', format: 'MP3', freq: '---', url: 'http://s3.voscast.com:10038/', language: '英语', geo: { lat: 19.4326, lon: -99.1332, label: '墨西哥' } },
   { id: 'rockenespaol', name: 'ROCK EN ESPAÑOL: Rock de México, España y Argentina', desc: '墨西哥广播电台，西班牙语/葡萄牙语节目', category: 'southamerica', format: 'AAC', freq: '---', url: 'https://19273.live.streamtheworld.com:443/ACIR20_S01AAC.aac', language: '西班牙语', geo: { lat: 19.4326, lon: -99.1332, label: '墨西哥' } },
+
+  // ===== 美英日俄补充电台 =====
+  { id: 'cnn', name: 'CNN', desc: '华盛顿广播电台，英语新闻音乐', category: 'usa', format: 'MP3', freq: '---', url: 'https://tunein.cdnstream1.com/2868_96.mp3', language: '英语', geo: { lat: 38.9072, lon: -77.0369, label: '华盛顿' } },
+  { id: '101smoothjaz', name: '101 SMOOTH JAZZ', desc: '华盛顿广播电台，英语新闻音乐', category: 'usa', format: 'MP3', freq: '---', url: 'http://jking.cdnstream1.com/b22139_128mp3', language: '英语', geo: { lat: 38.9072, lon: -77.0369, label: '华盛顿' } },
+  { id: '97780s', name: '.977 80s', desc: '华盛顿广播电台，英语新闻音乐', category: 'usa', format: 'MP3', freq: '---', url: 'http://26433.live.streamtheworld.com/977_80_SC', language: '英语', geo: { lat: 38.9072, lon: -77.0369, label: '华盛顿' } },
+  { id: 'msnbc', name: 'MSNBC', desc: '华盛顿广播电台，英语新闻音乐', category: 'usa', format: 'MP3', freq: '---', url: 'https://tunein.cdnstream1.com/3511_96.mp3', language: '英语', geo: { lat: 38.9072, lon: -77.0369, label: '华盛顿' } },
+  { id: '181fmoldscho', name: '181.FM - Old School HipHop/RnB', desc: '华盛顿广播电台，英语新闻音乐', category: 'usa', format: 'MP3', freq: '---', url: 'http://listen.181fm.com/181-oldschool_128k.mp3', language: '英语', geo: { lat: 38.9072, lon: -77.0369, label: '华盛顿' } },
+  { id: 'talksport', name: 'talkSPORT', desc: '伦敦广播电台，英语新闻体育音乐', category: 'uk', format: 'AAC', freq: '---', url: 'https://radio.talksport.com/stream', language: '英语', geo: { lat: 51.5074, lon: -0.1278, label: '伦敦' } },
+  { id: 'bbcradio5liv', name: 'BBC Radio 5 Live (128k)', desc: '伦敦广播电台，英语新闻体育音乐', category: 'uk', format: 'HLS', freq: '---', url: 'http://as-hls-ww-live.akamaized.net/pool_89021708/live/ww/bbc_radio_five_live/bbc_radio_five_live.isml/bbc_radio_five_live-audio%3d128000.norewind.m3u8', language: '英语', geo: { lat: 51.5074, lon: -0.1278, label: '伦敦' } },
+  { id: 'virginradiou', name: 'Virgin Radio UK', desc: '伦敦广播电台，英语新闻体育音乐', category: 'uk', format: 'MP3', freq: '---', url: 'https://radio.virginradio.co.uk/stream', language: '英语', geo: { lat: 51.5074, lon: -0.1278, label: '伦敦' } },
+  { id: 'kisstorynons', name: 'KISSTORY: Non-Stop Old Skool & Anthems', desc: '伦敦广播电台，英语新闻体育音乐', category: 'uk', format: 'AAC', freq: '---', url: 'https://live-bauerkiss.sharp-stream.com/kisstory.aac?direct=true&aw_0_1st.playerid=BMUK_Airable&aw_0_1st.skey=6778249992', language: '英语', geo: { lat: 51.5074, lon: -0.1278, label: '伦敦' } },
+  { id: 'gotannofm892', name: 'Gotanno FM 89.2', desc: '东京广播电台，日语节目', category: 'japan', format: 'MP3', freq: '---', url: 'https://radio.gotanno.love/;', language: '日语', geo: { lat: 35.6762, lon: 139.6503, label: '东京' } },
+  { id: 'nhk', name: 'NHKワールド・ラジオ日本', desc: '东京广播电台，日语节目', category: 'japan', format: 'HLS', freq: '---', url: 'https://masterpl.hls.nhkworld.jp/hls/r1/live/master.m3u8', language: '日语', geo: { lat: 35.6762, lon: 139.6503, label: '东京' } },
+  { id: 'shonanbeachf', name: 'Shonan Beach FM 78.9 湘南ビーチ', desc: '东京广播电台，日语节目', category: 'japan', format: 'MP3', freq: '---', url: 'http://shonanbeachfm.out.airtime.pro:8000/shonanbeachfm_a', language: '日语', geo: { lat: 35.6762, lon: 139.6503, label: '东京' } },
+  { id: 'nhkfm', name: 'NHK-FM', desc: '东京广播电台，日语节目', category: 'japan', format: 'HLS', freq: '---', url: 'http://mnet.x10.mx/nhkfm.m3u8', language: '日语', geo: { lat: 35.6762, lon: 139.6503, label: '东京' } },
+  { id: 'freefmtokyo', name: 'Free FM Tokyo', desc: '东京广播电台，日语节目', category: 'japan', format: 'MP3', freq: '---', url: 'https://rocafmadrid.radioca.st/', language: '英语/日语', geo: { lat: 35.6762, lon: 139.6503, label: '东京' } },
+  { id: 'gensokyoradi', name: 'Gensokyo Radio', desc: '东京广播电台，日语节目', category: 'japan', format: 'MP3', freq: '---', url: 'https://stream.gensokyoradio.net/3', language: '英语', geo: { lat: 35.6762, lon: 139.6503, label: '东京' } },
+  { id: 'replaynews5', name: 'REPLAY NEWS - 日本語 5分ごとのニュースラジオ', desc: '东京广播电台，日语节目', category: 'japan', format: 'MP3', freq: '---', url: 'https://replaynewsja.ice.infomaniak.ch/replaynewsja-128.mp3', language: '日语', geo: { lat: 35.6762, lon: 139.6503, label: '东京' } },
+  { id: 'stereoanime', name: 'stereo anime', desc: '东京广播电台，日语节目', category: 'japan', format: 'MP3', freq: '---', url: 'https://radio.stereoanime.com/listen/stereoanime/128', language: '英语/日语', geo: { lat: 35.6762, lon: 139.6503, label: '东京' } },
+  { id: 'retropcgamem', name: 'Retro PC GAME MUSIC Streaming Radio', desc: '东京广播电台，日语节目', category: 'japan', format: 'MP3', freq: '---', url: 'http://gyusyabu.ddo.jp:8000/', language: '日语', geo: { lat: 35.6762, lon: 139.6503, label: '东京' } },
+  { id: 'fm', name: 'FM世田谷', desc: '东京广播电台，日语节目', category: 'japan', format: 'MP3', freq: '---', url: 'https://fmsetagaya834.out.airtime.pro/fmsetagaya834_a', language: '日语', geo: { lat: 35.6762, lon: 139.6503, label: '东京' } },
+  { id: 'rockfm', name: 'ROCK FM', desc: '莫斯科广播电台，俄语新闻音乐', category: 'russian', format: 'MP3', freq: '---', url: 'http://nashe1.hostingradio.ru/rock-128.mp3', language: '俄语', geo: { lat: 55.7558, lon: 37.6173, label: '莫斯科' } },
+  { id: 'vestifm', name: 'Вести ФМ (Vesti FM)', desc: '莫斯科广播电台，俄语新闻音乐', category: 'russian', format: 'MP3', freq: '---', url: 'http://icecast.vgtrk.cdnvideo.ru/vestifm_mp3_192kbps', language: '俄语', geo: { lat: 55.7558, lon: 37.6173, label: '莫斯科' } },
+  { id: '', name: 'РАДИО ВАНЯ', desc: '莫斯科广播电台，俄语新闻音乐', category: 'russian', format: 'AAC+', freq: '---', url: 'https://icecast-radiovanya.cdnvideo.ru/radiovanya', language: '俄语', geo: { lat: 55.7558, lon: 37.6173, label: '莫斯科' } },
+  { id: '2', name: 'Спутник', desc: '莫斯科广播电台，俄语新闻音乐', category: 'russian', format: 'MP3', freq: '---', url: 'https://icecast-rian.cdnvideo.ru/voicerus', language: '俄语', geo: { lat: 55.7558, lon: 37.6173, label: '莫斯科' } },
+  { id: 'dfm90', name: 'DFM Дискач 90-х', desc: '莫斯科广播电台，俄语新闻音乐', category: 'russian', format: 'AAC', freq: '---', url: 'https://dfm-disc90.hostingradio.ru/disc9096.aacp', language: '俄语', geo: { lat: 55.7558, lon: 37.6173, label: '莫斯科' } },
+  { id: 'dfmrussianda', name: 'DFM RUSSIAN DANCE', desc: '莫斯科广播电台，俄语新闻音乐', category: 'russian', format: 'AAC', freq: '---', url: 'https://dfm-dfmrusdance.hostingradio.ru/dfmrusdance96.aacp?0.9987259013359274', language: '俄语', geo: { lat: 55.7558, lon: 37.6173, label: '莫斯科' } },
+  { id: 'radiomayak', name: 'Радио Маяк (Radio Mayak)', desc: '莫斯科广播电台，俄语新闻音乐', category: 'russian', format: 'MP3', freq: '---', url: 'http://icecast.vgtrk.cdnvideo.ru/mayakfm_mp3_192kbps', language: '俄语', geo: { lat: 55.7558, lon: 37.6173, label: '莫斯科' } },
+  { id: '3', name: 'Спокойное радио', desc: '莫斯科广播电台，俄语新闻音乐', category: 'russian', format: 'MP3', freq: '---', url: 'https://listen1.myradio24.com/6262', language: '俄语', geo: { lat: 55.7558, lon: 37.6173, label: '莫斯科' } },
+  { id: '4', name: 'Русское Радио', desc: '莫斯科广播电台，俄语新闻音乐', category: 'russian', format: 'AAC', freq: '---', url: 'https://rusradio.hostingradio.ru/rusradio96.aacp', language: '俄语', geo: { lat: 55.7558, lon: 37.6173, label: '莫斯科' } },
+  { id: 'live', name: 'Соловьёв LIVE', desc: '莫斯科广播电台，俄语新闻音乐', category: 'russian', format: 'AAC', freq: '---', url: 'https://solovievfm.hostingradio.ru/solovievfm128.aacp', language: '俄语', geo: { lat: 55.7558, lon: 37.6173, label: '莫斯科' } },
+  { id: '5', name: 'Дорожное радио', desc: '莫斯科广播电台，俄语新闻音乐', category: 'russian', format: 'MP3', freq: '---', url: 'http://dorognoe.hostingradio.ru:8000/radio', language: '俄语', geo: { lat: 55.7558, lon: 37.6173, label: '莫斯科' } },
+  { id: 'russianrock', name: 'Русский Рок - Russian Rock', desc: '莫斯科广播电台，俄语新闻音乐', category: 'russian', format: 'AAC', freq: '---', url: 'http://rock.volna.top/RusRock', language: '俄语', geo: { lat: 55.7558, lon: 37.6173, label: '莫斯科' } },
 ];
 
 const audio = document.getElementById('audioPlayer');
@@ -1076,7 +1116,7 @@ let currentStation = null;
 let isPlaying = false;
 let hlsInstance = null;
 
-const categoryNames = { cnr: '央广系列', local: '地方电台', hkmt: '港澳台', music: '音乐电台', internet: '网络音乐', singapore: '新加坡', international: '国际广播', ambient: '氛围音乐', russian: '俄语电台', arabic: '阿拉伯语', africa: '非洲电台', india: '印度电台', southamerica: '南美电台', australia: '澳洲电台', all: '全部' };
+const categoryNames = { cnr: '央广系列', local: '地方电台', hkmt: '港澳台', music: '音乐电台', internet: '网络音乐', singapore: '新加坡', international: '国际广播', ambient: '氛围音乐', russian: '俄语电台', arabic: '阿拉伯语', africa: '非洲电台', india: '印度电台', southamerica: '南美电台', australia: '澳洲电台', usa: '美国电台', uk: '英国电台', japan: '日本电台', all: '全部' };
 
 function renderStations(category) {
   category = category || 'all';
