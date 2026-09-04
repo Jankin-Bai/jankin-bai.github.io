@@ -2087,15 +2087,28 @@ async function initGlobe() {
       }
     }
     
-    function animate() {
+    let lastAnimTime = 0;
+    let lastRenderTime = 0;
+    const FRAME_INTERVAL = 1000 / 30; // 30fps
+    function animate(timestamp) {
       requestAnimationFrame(animate);
+      // 计算时间差（毫秒）
+      const delta = lastAnimTime ? (timestamp - lastAnimTime) : 16.7;
+      lastAnimTime = timestamp;
+      // 限制帧率到30fps
+      if (timestamp - lastRenderTime < FRAME_INTERVAL) return;
+      lastRenderTime = timestamp;
+      // 基于时间差的旋转（速度恒定，不受帧率影响）
+      // 原60fps时每帧0.001 = 每秒0.06弧度
       if (globeAutoRotate && !isDragging) {
-        userRotY += 0.001;
+        userRotY += 0.06 * (delta / 1000);
       }
       globeInstance.rotation.y = userRotY;
       globeInstance.rotation.x = userRotX;
-      stars.rotation.y += 0.0002;
-      if (greenTechMaterial) greenTechMaterial.uniforms.time.value += 0.016;
+      // 星空也基于时间差
+      stars.rotation.y += 0.012 * (delta / 1000);
+      // Shader时间基于时间差
+      if (greenTechMaterial) greenTechMaterial.uniforms.time.value += delta / 1000;
       updateCrosshair();
       globeRenderer.render(globeScene, globeCamera);
     }
