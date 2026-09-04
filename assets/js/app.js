@@ -226,31 +226,26 @@
     $('stats').innerHTML = `共 <strong>${totalLabel}</strong> 条 · <strong>${tags.length}</strong> 标签`;
   }
 
-  /* ---------- 无限滚动：滚动事件 + 位置检测（更稳定） ---------- */
-  let loadMoreTicking = false;
+  /* ---------- 无限滚动：最简单可靠的实现 ---------- */
   function checkLoadMore() {
-    if (loadMoreTicking) return;
-    loadMoreTicking = true;
-    requestAnimationFrame(function() {
-      loadMoreTicking = false;
-      const hint = $('load-more-hint');
-      if (!hint) return;
-      const rect = hint.getBoundingClientRect();
-      // 提示元素进入视口底部300px内时加载更多
-      if (rect.top < window.innerHeight + 300) {
-        const filtered = getFiltered();
-        if (displayCount < filtered.length) {
-          displayCount = Math.min(displayCount + PAGE_SIZE, filtered.length);
-          renderMain();
-        }
+    const hint = $('load-more-hint');
+    if (!hint) return;
+    const rect = hint.getBoundingClientRect();
+    // 提示元素进入视口底部200px内时加载更多
+    if (rect.top < window.innerHeight + 200) {
+      const filtered = getFiltered();
+      if (displayCount < filtered.length) {
+        displayCount = Math.min(displayCount + PAGE_SIZE, filtered.length);
+        renderMain();
       }
-    });
+    }
   }
   window.addEventListener('scroll', checkLoadMore, { passive: true });
+  window.addEventListener('touchmove', checkLoadMore, { passive: true });
   window.addEventListener('resize', checkLoadMore);
-  // renderMain 后立即检查一次（防止提示元素一开始就在视口内）
+  // renderMain 后立即检查（防止提示元素一开始就在视口内）
   function triggerLoadMoreCheck() {
-    setTimeout(checkLoadMore, 50);
+    checkLoadMore();
   }
 
   /* ---------- 后台更新事件 ---------- */
