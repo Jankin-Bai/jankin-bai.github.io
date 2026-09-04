@@ -352,6 +352,16 @@
     updateActiveTOC();
   }
 
+  /* ---------- 目录侧栏折叠/展开 ---------- */
+  (function initTOCCollapse() {
+    const tocSection = document.querySelector('.post-sidebar-section:has(.post-toc)');
+    const tocTitle = tocSection ? tocSection.querySelector('.post-sidebar-title') : null;
+    if (!tocSection || !tocTitle) return;
+    tocTitle.addEventListener('click', function() {
+      tocSection.classList.toggle('toc-collapsed');
+    });
+  })();
+
   // 相关链接
   if (meta.links && meta.links.length) {
     $('post-links').innerHTML = '<h3>相关链接</h3><ul>' +

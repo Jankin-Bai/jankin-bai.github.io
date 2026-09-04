@@ -134,6 +134,22 @@
   if (window.ThemeManager && typeof ThemeManager.init === 'function') {
     ThemeManager.init();
   }
+  /* ---------- 顶栏滚动compact效果 ---------- */
+  (function initHeaderCompact() {
+    const header = document.querySelector('.site-header-row');
+    if (!header) return;
+    let lastScroll = 0;
+    window.addEventListener('scroll', function() {
+      const scrollY = window.scrollY;
+      if (scrollY > 80) {
+        header.classList.add('compact');
+      } else {
+        header.classList.remove('compact');
+      }
+      lastScroll = scrollY;
+    }, { passive: true });
+  })();
+
 
   /* ---------- 站点信息渲染 ---------- */
   $('site-title').textContent = config.site.title;
@@ -142,23 +158,27 @@
 
   /* ---------- 标签筛选渲染（紧凑 #标签 链接） [ui-ux: 减少视觉噪音] ---------- */
   function renderTagFilter() {
-    const list = $('dimension-list');
-    if (!list) return;
     const allBtn = `<a href="#" class="tag-chip ${curTag === 'all' ? 'active' : ''}" data-tag="all"
                      aria-pressed="${curTag === 'all' ? 'true' : 'false'}">#全部 <span class="tag-chip-count">${posts.length}</span></a>`;
     const tagBtns = tags.map(t => `
       <a href="#" class="tag-chip ${curTag === t.id ? 'active' : ''}" data-tag="${escapeHtml(t.id)}"
          style="--tag-color:${escapeHtml(t.color)};--tag-bg:${escapeHtml(t.colorLight)};"
          aria-pressed="${curTag === t.id ? 'true' : 'false'}">#${escapeHtml(t.name)} <span class="tag-chip-count">${t.count}</span></a>`).join('');
-    list.innerHTML = allBtn + tagBtns;
-    list.querySelectorAll('.tag-chip').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        curTag = btn.dataset.tag;
-        applyTagTheme(curTag);
-        displayCount = PAGE_SIZE; // 切换标签时重置分页
-        renderTagFilter();
-        renderMain();
+    const html = allBtn + tagBtns;
+    // 同时渲染到顶部（手机端）和侧栏（PC端）
+    ['dimension-list', 'dimension-list-sidebar'].forEach(function(id) {
+      const list = $(id);
+      if (!list) return;
+      list.innerHTML = html;
+      list.querySelectorAll('.tag-chip').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          curTag = btn.dataset.tag;
+          applyTagTheme(curTag);
+          displayCount = PAGE_SIZE;
+          renderTagFilter();
+          renderMain();
+        });
       });
     });
   }
@@ -204,26 +224,32 @@
       area.innerHTML = html;
       // 恢复月份折叠状态（重新渲染后不丢失）
       restoreCollapsedState();
+      // 重新设置无限滚动监听
+      setupLoadMoreObserver();
     }
     const totalLabel = allPostsLoaded ? filtered.length : `${filtered.length}+`;
     $('stats').innerHTML = `共 <strong>${totalLabel}</strong> 条 · <strong>${tags.length}</strong> 标签`;
   }
 
-  /* ---------- 无限滚动：滚动到底部加载更多 ---------- */
-  function checkLoadMore() {
+  /* ---------- 无限滚动：IntersectionObserver 监听加载提示 ---------- */
+  let loadMoreObserver = null;
+  function setupLoadMoreObserver() {
     const hint = $('load-more-hint');
     if (!hint) return;
-    const rect = hint.getBoundingClientRect();
-    // 提示元素进入视口（底部200px内）时加载更多
-    if (rect.top < window.innerHeight + 200) {
-      const filtered = getFiltered();
-      if (displayCount < filtered.length) {
-        displayCount = Math.min(displayCount + PAGE_SIZE, filtered.length);
-        renderMain();
-      }
-    }
+    if (loadMoreObserver) loadMoreObserver.disconnect();
+    loadMoreObserver = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          const filtered = getFiltered();
+          if (displayCount < filtered.length) {
+            displayCount = Math.min(displayCount + PAGE_SIZE, filtered.length);
+            renderMain();
+          }
+        }
+      });
+    }, { rootMargin: '200px 0px', threshold: 0.01 });
+    loadMoreObserver.observe(hint);
   }
-  window.addEventListener('scroll', checkLoadMore, { passive: true });
 
   /* ---------- 时间线月份折叠/展开（状态持久化，重新渲染不丢失） ---------- */
   const collapsedMonths = new Set();

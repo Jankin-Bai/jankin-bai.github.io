@@ -1839,32 +1839,85 @@ select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
   .post-content h3 { font-size: 1.1em !important; }
   .post-title { font-size: 1.3em !important; }
 }
-/* ---------- 文章页面：隐藏搜索栏和侧栏导航面板 ---------- */
+/* ---------- 文章页面：只保留目录侧栏 ---------- */
 .page-post .header-right .search-box {
   display: none;
 }
 .page-post .mobile-search {
   display: none;
 }
-.page-post .post-sidebar {
-  display: none;
+/* PC端：显示侧栏，只保留目录 */
+@media (min-width: 900px) {
+  .page-post .post-sidebar {
+    display: block;
+  }
+  /* 隐藏标签、操作、相关文章，只保留目录 */
+  .page-post .post-sidebar .sidebar-toggle-btn {
+    display: none;
+  }
+  .page-post .post-sidebar .sidebar-content {
+    max-height: none !important;
+    overflow: visible;
+  }
+  .page-post .post-sidebar-section:not(:has(.post-toc)) {
+    display: none;
+  }
+  .page-post .post-sidebar .widgets-container {
+    display: none;
+  }
 }
-/* 文章页主内容占满宽度（侧栏隐藏后） */
-.page-post .post-article {
-  grid-column: 1 / -1;
+/* 手机端：隐藏侧栏，用浮动TOC按钮 */
+@media (max-width: 899px) {
+  .page-post .post-sidebar {
+    display: none;
+  }
+  .page-post .post-article {
+    grid-column: 1 / -1;
+  }
+}
+/* 目录可折叠 */
+.page-post .post-sidebar-section:has(.post-toc) .post-sidebar-title {
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.page-post .post-sidebar-section:has(.post-toc) .post-sidebar-title::after {
+  content: "▼";
+  font-size: 10px;
+  transition: transform var(--transition);
+}
+.page-post .post-sidebar-section.toc-collapsed .post-sidebar-title::after {
+  transform: rotate(-90deg);
+}
+.page-post .post-sidebar-section.toc-collapsed .post-toc {
+  display: none;
 }
 
-/* ---------- 主页：标签直接排列在时间线上方 ---------- */
-.page-home .sidebar {
-  display: none;
-}
-.page-home .main-area {
-  grid-column: 1 / -1;
-}
+/* ---------- 主页：PC端标签在左侧栏，手机端在顶部 ---------- */
 .timeline-tags {
   margin-bottom: var(--sp-5);
   padding: var(--sp-3) 0;
   border-bottom: 1px solid var(--color-border-light);
+}
+/* PC端：顶部标签栏隐藏，使用左侧栏 */
+@media (min-width: 900px) {
+  .timeline-tags {
+    display: none;
+  }
+  .page-home .sidebar {
+    display: block;
+  }
+}
+/* 手机端：侧栏隐藏，使用顶部标签栏 */
+@media (max-width: 899px) {
+  .page-home .sidebar {
+    display: none;
+  }
+  .page-home .main-area {
+    grid-column: 1 / -1;
+  }
 }
 .timeline-tags .dim-list {
   display: flex;
@@ -2080,4 +2133,18 @@ select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
 /* 确保父容器不限制 sticky（不能用 contain:layout，会破坏图片懒加载） */
 .timeline-container {
   overflow: visible;
+}
+
+/* 侧栏标签筛选样式 */
+.sidebar .dim-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.sidebar .tag-chip {
+  width: 100%;
+  justify-content: space-between;
+  padding: 8px 12px;
+  font-size: var(--fs-sm);
+  min-height: 36px;
 }

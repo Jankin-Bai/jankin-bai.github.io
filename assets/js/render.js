@@ -49,10 +49,10 @@ const Renderer = (() => {
 
   function renderMonthGroup(year, month, posts, tags, config) {
     const monthNames = ['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'];
-    // 计算干支年和干支月（用该月15号作为基准日，近似节气月）
-    const yearGZ = Ganzhi.getYearGanzhi(year);
-    const midDate = new Date(year, month - 1, 15);
-    const lunarMonth = Ganzhi.getApproxLunarMonth(midDate);
+    // 计算干支年和干支月（用该月第一篇文章的真实日期，与卡片内干支计算一致）
+    const firstPostDate = posts.length > 0 ? new Date(posts[0].date) : new Date(year, month - 1, 1);
+    const yearGZ = Ganzhi.getYearGanzhi(firstPostDate.getFullYear());
+    const lunarMonth = Ganzhi.getApproxLunarMonth(firstPostDate);
     const monthGZ = Ganzhi.getMonthGanzhi(yearGZ.gan, lunarMonth);
     const gz = ` <span class="year-ganzhi">${esc(yearGZ.full)} ${esc(monthGZ.full)}</span>`;
     return `<section class="year-group" data-year="${esc(year)}-${String(month).padStart(2,'0')}">
