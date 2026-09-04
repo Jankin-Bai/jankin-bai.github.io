@@ -841,10 +841,11 @@
       <svg id="globeConnector" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9;opacity:0;transition:opacity 0.3s;overflow:visible;">
         <line id="connectorLine" x1="0" y1="0" x2="0" y2="0" stroke="#ff9900" stroke-width="2.5" opacity="0.95"/>
         <circle id="connectorDot" cx="0" cy="0" r="4" fill="#ff9900" stroke="#fff" stroke-width="1"/>
-        <foreignObject id="connectorLabelFO" x="0" y="0" width="140" height="50" style="overflow:visible;">
-          <div xmlns="http://www.w3.org/1999/xhtml" id="globeFloatLabel" style="background:rgba(0,10,0,0.95);border:2px solid #ff9900;border-radius:4px;padding:5px 10px;font-family:Courier New;white-space:nowrap;transform:translate(0,-50%);box-shadow:0 0 10px rgba(255,153,0,0.5);">
+        <foreignObject id="connectorLabelFO" x="0" y="0" width="250" height="100" style="overflow:visible;">
+          <div xmlns="http://www.w3.org/1999/xhtml" id="globeFloatLabel" style="background:rgba(0,10,0,0.95);border:2px solid #ff9900;border-radius:4px;padding:6px 10px;font-family:Courier New;white-space:nowrap;transform:translate(0,-50%);box-shadow:0 0 10px rgba(255,153,0,0.5);display:inline-block;">
             <div id="floatName" style="color:#ffcc00;font-size:11px;font-weight:bold;">---</div>
-            <div id="floatMeta" style="color:#ffaa44;font-size:9px;margin-top:3px;">---</div>
+            <div id="floatFmt" style="color:#88ccff;font-size:9px;margin-top:3px;">---</div>
+            <div id="floatGeo" style="color:#ffaa44;font-size:9px;margin-top:2px;">---</div>
           </div>
         </foreignObject>
       </svg>
@@ -1490,10 +1491,11 @@ async function initGlobe() {
         // 浮动标签在引线末端
         labelFO.setAttribute('x', endX + 5);
         labelFO.setAttribute('y', endY - 25);
-        document.getElementById('floatName').textContent = currentStation.name.substring(0, 16);
-        document.getElementById('floatMeta').textContent = 
-          currentStation.format + ' | ' + currentStation.freq + 'MHz | ' + 
-          currentStation.geo.lat.toFixed(1) + ',' + currentStation.geo.lon.toFixed(1);
+        document.getElementById('floatName').textContent = currentStation.name;
+        document.getElementById('floatFmt').textContent = 
+          currentStation.format + ' | ' + currentStation.freq + ' MHz';
+        document.getElementById('floatGeo').textContent = 
+          currentStation.geo.label + ' (' + currentStation.geo.lat.toFixed(2) + '°, ' + currentStation.geo.lon.toFixed(2) + '°)';
       } else {
         crosshairEl.style.opacity = '0.2';
         crosshairEl.style.left = x + 'px';
