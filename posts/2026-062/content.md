@@ -12,7 +12,7 @@
 
 这篇论文《When Memory Mappings Attack》讲的就是这件事。三位作者来自 CertiK、新罕布什尔大学和马萨诸塞大学洛厄尔分校，2023年12月发布在 arXiv 上。
 
-> **📝 雅思表达卡（IELTS Expression Card）**
+> **📝 英文小卡片（English Expression Card）**
 >
 > **技术句**：这个调试模块本来是给开发者用的，但出货后没有被关闭，变成了安全隐患。
 >
@@ -64,18 +64,18 @@ FPB 是 ARM 设计的硬件调试模块，核心功能有两个：
 
 > FPB 的所有寄存器都是**内存映射**的（起始地址 `0xE0002000`），软件可以直接读写，**不需要调试探针**。
 
-```
-FPB 寄存器组（起始地址 0xE0002000）
-┌──────────────┬─────────────────────────────────────┐
-│ 寄存器        │ 功能                                 │
-├──────────────┼─────────────────────────────────────┤
-│ FP_CTRL      │ 全局使能 + 实现信息（比较器数量）      │
-│ FP_REMAP     │ remap table 在 SRAM 中的地址          │
-│ FP_COMP0~n   │ 比较器：指定要拦截的地址              │
-└──────────────┴─────────────────────────────────────┘
+```mermaid
+graph LR
+    subgraph FPB_Regs["FPB 寄存器组（起始地址 0xE0002000）"]
+        direction TB
+        CTRL["FP_CTRL<br/>全局使能 + 比较器数量"]
+        REMAP["FP_REMAP<br/>remap table 在 SRAM 中的地址"]
+        COMP["FP_COMP0 ~ FP_COMPn<br/>比较器：指定要拦截的地址"]
+        CTRL --> REMAP --> COMP
+    end
 ```
 
-> **📝 雅思表达卡**
+> **📝 英文小卡片**
 >
 > **技术句**：FPB 的所有寄存器都是内存映射的，软件可以直接配置，不需要物理调试探针。
 >
@@ -135,7 +135,7 @@ FPB 也可以拦截数据读取，把 Flash 中的某个常量替换成 remap ta
 | 数据重映射 | 修补常量 | 篡改函数指针、跳转目标 |
 | 绕过 MPU | 调试时不受限 | 非特权代码可读特权内存、可执行 NX 区域 |
 
-> **📝 雅思表达卡**
+> **📝 英文小卡片**
 >
 > **技术句**：FPB 访问重映射表时完全忽略 MPU 权限，这使得非特权代码能够读取特权内存。
 >
@@ -212,7 +212,7 @@ bx  lr              ; 返回
 
 执行后，整个系统的 MPU 被禁用，攻击者获得完全的内存访问权限。
 
-> **📝 雅思表达卡**
+> **📝 英文小卡片**
 >
 > **技术句**：通过替换 SVCall 中断处理程序，攻击者能够在特权级下执行任意代码。
 >
@@ -268,7 +268,7 @@ bx  lr              ; 返回
 | MPU Bypass | 内存保护单元 | 替换 SVCall 处理程序 | 任意读 + 禁用 MPU |
 | Kill Protect | RTOS 任务隔离 | 替换 MPU 配置函数 | 跨任务切换持久化 |
 
-> **📝 雅思表达卡**
+> **📝 英文小卡片**
 >
 > **技术句**：通过替换配置 MPU 的函数，攻击者在每次任务切换时都能禁用内存保护，实现持久化攻击。
 >
@@ -318,7 +318,7 @@ bx  lr              ; 返回
 
 这不是某个厂商的疏忽，而是整个行业的系统性问题。作者说："我们还没见过不带 FPB 的 Cortex-M 芯片。"
 
-> **📝 雅思表达卡**
+> **📝 英文小卡片**
 >
 > **技术句**：调试友好性和产品安全性本质上是矛盾的，需要在硬件层面取得平衡。
 >
@@ -333,13 +333,13 @@ bx  lr              ; 返回
 
 ---
 
-## 六、雅思写作迁移：把技术论证用到 Task 2
+## 六、英文写作迁移：把技术论证用到 Task 2
 
-这篇论文的论证结构，完美对应雅思写作 Task 2 的**"问题解决型"（Problem-Solution）**作文。
+这篇论文的论证结构，完美对应英文写作 Task 2 的**"问题解决型"（Problem-Solution）**作文。
 
 ### 6.1 结构映射
 
-| 论文章节 | 雅思 Task 2 对应 |
+| 论文章节 | 学术写作 Task 2 对应 |
 |----------|-----------------|
 | 开篇场景 | Introduction：背景引入 + 问题陈述 |
 | 背景知识 | Background：解释关键概念 |
@@ -370,7 +370,7 @@ bx  lr              ; 返回
 > Ultimately, addressing this issue requires a fundamental shift in how we think about...
 > （归根结底，解决这个问题需要我们在思考……的方式上发生根本转变。）
 
-### 6.3 模拟雅思题目
+### 6.3 模拟写作题目
 
 > **题目**：Some people believe that technology companies should be held legally responsible for security vulnerabilities in their products. To what extent do you agree or disagree?
 
@@ -378,7 +378,7 @@ bx  lr              ; 返回
 
 > On the one hand, holding companies legally liable could incentivize more secure design practices. For instance, research has shown that microcontroller manufacturers often leave debug interfaces accessible after deployment, thereby creating significant attack surfaces. If these companies faced legal consequences, they would be more likely to implement hardware-level protections such as TrustZone isolation. However, opponents argue that excessive regulation could stifle innovation, particularly for resource-constrained embedded systems where debug functionality is essential during development. A balanced approach would therefore require...
 
-注意这段话里用了论文中的核心论据（调试接口、TrustZone、资源受限），同时保持了雅思写作的学术风格和论证结构。
+注意这段话里用了论文中的核心论据（调试接口、TrustZone、资源受限），同时保持了英文写作的学术风格和论证结构。
 
 ---
 
@@ -409,4 +409,4 @@ bx  lr              ; 返回
 - ARM Limited. ARMv7-M Architecture Reference Manual (Issue E.d), 2018.
 - ARM Limited. ARMv8-M Architecture Reference Manual (Issue B.f), 2019.
 
-*本文基于论文原文进行技术拆解，所有攻击原语和寄存器配置均来自论文第 III-IV 节。雅思表达部分为作者附加的学习辅助内容。*
+*本文基于论文原文进行技术拆解，所有攻击原语和寄存器配置均来自论文第 III-IV 节。英文表达部分为作者附加的学习辅助内容。*

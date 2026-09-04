@@ -1566,10 +1566,36 @@ select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
 /* ---------- 桌面端隐藏手机端元素 ---------- */
 @media (min-width: 641px) {
   .mobile-search,
-  .sidebar-toggle-btn,
-  .toc-fab,
-  .toc-modal {
+  .sidebar-toggle-btn {
     display: none !important;
+  }
+}
+
+/* ---------- PC端 TOC 浮动按钮（与手机端共用，PC端也显示） ---------- */
+@media (min-width: 641px) {
+  .toc-fab {
+    bottom: 32px;
+    right: 32px;
+    width: 52px;
+    height: 52px;
+  }
+  /* PC端模态框居中显示，而非底部滑出 */
+  .toc-modal {
+    align-items: center;
+    justify-content: center;
+  }
+  .toc-modal-content {
+    width: 480px;
+    max-width: 90vw;
+    max-height: 80vh;
+    border-radius: var(--border-radius);
+    transform: scale(0.9);
+    opacity: 0;
+    transition: transform var(--transition-slow), opacity var(--transition-slow);
+  }
+  .toc-modal.open .toc-modal-content {
+    transform: scale(1);
+    opacity: 1;
   }
 }
 
