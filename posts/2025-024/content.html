@@ -2229,16 +2229,15 @@ if (document.readyState === 'loading') {
   updateHeaderHeight();
 }
 
-// 设置导航栏高度CSS变量，供地球sticky的top使用
+// 持续同步导航栏高度到CSS变量（包括渐入渐出动画过程中）
 function updateHeaderHeight() {
   const header = document.querySelector('.site-header-row');
   if (header) {
     document.documentElement.style.setProperty('--header-height', header.offsetHeight + 'px');
   }
+  requestAnimationFrame(updateHeaderHeight);
 }
 updateHeaderHeight();
-window.addEventListener('resize', updateHeaderHeight);
-setTimeout(updateHeaderHeight, 500);
 
 /* ========== 休眠定时器 ========== */
 let sleepTimerId = null;
