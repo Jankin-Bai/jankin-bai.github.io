@@ -257,7 +257,7 @@
   margin-bottom: 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.5);
   position: sticky;
-  top: var(--header-height, 60px);
+  top: calc(var(--header-height, 60px) + 2px);
   z-index: 50;
 }
 
@@ -2229,17 +2229,20 @@ if (document.readyState === 'loading') {
   updateHeaderHeight();
 }
 
-// 持续同步导航栏底部位置到CSS变量（包括border和动画过程中）
+// 设置导航栏高度供地球sticky使用（只取正常状态高度，不跟随收缩动画）
 function updateHeaderHeight() {
   const header = document.querySelector('.site-header-row');
   if (header) {
-    // 用getBoundingClientRect().bottom获取实际底部位置（包括border）
-    const bottom = header.getBoundingClientRect().bottom;
-    document.documentElement.style.setProperty('--header-height', Math.max(0, bottom) + 'px');
+    const h = header.offsetHeight;
+    if (h > 10) { // 只在导航栏正常显示时更新，收缩时不更新
+      document.documentElement.style.setProperty('--header-height', h + 'px');
+    }
   }
-  requestAnimationFrame(updateHeaderHeight);
 }
 updateHeaderHeight();
+window.addEventListener('resize', updateHeaderHeight);
+setTimeout(updateHeaderHeight, 500);
+setTimeout(updateHeaderHeight, 1500);
 
 /* ========== 休眠定时器 ========== */
 let sleepTimerId = null;
