@@ -810,6 +810,22 @@
       <canvas id="globeCanvas" style="width:100%;height:100%;display:block;touch-action:none;cursor:grab;"></canvas>
       <div id="globeLoading" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#4a8a4a;font-family:Courier New;font-size:11px;letter-spacing:1px;">INITIALIZING 3D GLOBE...</div>
       <div id="globeHint" style="position:absolute;bottom:4px;right:8px;color:#3a5a3a;font-family:Courier New;font-size:9px;pointer-events:none;">DRAG: ROTATE | SCROLL: ZOOM | TAP STATION: PLAY</div>
+      <!-- 3D十字瞄准镜覆盖层 -->
+      <div id="globeCrosshair" style="position:absolute;pointer-events:none;opacity:0;transition:opacity 0.3s;z-index:10;transform:translate(-50%,-50%);">
+        <svg width="70" height="70" viewBox="-35 -35 70 70" style="overflow:visible;">
+          <line x1="-30" y1="0" x2="-12" y2="0" stroke="#ff4757" stroke-width="1.5"/>
+          <line x1="12" y1="0" x2="30" y2="0" stroke="#ff4757" stroke-width="1.5"/>
+          <line x1="0" y1="-30" x2="0" y2="-12" stroke="#ff4757" stroke-width="1.5"/>
+          <line x1="0" y1="12" x2="0" y2="30" stroke="#ff4757" stroke-width="1.5"/>
+          <circle cx="0" cy="0" r="8" fill="none" stroke="#ff4757" stroke-width="1" opacity="0.8"/>
+          <circle cx="0" cy="0" r="16" fill="none" stroke="#ff4757" stroke-width="0.8" opacity="0.5"/>
+          <path d="M -22,-22 L -15,-22 M -22,-22 L -22,-15" stroke="#ff4757" stroke-width="1.5" fill="none"/>
+          <path d="M 22,-22 L 15,-22 M 22,-22 L 22,-15" stroke="#ff4757" stroke-width="1.5" fill="none"/>
+          <path d="M -22,22 L -15,22 M -22,22 L -22,15" stroke="#ff4757" stroke-width="1.5" fill="none"/>
+          <path d="M 22,22 L 15,22 M 22,22 L 22,15" stroke="#ff4757" stroke-width="1.5" fill="none"/>
+        </svg>
+        <div id="globeCrosshairLabel" style="position:absolute;top:38px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.85);border:1px solid #ff4757;padding:2px 8px;border-radius:3px;color:#ff6b81;font-family:Courier New;font-size:10px;white-space:nowrap;font-weight:bold;">TARGET</div>
+      </div>
     </div>
   </div>
 
@@ -1196,34 +1212,21 @@ async function initGlobe() {
     globeScene.add(dirLight);
     
     // 创建地球
-    globeInstance = new ThreeGlobe({ waitForGlobeReady: false, animateIn: true })
+    globeInstance = new ThreeGlobe({ waitForGlobeReady: true, animateIn: true })
       .showAtmosphere(true)
       .atmosphereColor('#2a8a2a')
-      .atmosphereAltitude(0.2)
-      .showGraticules(true)
-      .globeMaterial(new THREE.MeshPhongMaterial({ 
-        color: 0x0d2a0d, 
-        wireframe: false, 
-        transparent: true, 
-        opacity: 0.9,
-        shininess: 10
-      }))
+      .atmosphereAltitude(0.15)
+      .showGraticules(false)
+      .globeImageUrl('https://raw.githubusercontent.com/Jankin-Bai/jankin-bai.github.io/main/images/radio/world_map_hd.png')
       .pointsData(stations.filter(s => s.geo))
       .pointLat(d => d.geo.lat)
       .pointLng(d => d.geo.lon)
       .pointColor(d => d.id === (currentStation && currentStation.id) ? '#ff4757' : '#4aff4a')
-      .pointAltitude(0.02)
-      .pointRadius(0.3)
-      .pointResolution(8);
+      .pointAltitude(0.05)
+      .pointRadius(0.5)
+      .pointResolution(16);
     
     globeScene.add(globeInstance);
-    
-    // 低密度线框轮廓层
-    const wireSphere = new THREE.Mesh(
-      new THREE.SphereGeometry(101, 24, 16),
-      new THREE.MeshBasicMaterial({ color: 0x2a6a2a, wireframe: true, transparent: true, opacity: 0.3 })
-    );
-    globeInstance.add(wireSphere);
     
     // 星空背景
     const starGeo = new THREE.BufferGeometry();
@@ -1310,6 +1313,42 @@ async function initGlobe() {
     });
     
     // 动画循环
+    const crosshairEl = document.getElementById('globeCrosshair');
+    const crosshairLabel = document.getElementById('globeCrosshairLabel');
+    
+    function updateCrosshair() {
+      if (!currentStation || !currentStation.geo || !globeInstance) {
+        crosshairEl.style.opacity = '0';
+        return;
+      }
+      // 计算目标点的3D坐标
+      const coords = globeInstance.getCoords(currentStation.geo.lat, currentStation.geo.lon, 0.05);
+      const point = new THREE.Vector3(coords.x, coords.y, coords.z);
+      globeInstance.localToWorld(point);
+      // 投影到2D屏幕
+      const projected = point.clone().project(globeCamera);
+      const container = document.getElementById('globeContainer');
+      const rect = container.getBoundingClientRect();
+      const x = (projected.x * 0.5 + 0.5) * rect.width;
+      const y = (-projected.y * 0.5 + 0.5) * rect.height;
+      // 判断是否在地球背面（点到相机距离 > 地球半径）
+      const camDist = globeCamera.position.distanceTo(point);
+      const center = new THREE.Vector3(0, 0, 0);
+      globeInstance.localToWorld(center);
+      const centerDist = globeCamera.position.distanceTo(center);
+      const isFront = camDist < centerDist + 5;
+      if (isFront && projected.z < 1) {
+        crosshairEl.style.left = x + 'px';
+        crosshairEl.style.top = y + 'px';
+        crosshairEl.style.opacity = '1';
+        crosshairLabel.textContent = currentStation.name.substring(0, 14);
+      } else {
+        crosshairEl.style.opacity = '0.3';
+        crosshairEl.style.left = x + 'px';
+        crosshairEl.style.top = y + 'px';
+      }
+    }
+    
     function animate() {
       requestAnimationFrame(animate);
       if (globeAutoRotate && !isDragging) {
@@ -1318,6 +1357,7 @@ async function initGlobe() {
       globeInstance.rotation.y = userRotY;
       globeInstance.rotation.x = userRotX;
       stars.rotation.y += 0.0002;
+      updateCrosshair();
       globeRenderer.render(globeScene, globeCamera);
     }
     animate();
@@ -1340,17 +1380,17 @@ async function initGlobe() {
 
 // 播放时旋转地球到目标位置
 function focusGlobeOnStation(stationId) {
-  if (!globeInstance) return;
+  if (!globeInstance) { setTimeout(() => focusGlobeOnStation(stationId), 500); return; }
   const station = stations.find(s => s.id === stationId);
   if (!station || !station.geo) return;
-  // 旋转到目标经纬度
+  // 旋转到目标经纬度（经度取反，纬度限制范围）
   const targetRotY = -station.geo.lon * Math.PI / 180;
-  const targetRotX = station.geo.lat * Math.PI / 180;
+  const targetRotX = Math.max(-Math.PI/3, Math.min(Math.PI/3, station.geo.lat * Math.PI / 180));
   globeAutoRotate = false;
   // 平滑过渡
   const startY = userRotY;
   const startX = userRotX;
-  const duration = 1000;
+  const duration = 1200;
   const startTime = Date.now();
   function animateRotation() {
     const elapsed = Date.now() - startTime;
@@ -1359,13 +1399,11 @@ function focusGlobeOnStation(stationId) {
     userRotY = startY + (targetRotY - startY) * ease;
     userRotX = startX + (targetRotX - startX) * ease;
     if (t < 1) requestAnimationFrame(animateRotation);
-    else setTimeout(() => { globeAutoRotate = true; }, 2000);
+    else setTimeout(() => { globeAutoRotate = true; }, 3000);
   }
   animateRotation();
   // 更新点颜色
-  if (globeInstance) {
-    globeInstance.pointColor(d => d.id === stationId ? '#ff4757' : '#4aff4a');
-  }
+  globeInstance.pointColor(d => d.id === stationId ? '#ff4757' : '#4aff4a');
 }
 
 // 初始化
