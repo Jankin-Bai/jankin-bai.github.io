@@ -1024,6 +1024,64 @@
     justify-content: center;
   }
 }
+
+/* 底部融合区域：品牌行 + footer meta */
+.radio-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 8px;
+  border-top: 1px solid rgba(74, 255, 74, 0.2);
+  margin-top: 12px;
+}
+.radio-footer .footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.radio-footer .footer-brand .brand-bars {
+  display: flex;
+  gap: 4px;
+}
+.radio-footer .footer-brand .brand-bars span {
+  width: 3px;
+  height: 16px;
+  background: #4aff4a;
+  opacity: 0.6;
+}
+.radio-footer .footer-brand .brand-bars span:nth-child(2) { opacity: 0.8; }
+.radio-footer .footer-brand .brand-bars span:nth-child(3) { opacity: 1.0; }
+.radio-footer .footer-brand .brand-bars span:nth-child(4) { opacity: 0.7; }
+.radio-footer .footer-brand .brand-title {
+  flex: 1;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.radio-footer .footer-brand .brand-title .main {
+  font-size: 1.1em;
+  font-weight: bold;
+  color: #4aff4a;
+  letter-spacing: 2px;
+}
+.radio-footer .footer-brand .brand-title .sub {
+  font-size: 0.75em;
+  color: #888;
+  letter-spacing: 1px;
+}
+.radio-footer .footer-brand .brand-date {
+  font-size: 0.75em;
+  color: #888;
+  text-align: right;
+  min-width: 80px;
+}
+.radio-footer .footer-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.7em;
+  color: #555;
+  letter-spacing: 1px;
+}
 </style>
 
 <div class="radio-container">
@@ -1063,15 +1121,6 @@
   </div>
 
   <!-- 品牌标识 -->
-  <div class="radio-brand-row">
-    <div class="brand-bars"><span></span><span></span><span></span><span></span></div>
-    <div class="brand-title">
-      <div class="main">JANKIN</div>
-      <div class="sub">RADIO 3000</div>
-    </div>
-    <div class="brand-date" id="brandDate">DATE</div>
-  </div>
-
   <!-- 雷达 + 信息面板 -->
   <div class="radio-radar-info">
     <div class="radar-panel paused" id="radarPanel">
@@ -1184,9 +1233,19 @@
   <!-- 底部控制区 -->
   <!-- 底部标识 -->
   <div class="radio-footer">
-    <span class="galaxy-time">GALAXY TIME</span>
-    <span class="water-resist">WATER RESIST</span>
-    <span class="xb-logo">XB</span>
+    <div class="footer-brand">
+      <div class="brand-bars"><span></span><span></span><span></span><span></span></div>
+      <div class="brand-title">
+        <span class="main">JANKIN</span>
+        <span class="sub">RADIO 3000</span>
+      </div>
+      <div class="brand-date" id="brandDate">DATE</div>
+    </div>
+    <div class="footer-meta">
+      <span class="galaxy-time">GALAXY TIME</span>
+      <span class="water-resist">WATER RESIST</span>
+      <span class="xb-logo">XB</span>
+    </div>
   </div>
 
   <audio id="audioPlayer" crossorigin="anonymous"></audio>
