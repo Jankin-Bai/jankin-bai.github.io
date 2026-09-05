@@ -1804,6 +1804,10 @@ const waveform = document.getElementById('waveform');
 const radarPanel = document.getElementById('radarPanel');
 let currentStation = null;
 let isPlaying = false;
+let playTimeout = null;
+let randomPlayMode = false;
+let triedStationIds = new Set();
+const PLAY_TIMEOUT_MS = 500; // 500ms未播放成功则切换下一个
 let hlsInstance = null;
 
 const categoryNames = { cnr: '央广系列', local: '地方电台', hkmt: '港澳台', music: '音乐电台', internet: '网络音乐', singapore: '新加坡', international: '国际广播', ambient: '氛围音乐', russian: '俄语电台', arabic: '阿拉伯语', africa: '非洲电台', india: '印度电台', southamerica: '南美电台', australia: '澳洲电台', usa: '美国电台', uk: '英国电台', japan: '日本电台', asia: '亚洲电台', europe: '欧洲电台', northamerica: '北美电台', oceania: '大洋洲电台', language: '语言学习', all: '全部' };
@@ -1871,6 +1875,11 @@ async function playStation(id) {
   if (!station) return;
   if (currentStation && currentStation.id === id) { togglePlay(); return; }
 
+  // 用户手动选择电台，退出随机自动切换模式
+  randomPlayMode = false;
+  if (playTimeout) { clearTimeout(playTimeout); playTimeout = null; }
+  triedStationIds.clear();
+
   currentStation = station;
   // 根据经纬度高亮国家
   if (station.geo && window.geoFeatures) {
@@ -1909,6 +1918,17 @@ async function playStation(id) {
   document.getElementById('infoStatus').textContent = 'CONNECTING';
   playerStatus.style.color = '#c8a060';
 
+  // 设置播放超时：500ms未成功则自动切换（仅随机播放模式）
+  if (playTimeout) { clearTimeout(playTimeout); playTimeout = null; }
+  if (randomPlayMode) {
+    playTimeout = setTimeout(() => {
+      if (!isPlaying && randomPlayMode) {
+        console.log('播放超时，切换下一个随机电台');
+        playNextRandom();
+      }
+    }, PLAY_TIMEOUT_MS);
+  }
+
   try {
     if (station.url.includes('.m3u8') && typeof Hls !== 'undefined' && Hls.isSupported()) {
       hlsInstance = new Hls();
@@ -1936,6 +1956,9 @@ async function playStation(id) {
 }
 
 function startPlaying() {
+  // 播放成功，清除超时定时器，退出随机切换模式
+  if (playTimeout) { clearTimeout(playTimeout); playTimeout = null; }
+  randomPlayMode = false;
   isPlaying = true;
   playBtn.textContent = '⏸';
   playerStatus.textContent = '● ON AIR';
@@ -1967,15 +1990,26 @@ function stopPlay() {
   renderStations(currentCategory);
 }
 
+function playNextRandom() {
+  // 筛选未尝试过的电台
+  const available = stations.filter(s => !triedStationIds.has(s.id));
+  if (available.length === 0) {
+    // 全部尝试过了，重置
+    triedStationIds.clear();
+    playStation(stations[Math.floor(Math.random() * stations.length)].id);
+    return;
+  }
+  const randomStation = available[Math.floor(Math.random() * available.length)];
+  triedStationIds.add(randomStation.id);
+  playStation(randomStation.id);
+}
+
 function togglePlay() {
   if (!currentStation) {
-    // 没有选中电台时，随机选一个播放
-    const randomStation = stations[Math.floor(Math.random() * stations.length)];
-    if (randomStation) {
-      playStation(randomStation.id);
-      return;
-    }
-    showError('请先选择一个电台');
+    // 没有选中电台时，随机选一个播放，开启自动切换模式
+    randomPlayMode = true;
+    triedStationIds.clear();
+    playNextRandom();
     return;
   }
   if (isPlaying) {
