@@ -1807,6 +1807,8 @@ let isPlaying = false;
 let playTimeout = null;
 let randomPlayMode = false;
 let triedStationIds = new Set();
+let userLocation = null; // 用户IP定位的经纬度 {lat, lon, city, country}
+const NEARBY_RADIUS_KM = 1500; // 附近电台半径(公里)
 const PLAY_TIMEOUT_MS = 500; // 500ms未播放成功则切换下一个
 let hlsInstance = null;
 
@@ -1991,17 +1993,41 @@ function stopPlay() {
 }
 
 function playNextRandom() {
-  // 筛选未尝试过的电台
-  const available = stations.filter(s => !triedStationIds.has(s.id));
-  if (available.length === 0) {
-    // 全部尝试过了，重置
-    triedStationIds.clear();
-    playStation(stations[Math.floor(Math.random() * stations.length)].id);
-    return;
+  // 优先从附近电台中选择（用户IP定位范围内）
+  let nearby = [];
+  if (userLocation) {
+    nearby = stations.filter(s => {
+      if (!s.geo || !s.geo.lat) return false;
+      if (triedStationIds.has(s.id)) return false;
+      const dist = haversineDistanceKm(
+        userLocation.lat, userLocation.lon,
+        s.geo.lat, s.geo.lon
+      );
+      return dist <= NEARBY_RADIUS_KM;
+    });
   }
-  const randomStation = available[Math.floor(Math.random() * available.length)];
+  
+  let pool = nearby.length > 0 ? nearby : stations.filter(s => !triedStationIds.has(s.id));
+  
+  if (pool.length === 0) {
+    triedStationIds.clear();
+    pool = nearby.length > 0 ? nearby : stations;
+  }
+  
+  const randomStation = pool[Math.floor(Math.random() * pool.length)];
   triedStationIds.add(randomStation.id);
   playStation(randomStation.id);
+}
+
+// 计算两点间距离(公里)
+function haversineDistanceKm(lat1, lon1, lat2, lon2) {
+  const R = 6371;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLon/2) * Math.sin(dLon/2);
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 }
 
 function togglePlay() {
@@ -2107,6 +2133,61 @@ function loadScript(src) {
     s.onerror = reject;
     document.head.appendChild(s);
   });
+}
+
+// IP地理定位：获取访问者所在地区
+async function detectUserLocation() {
+  try {
+    const resp = await fetch('https://ipapi.co/json/', { signal: AbortSignal.timeout(3000) });
+    if (!resp.ok) throw new Error('API error');
+    const data = await resp.json();
+    if (data.latitude && data.longitude) {
+      userLocation = {
+        lat: data.latitude,
+        lon: data.longitude,
+        city: data.city || '',
+        country: data.country_name || ''
+      };
+      console.log('用户位置:', userLocation.city, userLocation.country, userLocation.lat, userLocation.lon);
+      // 地球聚焦到用户位置
+      if (typeof focusGlobeOnLatLon === 'function') {
+        setTimeout(() => focusGlobeOnLatLon(userLocation.lat, userLocation.lon), 1500);
+      }
+      // 显示用户位置
+      const regionEl = document.getElementById('regionLabel');
+      if (regionEl && !currentStation) {
+        regionEl.textContent = (userLocation.city || userLocation.country) + ' · 您的位置';
+      }
+    }
+  } catch (e) {
+    console.log('IP定位失败，使用默认位置:', e.message);
+  }
+}
+
+// 地球聚焦到指定经纬度
+function focusGlobeOnLatLon(lat, lon) {
+  if (!globeInstance || !globeCamera) return;
+  const phi = (90 - lat) * Math.PI / 180;
+  const theta = (lon + 180) * Math.PI / 180;
+  const radius = 300;
+  const targetX = -(radius * Math.sin(phi) * Math.cos(theta));
+  const targetY = radius * Math.cos(phi);
+  const targetZ = radius * Math.sin(phi) * Math.sin(theta);
+  // 平滑移动相机
+  const startPos = globeCamera.position.clone();
+  const endPos = new THREE.Vector3(targetX, targetY, targetZ);
+  let progress = 0;
+  function animateCamera() {
+    progress += 0.02;
+    if (progress >= 1) {
+      globeCamera.position.copy(endPos);
+      return;
+    }
+    globeCamera.position.lerpVectors(startPos, endPos, progress);
+    globeCamera.lookAt(0, 0, 0);
+    requestAnimationFrame(animateCamera);
+  }
+  animateCamera();
 }
 
 async function initGlobe() {
@@ -2597,6 +2678,8 @@ function focusGlobeOnStation(stationId) {
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => {
     initGlobe();
+// IP地理定位，聚焦到用户所在地区
+detectUserLocation();
   });
 } else {
   initGlobe();
