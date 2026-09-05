@@ -2358,13 +2358,6 @@ async function initGlobe() {
       const w = container.clientWidth;
       const h = container.clientHeight;
       globeCamera.aspect = w / h;
-      // 地球半径100，fov45度，计算刚好填满的距离
-      // distance = radius / tan(fov/2) = 100 / tan(22.5°) ≈ 241
-      // 留10%边距
-      const fitDistance = 340;
-      if (!isDragging && globeAutoRotate) {
-        globeCamera.position.z = fitDistance;
-      }
       globeCamera.updateProjectionMatrix();
       globeRenderer.setSize(w, h);
     }
