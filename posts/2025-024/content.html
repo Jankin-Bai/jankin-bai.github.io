@@ -1923,18 +1923,13 @@ async function playStation(id) {
   triedStationIds.clear();
 
   currentStation = station;
-  // 根据经纬度高亮国家
+  // 根据经纬度获取地区名称（不高亮国家轮廓，保持原样）
   if (station.geo && window.geoFeatures) {
     currentRegion = getRegionByLatLon(station.geo.lat, station.geo.lon);
     if (currentRegion) {
       document.getElementById('regionLabel').textContent = currentRegion;
-      // region label always visible
     }
-    if (globeInstance) {
-      globeInstance.polygonCapColor(() => 'rgba(0,0,0,0)');
-      globeInstance.polygonStrokeColor(d => (d.properties.NAME === currentRegion ? '#ff9900' : '#5aff5a'));
-      globeInstance.polygonAltitude(d => (d.properties.NAME === currentRegion ? 0.08 : 0.05));
-    }
+    // 国家轮廓保持原样，不做高亮变化
   }
   // 只高亮对应分类，不自动展开（用户手动选择展开）
   document.querySelectorAll('.station-group').forEach(g => {
