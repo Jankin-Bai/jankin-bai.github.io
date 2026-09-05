@@ -1242,6 +1242,118 @@
 .random-icon {
   font-size: 1em;
 }
+
+/* 附近电台 */
+.nearby-stations {
+  margin-bottom: 12px;
+  border: 1px solid #1a3a1a;
+  border-radius: 6px;
+  overflow: hidden;
+  background: rgba(0, 15, 0, 0.6);
+}
+.nearby-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: linear-gradient(90deg, rgba(0,40,0,0.8), rgba(0,20,0,0.6));
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.2s;
+}
+.nearby-header:hover {
+  background: linear-gradient(90deg, rgba(0,60,0,0.9), rgba(0,30,0,0.7));
+}
+.nearby-title {
+  font-size: 0.85em;
+  color: #4aff4a;
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+.nearby-count {
+  flex: 1;
+  font-size: 0.7em;
+  color: #5a7a5a;
+  font-family: 'Courier New', monospace;
+}
+.nearby-arrow {
+  font-size: 0.6em;
+  color: #5a7a5a;
+  transition: transform 0.2s;
+}
+.nearby-list.open ~ .nearby-header .nearby-arrow,
+.nearby-header:active .nearby-arrow {
+  transform: rotate(180deg);
+}
+.nearby-list {
+  display: none;
+  padding: 8px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+.nearby-list.open {
+  display: block;
+}
+.nearby-empty {
+  text-align: center;
+  padding: 20px;
+  color: #4a6a4a;
+  font-size: 0.75em;
+  font-family: 'Courier New', monospace;
+}
+.nearby-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s;
+  border: 1px solid transparent;
+}
+.nearby-item:hover {
+  background: rgba(0, 40, 0, 0.6);
+  border-color: #2a5a2a;
+}
+.nearby-item.playing {
+  background: rgba(0, 60, 0, 0.6);
+  border-color: #4a8a4a;
+}
+.nearby-item .nearby-name {
+  flex: 1;
+  font-size: 0.8em;
+  color: #a0b0a0;
+  font-family: 'Courier New', monospace;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.nearby-item.playing .nearby-name {
+  color: #4aff4a;
+}
+.nearby-item .nearby-freq {
+  font-size: 0.7em;
+  color: #6a8a6a;
+  font-family: 'Courier New', monospace;
+  min-width: 50px;
+}
+.nearby-item .nearby-dist {
+  font-size: 0.65em;
+  color: #8a8a6a;
+  font-family: 'Courier New', monospace;
+  background: rgba(0,0,0,0.3);
+  padding: 2px 6px;
+  border-radius: 3px;
+  min-width: 50px;
+  text-align: right;
+}
+.nearby-item .nearby-lang {
+  font-size: 0.6em;
+  color: #c8a060;
+  font-family: 'Courier New', monospace;
+  min-width: 40px;
+}
 </style>
 
 <div class="radio-container">
@@ -1350,6 +1462,18 @@
         </div>
         <div class="info-overlay-hint">DRAG: ROTATE | SCROLL/PINCH: ZOOM | TAP: PLAY</div>
       </div>
+    </div>
+  </div>
+
+  <!-- 附近电台 -->
+  <div class="nearby-stations" id="nearbyStations">
+    <div class="nearby-header" onclick="document.getElementById('nearbyList').classList.toggle('open')">
+      <span class="nearby-title">📍 附近电台</span>
+      <span class="nearby-count" id="nearbyCount">选择电台后显示</span>
+      <span class="nearby-arrow">▼</span>
+    </div>
+    <div class="nearby-list" id="nearbyList">
+      <div class="nearby-empty">播放一个电台后，显示附近的其他电台</div>
     </div>
   </div>
 
@@ -1923,6 +2047,8 @@ async function playStation(id) {
   triedStationIds.clear();
 
   currentStation = station;
+  // 更新附近电台列表
+  setTimeout(updateNearbyStations, 100);
   // 根据经纬度获取地区名称（不高亮国家轮廓，保持原样）
   if (station.geo && window.geoFeatures) {
     currentRegion = getRegionByLatLon(station.geo.lat, station.geo.lon);
@@ -2047,6 +2173,49 @@ function startPlaying() {
   radarPanel.classList.remove('paused');
   playerError.style.display = 'none';
 }
+
+// 更新附近电台列表
+function updateNearbyStations() {
+  const listEl = document.getElementById('nearbyList');
+  const countEl = document.getElementById('nearbyCount');
+  if (!listEl || !countEl || !currentStation || !currentStation.geo) return;
+  
+  const centerLat = currentStation.geo.lat;
+  const centerLon = currentStation.geo.lon;
+  
+  // 计算所有电台到当前电台的距离
+  const nearby = stations
+    .filter(s => s.id !== currentStation.id && s.geo && s.geo.lat)
+    .map(s => ({
+      ...s,
+      distance: haversineDistanceKm(centerLat, centerLon, s.geo.lat, s.geo.lon)
+    }))
+    .sort((a, b) => a.distance - b.distance)
+    .slice(0, 12); // TOP 12
+  
+  countEl.textContent = `附近 ${nearby.length} 个电台`;
+  
+  if (nearby.length === 0) {
+    listEl.innerHTML = '<div class="nearby-empty">附近没有其他电台</div>';
+    return;
+  }
+  
+  let html = '';
+  nearby.forEach(s => {
+    const isPlaying = currentStation && currentStation.id === s.id;
+    const distStr = s.distance < 1 ? `${Math.round(s.distance * 1000)}m` : `${Math.round(s.distance)}km`;
+    html += `<div class="nearby-item ${isPlaying ? 'playing' : ''}" onclick="playStation('${s.id}')">
+      <span class="nearby-name">${s.name}</span>
+      <span class="nearby-freq">${s.freq || ''}</span>
+      <span class="nearby-lang">${s.language || ''}</span>
+      <span class="nearby-dist">${distStr}</span>
+    </div>`;
+  });
+  listEl.innerHTML = html;
+  // 自动展开附近列表
+  listEl.classList.add('open');
+}
+
 
 function stopPlay() {
   isPlaying = false;
