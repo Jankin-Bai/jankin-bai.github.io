@@ -1252,7 +1252,7 @@
       </svg>
       <!-- 右下角国家显示面板 -->
       <!-- 右下角信息面板 -->
-      <div id="infoOverlay" style="position:absolute;bottom:28px;right:8px;z-index:11;pointer-events:none;font-family:Courier New;text-align:right;">
+      <div id="infoOverlay" style="position:absolute;right:8px;z-index:11;pointer-events:none;font-family:Courier New;text-align:right;">
         <div class="info-overlay-row"><span class="info-overlay-label">STATUS</span><span class="info-overlay-value" id="infoStatus">IDLE</span></div>
         <div class="info-overlay-row"><span class="info-overlay-label">FORMAT</span><span class="info-overlay-value" id="infoFormat">--</span></div>
         <div class="info-overlay-row"><span class="info-overlay-label">CATEGORY</span><span class="info-overlay-value" id="infoCategory">--</span></div>
@@ -2379,6 +2379,22 @@ async function initGlobe() {
     }
     updateCameraFit();
     window.addEventListener('resize', updateCameraFit);
+    
+    // 动态计算infoOverlay位置：在操作提示文字上方，不遮挡
+    function positionInfoOverlay() {
+      const hint = document.getElementById('globeHint');
+      const overlay = document.getElementById('infoOverlay');
+      if (hint && overlay) {
+        const hintHeight = hint.offsetHeight;
+        const hintBottom = 4; // globeHint的bottom值
+        const gap = 6; // 间距
+        overlay.style.bottom = (hintHeight + hintBottom + gap) + 'px';
+      }
+    }
+    positionInfoOverlay();
+    window.addEventListener('resize', positionInfoOverlay);
+    setTimeout(positionInfoOverlay, 100);
+    setTimeout(positionInfoOverlay, 500);
     
   } catch (err) {
     console.error('Globe init failed:', err);
