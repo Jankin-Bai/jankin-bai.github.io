@@ -1771,7 +1771,7 @@ async function playStation(id) {
       document.getElementById('countryPanel').style.opacity = '1';
     }
     if (globeInstance) {
-      globeInstance.polygonCapColor(d => (d.properties.NAME === currentCountry ? 'rgba(255,153,0,0.25)' : 'rgba(0,0,0,0)'));
+      globeInstance.polygonCapColor(() => 'rgba(0,0,0,0)');
       globeInstance.polygonStrokeColor(d => (d.properties.NAME === currentCountry ? '#ff9900' : '#5aff5a'));
       globeInstance.polygonAltitude(d => (d.properties.NAME === currentCountry ? 0.08 : 0.05));
     }
@@ -2075,7 +2075,7 @@ async function initGlobe() {
       .pointResolution(16)
       // 国家边界线
       .polygonsData([])
-      .polygonCapColor(d => (d.properties.NAME === currentCountry ? 'rgba(255,153,0,0.25)' : 'rgba(0,0,0,0)'))
+      .polygonCapColor(() => 'rgba(0,0,0,0)')
       .polygonSideColor(() => 'rgba(0,255,100,0.0)')
       .polygonStrokeColor(d => (d.properties.NAME === currentCountry ? '#ff9900' : '#5aff5a'))
       .polygonAltitude(d => (d.properties.NAME === currentCountry ? 0.08 : 0.05));
