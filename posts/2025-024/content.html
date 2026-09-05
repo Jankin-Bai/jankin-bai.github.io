@@ -1114,46 +1114,57 @@
   position: absolute;
   bottom: 8px;
   left: 8px;
-  width: 64px;
-  height: 64px;
-  z-index: 15;
-  pointer-events: none;
-  opacity: 0.85;
-}
-.globe-container .radar-panel .radar-ring {
-  position: absolute;
-  border-radius: 50%;
-  border: 1px solid rgba(74, 255, 74, 0.4);
-}
-.globe-container .radar-panel .radar-ring.r1 {
   width: 60px;
   height: 60px;
-  top: 2px;
-  left: 2px;
+  z-index: 15;
+  pointer-events: none;
+  opacity: 0.9;
+  border-radius: 50%;
+  background: rgba(0, 20, 0, 0.6);
+  border: 1px solid rgba(74, 255, 74, 0.3);
+  overflow: hidden;
 }
-.globe-container .radar-panel .radar-ring.r2 {
-  width: 40px;
-  height: 40px;
-  top: 12px;
-  left: 12px;
-}
-.globe-container .radar-panel .radar-ring.r3 {
-  width: 20px;
-  height: 20px;
-  top: 22px;
-  left: 22px;
-}
-.globe-container .radar-panel .radar-sweep {
+/* 三个圆环：全部居中 */
+.globe-container .radar-panel .radar-ring {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 50%;
-  height: 50%;
-  transform-origin: 0% 100%;
-  background: linear-gradient(90deg, transparent, rgba(74, 255, 74, 0.5));
-  animation: radar-sweep 3s linear infinite;
-  clip-path: polygon(0 100%, 100% 100%, 0 0);
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 1px solid rgba(74, 255, 74, 0.35);
 }
+.globe-container .radar-panel .radar-ring.r1 {
+  width: 54px;
+  height: 54px;
+}
+.globe-container .radar-panel .radar-ring.r2 {
+  width: 36px;
+  height: 36px;
+}
+.globe-container .radar-panel .radar-ring.r3 {
+  width: 18px;
+  height: 18px;
+}
+/* 扫描线：占满容器，从中心旋转 */
+.globe-container .radar-panel .radar-sweep {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, transparent 0deg, transparent 300deg, rgba(74, 255, 74, 0.15) 340deg, rgba(74, 255, 74, 0.6) 360deg);
+  animation: radar-sweep-rotate 3s linear infinite;
+}
+@keyframes radar-sweep-rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+/* 暂停时停止旋转 */
+.globe-container .radar-panel.paused .radar-sweep {
+  animation-play-state: paused;
+}
+/* 中心点 */
 .globe-container .radar-panel .radar-center {
   position: absolute;
   top: 50%;
@@ -1164,6 +1175,7 @@
   background: #4aff4a;
   border-radius: 50%;
   box-shadow: 0 0 6px #4aff4a;
+  z-index: 2;
 }
 /* info-panel现在独占一行 */
 .radio-radar-info .info-panel {
