@@ -1206,6 +1206,42 @@
 .radio-container :not(pre):not(code):not(.volume-icon) {
   font-feature-settings: "kern" 1;
 }
+
+/* 随机播放按钮 */
+.random-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  background: linear-gradient(145deg, #3a5a3a, #2a4a2a);
+  border: 1px solid #4a8a4a;
+  color: #8aff8a;
+  font-family: 'Courier New', monospace;
+  font-size: 0.75em;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s;
+  letter-spacing: 1px;
+}
+.random-btn:hover {
+  background: linear-gradient(145deg, #4a6a4a, #3a5a3a);
+  box-shadow: 0 0 10px rgba(74, 255, 74, 0.3);
+}
+.random-btn:active {
+  transform: scale(0.95);
+}
+.random-btn.active {
+  background: linear-gradient(145deg, #4a8a4a, #3a7a3a);
+  box-shadow: 0 0 12px rgba(74, 255, 74, 0.5);
+  animation: random-pulse 1s ease-in-out infinite;
+}
+@keyframes random-pulse {
+  0%, 100% { box-shadow: 0 0 8px rgba(74, 255, 74, 0.3); }
+  50% { box-shadow: 0 0 16px rgba(74, 255, 74, 0.6); }
+}
+.random-icon {
+  font-size: 1em;
+}
 </style>
 
 <div class="radio-container">
@@ -1227,6 +1263,10 @@
       <span id="displaySignal">SIGNAL: ----</span>
     </div>
     <div class="display-controls">
+      <button class="random-btn" id="randomBtn" onclick="startRandomPlay()" title="随机播放">
+        <span class="random-icon">🎲</span>
+        <span class="random-text">随机</span>
+      </button>
       <div class="volume-control">
         <span class="volume-icon" onclick="toggleMute()">🔊</span>
         <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="80" oninput="setVolume(this.value)">
@@ -1809,7 +1849,7 @@ let randomPlayMode = false;
 let triedStationIds = new Set();
 let userLocation = null; // 用户IP定位的经纬度 {lat, lon, city, country}
 const NEARBY_RADIUS_KM = 1500; // 附近电台半径(公里)
-const PLAY_TIMEOUT_MS = 500; // 500ms未播放成功则切换下一个
+const PLAY_TIMEOUT_MS = 300; // 500ms未播放成功则切换下一个
 let hlsInstance = null;
 
 const categoryNames = { cnr: '央广系列', local: '地方电台', hkmt: '港澳台', music: '音乐电台', internet: '网络音乐', singapore: '新加坡', international: '国际广播', ambient: '氛围音乐', russian: '俄语电台', arabic: '阿拉伯语', africa: '非洲电台', india: '印度电台', southamerica: '南美电台', australia: '澳洲电台', usa: '美国电台', uk: '英国电台', japan: '日本电台', asia: '亚洲电台', europe: '欧洲电台', northamerica: '北美电台', oceania: '大洋洲电台', language: '语言学习', all: '全部' };
@@ -1961,6 +2001,9 @@ function startPlaying() {
   // 播放成功，清除超时定时器，退出随机切换模式
   if (playTimeout) { clearTimeout(playTimeout); playTimeout = null; }
   randomPlayMode = false;
+  // 移除随机按钮高亮
+  const randomBtn = document.getElementById('randomBtn');
+  if (randomBtn) randomBtn.classList.remove('active');
   isPlaying = true;
   playBtn.textContent = '⏸';
   playerStatus.textContent = '● ON AIR';
@@ -1990,6 +2033,17 @@ function stopPlay() {
   // 3D地球恢复自动旋转
   if (typeof globeAutoRotate !== 'undefined') globeAutoRotate = true;
   renderStations(currentCategory);
+}
+
+function startRandomPlay() {
+  // 进入随机播放模式
+  randomPlayMode = true;
+  triedStationIds.clear();
+  // 高亮随机按钮
+  const randomBtn = document.getElementById('randomBtn');
+  if (randomBtn) randomBtn.classList.add('active');
+  // 开始随机播放
+  playNextRandom();
 }
 
 function playNextRandom() {
