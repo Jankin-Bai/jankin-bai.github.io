@@ -1416,7 +1416,7 @@
         <button class="sleep-btn sleep-cancel-btn" id="sleepCancelBtn" onclick="cancelSleepTimer()" style="display:none">消</button>
       </div>
     </div>
-    <div class="player-error" id="playerError"></div>
+    <div class="player-error" id="playerError" style="display:none"></div>
   </div>
 
   <!-- 品牌标识 -->
@@ -2386,9 +2386,13 @@ function toggleMute() {
 }
 
 function showError(msg) {
-  playerError.textContent = '⚠ ' + msg;
-  playerError.style.display = 'block';
-  setTimeout(() => { playerError.style.display = 'none'; }, 4000);
+  // 错误直接显示在状态行，不单独占一行
+  playerStatus.textContent = '● ERROR: ' + msg;
+  playerStatus.style.color = '#ff4444';
+  setTimeout(() => {
+    playerStatus.textContent = '● STANDBY';
+    playerStatus.style.color = '#8a9a7b';
+  }, 4000);
 }
 
 let currentCategory = 'all';
