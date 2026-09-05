@@ -1082,6 +1082,32 @@
   color: #555;
   letter-spacing: 1px;
 }
+
+/* 顶部显示屏内的休眠定时器显示 */
+.sleep-info-inline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 6px;
+  font-size: 10px;
+  color: #888;
+  letter-spacing: 1px;
+}
+.sleep-info-inline .sleep-label {
+  color: #666;
+}
+.sleep-info-inline .remaining {
+  color: #4aff4a;
+  font-weight: bold;
+  font-family: 'Courier New', monospace;
+}
+.sleep-info-inline #sleepStatus {
+  color: #ff9900;
+}
+.sleep-info-inline #sleepStatus.off {
+  color: #555;
+}
 </style>
 
 <div class="radio-container">
@@ -1116,6 +1142,11 @@
         <button class="sleep-btn" onclick="setCustomSleepTimer()">设</button>
         <button class="sleep-btn sleep-cancel-btn" id="sleepCancelBtn" onclick="cancelSleepTimer()" style="display:none">消</button>
       </div>
+    </div>
+    <div class="sleep-info-inline">
+      <span class="sleep-label">SLEEP:</span>
+      <span class="remaining" id="sleepRemaining">--:--</span>
+      <span id="sleepStatus">OFF</span>
     </div>
     <div class="player-error" id="playerError"></div>
   </div>
@@ -1222,11 +1253,6 @@
       <div class="planet p3" data-minutes="15" style="transform: translate(-50%,-50%) translate(50px,0);" title="15分钟"></div>
       <div class="planet p4" data-minutes="30" style="transform: translate(-50%,-50%) translate(65px,0);" title="30分钟"></div>
       <div class="planet p5" data-minutes="custom" style="transform: translate(-50%,-50%) translate(80px,0);" title="自定义"></div>
-    </div>
-    <div class="sleep-info">
-      <span>SLEEP TIMER: </span>
-      <span class="remaining" id="sleepRemaining" style="display:none">--:--</span>
-      <span id="sleepStatus">OFF</span>
     </div>
   </div>
 
