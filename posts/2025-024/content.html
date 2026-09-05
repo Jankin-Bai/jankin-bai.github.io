@@ -1968,7 +1968,16 @@ function stopPlay() {
 }
 
 function togglePlay() {
-  if (!currentStation) { showError('请先选择一个电台'); return; }
+  if (!currentStation) {
+    // 没有选中电台时，随机选一个播放
+    const randomStation = stations[Math.floor(Math.random() * stations.length)];
+    if (randomStation) {
+      playStation(randomStation.id);
+      return;
+    }
+    showError('请先选择一个电台');
+    return;
+  }
   if (isPlaying) {
     audio.pause();
     isPlaying = false;
