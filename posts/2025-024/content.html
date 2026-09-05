@@ -2340,7 +2340,7 @@ async function initGlobe() {
       // 基于时间差的旋转（速度恒定，不受帧率影响）
       // 原60fps时每帧0.001 = 每秒0.06弧度
       if (globeAutoRotate && !isDragging) {
-        userRotY += 0.06 * (delta / 1000);
+        userRotY += 0.12 * (delta / 1000);
       }
       globeInstance.rotation.y = userRotY;
       globeInstance.rotation.x = userRotX;
