@@ -1244,14 +1244,9 @@
 }
 
 /* 附近电台 */
-/* 附近电台 - 独立模块，在地图下方 */
-.nearby-stations {
+/* 附近电台 - 复用station-group样式 */
+.nearby-group {
   margin: 0 0 12px 0;
-  border: 2px solid #4a6a6a;
-  border-radius: 8px;
-  overflow: hidden;
-  background: #1a2a2a;
-  font-family: 'Courier New', 'Consolas', monospace;
 }
 .nearby-header {
   display: flex;
@@ -1288,7 +1283,8 @@
 .nearby-header:active .nearby-arrow {
   transform: rotate(180deg);
 }
-.nearby-list {
+/* 附近电台列表：复用station-group-content，显示为block */
+.nearby-group .station-group-content {
   display: none;
   padding: 4px 8px;
   max-height: calc(5 * 32px + 8px);
@@ -1296,18 +1292,18 @@
   scrollbar-width: thin;
   scrollbar-color: rgba(74, 106, 106, 0.4) transparent;
 }
-.nearby-list::-webkit-scrollbar {
+.nearby-group.open .station-group-content {
+  display: block;
+}
+.nearby-group .station-group-content::-webkit-scrollbar {
   width: 4px;
 }
-.nearby-list::-webkit-scrollbar-track {
+.nearby-group .station-group-content::-webkit-scrollbar-track {
   background: transparent;
 }
-.nearby-list::-webkit-scrollbar-thumb {
+.nearby-group .station-group-content::-webkit-scrollbar-thumb {
   background: rgba(74, 106, 106, 0.4);
   border-radius: 2px;
-}
-.nearby-stations.open .nearby-list {
-  display: block;
 }
 .nearby-empty {
   text-align: center;
@@ -1491,13 +1487,13 @@
   </div>
 
   <!-- 附近电台 -->
-    <div class="nearby-stations" id="nearbyStations">
-      <div class="nearby-header" id="nearbyHeader" onclick="document.getElementById('nearbyStations').classList.toggle('open')">
-        <span class="nearby-title">📍 附近电台</span>
-        <span class="nearby-count" id="nearbyCount">选择电台后显示</span>
-        <span class="nearby-arrow">▼</span>
+    <div class="station-group nearby-group" id="nearbyStations" data-category="nearby">
+      <div class="station-group-header" onclick="toggleStationGroup(this)">
+        <span class="group-arrow">▶</span>
+        <span class="group-name">📍 附近电台</span>
+        <span class="group-count" id="nearbyCount">选择电台后显示</span>
       </div>
-      <div class="nearby-list" id="nearbyList">
+      <div class="station-group-content nearby-list" id="nearbyList">
         <div class="nearby-empty">播放一个电台后，显示附近的其他电台</div>
       </div>
     </div>
