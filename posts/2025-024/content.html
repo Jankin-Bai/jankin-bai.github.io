@@ -252,11 +252,12 @@
 .map-panel {
   background: #1a2a2a;
   border: 2px solid #4a6a6a;
-  border-radius: 8px 8px 0 0;
+  border-radius: 8px;
   padding: 10px;
-  margin-bottom: 0;
+  margin-bottom: 8px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-  position: relative;
+  position: sticky;
+  top: 42px;
   z-index: 50;
 }
 
@@ -1243,30 +1244,27 @@
 }
 
 /* 附近电台 */
+/* 附近电台 - 独立模块，在地图下方 */
 .nearby-stations {
-  margin: 8px 0 0 0;
-  border: 1px solid #1a3a1a;
-  border-radius: 6px;
+  margin: 0 0 12px 0;
+  border: 2px solid #4a6a6a;
+  border-radius: 8px;
   overflow: hidden;
-  background: rgba(0, 15, 0, 0.95);
-  /* sticky由父容器.sticky-map-nearby {
-  position: sticky;
-  top: 42px;
-  z-index: 50;
-  margin-bottom: 12px;
+  background: #1a2a2a;
+  font-family: 'Courier New', 'Consolas', monospace;
 }
 .nearby-header {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 14px;
-  background: linear-gradient(90deg, rgba(0,40,0,0.8), rgba(0,20,0,0.6));
+  padding: 6px 12px;
+  background: rgba(0, 30, 30, 0.5);
   cursor: pointer;
   user-select: none;
   transition: background 0.2s;
 }
 .nearby-header:hover {
-  background: linear-gradient(90deg, rgba(0,60,0,0.9), rgba(0,30,0,0.7));
+  background: rgba(0, 50, 50, 0.6);
 }
 .nearby-title {
   font-size: 0.85em;
@@ -1379,12 +1377,7 @@
 }
 
 /* 地图+附近电台 吸顶容器（纯CSS原生sticky） */
-.sticky-map-nearby {
-  position: sticky;
-  top: 42px;
-  z-index: 50;
-  margin-bottom: 12px;
-}
+
 
 </style>
 
@@ -1494,9 +1487,10 @@
         </div>
         <div class="info-overlay-hint">DRAG: ROTATE | SCROLL/PINCH: ZOOM | TAP: PLAY</div>
       </div>
-    </div>
-  
-    <!-- 附近电台 -->
+        </div>
+  </div>
+
+  <!-- 附近电台 -->
     <div class="nearby-stations" id="nearbyStations">
       <div class="nearby-header" id="nearbyHeader">
         <span class="nearby-title">📍 附近电台</span>
@@ -1509,7 +1503,7 @@
     </div>
 </div>
 
-  <!-- 分类筛选 -->
+    <!-- 分类筛选 -->
   <div class="radio-categories" id="categoryButtons" style="display:none;">
     <button class="category-btn active" data-category="all">全部</button>
     <button class="category-btn" data-category="cnr">央广系列</button>
