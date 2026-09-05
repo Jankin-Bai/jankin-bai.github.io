@@ -2602,7 +2602,7 @@ document.getElementById('sleepCustomInput').addEventListener('keypress', (e) => 
 audio.volume = 0.8;
 renderStations('all');
 
-// 动态计算信息项宽度，实时排序：上边小下边大（短的在上，长的在下）
+// 动态计算信息项长度，实时排序：上边小下边大，同长度时英文在上中文在下
 function reorderInfoItems() {
   const valuesContainer = document.querySelector('.info-overlay-values');
   const labelsContainer = document.querySelector('.info-overlay-labels');
@@ -2613,16 +2613,29 @@ function reorderInfoItems() {
   
   if (valueItems.length < 2) return;
   
-  // 计算每个值的实际字数/宽度
+  // 计算每个值的字符长度（英文字母数 + 中文字数）
+  function getCharLength(text) {
+    return (text || '').trim().length;
+  }
+  // 判断是否包含中文
+  function hasChinese(text) {
+    return /[\u4e00-\u9fa5]/.test(text || '');
+  }
+  
   const items = valueItems.map((el, i) => ({
     valueEl: el,
     labelEl: labelItems[i],
-    width: (el.textContent || '').length || el.scrollWidth || 0,
+    length: getCharLength(el.textContent),
+    isChinese: hasChinese(el.textContent),
     text: el.textContent || ''
   }));
   
-  // 按宽度/字数升序排列：短的在上，长的在下（上边小下边大）
-  items.sort((a, b) => a.width - b.width);
+  // 排序：先按长度升序（上边小下边大），长度相同时英文在上中文在下
+  items.sort((a, b) => {
+    if (a.length !== b.length) return a.length - b.length;
+    // 长度相同：英文在前（isChinese=false排前面）
+    return a.isChinese - b.isChinese;
+  });
   
   // 重新排列DOM
   items.forEach(item => {
