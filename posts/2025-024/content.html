@@ -1483,7 +1483,7 @@
   
     <!-- 附近电台 -->
     <div class="nearby-stations" id="nearbyStations">
-      <div class="nearby-header" onclick="this.parentElement.classList.toggle('open')">
+      <div class="nearby-header" id="nearbyHeader">
         <span class="nearby-title">📍 附近电台</span>
         <span class="nearby-count" id="nearbyCount">选择电台后显示</span>
         <span class="nearby-arrow">▼</span>
@@ -2215,6 +2215,17 @@ window.addEventListener('load', () => {
 window.addEventListener('resize', () => {
   document.querySelectorAll('.marquee').forEach(checkMarquee);
 });
+// 附近电台折叠/展开
+document.addEventListener('DOMContentLoaded', () => {
+  const header = document.getElementById('nearbyHeader');
+  const container = document.getElementById('nearbyStations');
+  if (header && container) {
+    header.addEventListener('click', () => {
+      container.classList.toggle('open');
+    });
+  }
+});
+
 function updateNearbyStations() {
   const listEl = document.getElementById('nearbyList');
   const countEl = document.getElementById('nearbyCount');
@@ -2252,7 +2263,7 @@ function updateNearbyStations() {
     </div>`;
   });
   listEl.innerHTML = html;
-  // 不自动展开，用户手动控制折叠
+  // 保持用户的折叠/展开状态，不自动改变
 }
 
 
