@@ -1125,6 +1125,7 @@
     <div class="display-meta">
       <span id="playerStatus">● STANDBY</span>
       <span id="displayFreq">FREQ: --.- MHz</span>
+      <span class="meta-sleep"><span class="sleep-label">SLEEP:</span> <span class="remaining" id="sleepRemaining">--:--</span> <span id="sleepStatus">OFF</span></span>
       <span id="displaySignal">SIGNAL: ----</span>
     </div>
     <div class="display-controls">
@@ -1142,11 +1143,6 @@
         <button class="sleep-btn" onclick="setCustomSleepTimer()">设</button>
         <button class="sleep-btn sleep-cancel-btn" id="sleepCancelBtn" onclick="cancelSleepTimer()" style="display:none">消</button>
       </div>
-    </div>
-    <div class="sleep-info-inline">
-      <span class="sleep-label">SLEEP:</span>
-      <span class="remaining" id="sleepRemaining">--:--</span>
-      <span id="sleepStatus">OFF</span>
     </div>
     <div class="player-error" id="playerError"></div>
   </div>
