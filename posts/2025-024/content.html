@@ -1249,7 +1249,10 @@
   border: 1px solid #1a3a1a;
   border-radius: 6px;
   overflow: hidden;
-  background: rgba(0, 15, 0, 0.6);
+  background: rgba(0, 15, 0, 0.95);
+  position: sticky;
+  z-index: 49;
+  /* top值由JS动态计算，紧跟在地图面板下面 */
 }
 .nearby-header {
   display: flex;
@@ -1289,7 +1292,7 @@
 .nearby-list {
   display: none;
   padding: 8px;
-  max-height: 300px;
+  max-height: 40vh;
   overflow-y: auto;
 }
 .nearby-list.open {
@@ -2178,6 +2181,7 @@ function startPlaying() {
 function updateNearbyStations() {
   const listEl = document.getElementById('nearbyList');
   const countEl = document.getElementById('nearbyCount');
+  updateNearbySticky(); // 确保sticky位置正确
   if (!listEl || !countEl || !currentStation || !currentStation.geo) return;
   
   const centerLat = currentStation.geo.lat;
@@ -2934,6 +2938,17 @@ if (document.readyState === 'loading') {
     initGlobe();
 // IP地理定位，聚焦到用户所在地区
 detectUserLocation();
+// 更新附近电台面板的sticky位置（紧跟地图面板）
+function updateNearbySticky() {
+  const mapPanel = document.querySelector('.map-panel');
+  const nearbyPanel = document.getElementById('nearbyStations');
+  if (!mapPanel || !nearbyPanel) return;
+  const mapHeight = mapPanel.offsetHeight;
+  nearbyPanel.style.top = (42 + mapHeight) + 'px';
+}
+window.addEventListener('resize', updateNearbySticky);
+window.addEventListener('load', () => setTimeout(updateNearbySticky, 500));
+setTimeout(updateNearbySticky, 1000);
   });
 } else {
   initGlobe();
