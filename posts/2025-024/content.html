@@ -1250,7 +1250,10 @@
   border-radius: 6px;
   overflow: hidden;
   background: rgba(0, 15, 0, 0.95);
-  /* sticky由父容器.sticky-map-nearby处理 */
+  /* sticky由父容器.sticky-map-nearby {
+  position: sticky;
+  top: 42px;
+  z-index: 50;
 }
 .nearby-header {
   display: flex;
@@ -1363,36 +1366,13 @@
   z-index: 50;
 }
 
-/* 跑马灯滚动：长文本从右向左滚动，不撑大容器 */
-.marquee {
-  overflow: hidden;
-  white-space: nowrap;
-  position: relative;
-}
-.marquee .marquee-content {
-  display: inline-block;
-  padding-left: 100%;
-  animation: marquee-scroll 12s linear infinite;
-}
-.marquee .marquee-content:hover {
-  animation-play-state: paused;
-}
-@keyframes marquee-scroll {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-100%); }
-}
-/* 短文本不滚动 */
-.marquee.no-scroll .marquee-content {
-  animation: none;
-  padding-left: 0;
-}
 </style>
 
 <div class="radio-container">
   <!-- 顶部大显示屏 -->
   <div class="radio-top-display">
     <div class="display-header-row">
-      <div class="display-station-name marquee" id="playerStationName"><span class="marquee-content">SELECT STATION</span></div>
+      <div class="display-station-name" id="playerStationName">SELECT STATION</div>
       <button class="play-btn" id="playBtn" onclick="togglePlay()">▶</button>
     </div>
     <div class="display-station-desc" id="playerStationDesc">选择一个电台开始收听</div>
@@ -2093,10 +2073,8 @@ async function playStation(id) {
   document.querySelectorAll('.station-group').forEach(g => {
     g.classList.toggle('playing-group', g.dataset.category === station.category);
   });
-  playerStationName.querySelector('.marquee-content').textContent = station.name.toUpperCase();
-  checkMarquee(playerStationName);
-  playerStationDesc.querySelector('.marquee-content').textContent = station.desc;
-  checkMarquee(playerStationDesc);
+  playerStationName.textContent = station.name.toUpperCase();
+  playerStationDesc.textContent = station.desc;
   document.getElementById('displayFreq').textContent = 'FREQ: ' + station.freq + ' MHz';
   document.getElementById('displaySignal').textContent = 'SIGNAL: ████░░';
   document.getElementById('infoFormat').textContent = station.format;
@@ -2262,15 +2240,13 @@ function updateNearbyStations() {
     const isPlaying = currentStation && currentStation.id === s.id;
     const distStr = s.distance < 1 ? `${Math.round(s.distance * 1000)}m` : `${Math.round(s.distance)}km`;
     html += `<div class="nearby-item ${isPlaying ? 'playing' : ''}" onclick="playStation('${s.id}')">
-      <span class="nearby-name marquee"><span class="marquee-content">${s.name}</span></span>
+      <span class="nearby-name">${s.name}</span>
       <span class="nearby-freq">${s.freq || ''}</span>
       <span class="nearby-lang">${s.language || ''}</span>
       <span class="nearby-dist">${distStr}</span>
     </div>`;
   });
   listEl.innerHTML = html;
-  // 检查附近电台名称是否需要跑马灯
-  listEl.querySelectorAll('.marquee').forEach(checkMarquee);
   // 自动展开附近列表
   listEl.classList.add('open');
 }
