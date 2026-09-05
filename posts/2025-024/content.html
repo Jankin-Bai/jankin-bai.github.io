@@ -1148,24 +1148,31 @@
 /* 地球右下角信息覆盖层 */
 #infoOverlay {
   bottom: 8px !important;
-}
-.info-overlay-row.region-row {
-  /* 和普通行保持一致，无特殊样式 */
+  font-family: 'Courier New', monospace;
 }
 .info-overlay-row {
   display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  font-size: 10px;
-  line-height: 1.6;
+  justify-content: flex-end;
+  gap: 8px;
+  font-size: 9px;
+  line-height: 1.7;
 }
 .info-overlay-label {
-  color: rgba(74, 255, 74, 0.6);
+  color: #3a5a3a;
   letter-spacing: 1px;
 }
 .info-overlay-value {
-  color: #4aff4a;
+  color: #4a6a4a;
+  min-width: 50px;
   text-align: right;
+}
+.info-overlay-hint {
+  font-size: 9px;
+  color: #3a5a3a;
+  letter-spacing: 0.5px;
+  margin-top: 4px;
+  padding-top: 4px;
+  border-top: 1px solid rgba(58, 90, 58, 0.3);
 }
 </style>
 
