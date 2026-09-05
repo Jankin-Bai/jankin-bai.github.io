@@ -1257,8 +1257,6 @@
         <div class="info-overlay-row"><span class="info-overlay-label">FORMAT</span><span class="info-overlay-value" id="infoFormat">--</span></div>
         <div class="info-overlay-row"><span class="info-overlay-label">CATEGORY</span><span class="info-overlay-value" id="infoCategory">--</span></div>
         <div class="info-overlay-row"><span class="info-overlay-label">LANG</span><span class="info-overlay-value" id="infoLanguage">--</span></div>
-        <div class="info-overlay-row"><span class="info-overlay-label">SLEEP</span><span class="info-overlay-value" id="infoSleep">OFF</span></div>
-        <div class="info-overlay-row"><span class="info-overlay-label">VOL</span><span class="info-overlay-value" id="infoVolume">80%</span></div>
         <div class="info-overlay-row region-row"><span class="info-overlay-label">REGION</span><span class="info-overlay-value" id="regionLabel">---</span></div>
       </div>
     </div>
@@ -1902,7 +1900,7 @@ let lastVolume = 80;
 let isMuted = false;
 function setVolume(value) {
   audio.volume = value / 100;
-  document.getElementById('infoVolume').textContent = value + '%';
+  const iv = document.getElementById('infoVolume'); if (iv) iv.textContent = value + '%';
   const volVal = document.querySelector('.volume-value');
   if (volVal) volVal.textContent = value + '%';
   if (value > 0) { isMuted = false; document.querySelector('.volume-icon').textContent = '🔊'; }
@@ -2488,7 +2486,7 @@ function setSleepTimer(minutes) {
   document.getElementById('sleepRemaining').style.display = 'inline';
   document.getElementById('sleepCancelBtn').style.display = 'inline-block';
   document.getElementById('sleepStatus').textContent = minutes + 'MIN';
-  document.getElementById('infoSleep').textContent = minutes + 'MIN';
+  const isl = document.getElementById('infoSleep'); if (isl) isl.textContent = minutes + 'MIN';
   updateSleepRemaining();
   sleepRemainingInterval = setInterval(updateSleepRemaining, 1000);
 }
@@ -2513,7 +2511,7 @@ function cancelSleepTimer() {
   document.getElementById('sleepRemaining').style.display = 'none';
   document.getElementById('sleepCancelBtn').style.display = 'none';
   document.getElementById('sleepStatus').textContent = 'OFF';
-  document.getElementById('infoSleep').textContent = 'OFF';
+  const isl2 = document.getElementById('infoSleep'); if (isl2) isl2.textContent = 'OFF';
 }
 
 function updateSleepRemaining() {
