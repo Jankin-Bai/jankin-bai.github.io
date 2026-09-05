@@ -1492,7 +1492,7 @@
 
   <!-- 附近电台 -->
     <div class="nearby-stations" id="nearbyStations">
-      <div class="nearby-header" id="nearbyHeader">
+      <div class="nearby-header" id="nearbyHeader" onclick="document.getElementById('nearbyStations').classList.toggle('open')">
         <span class="nearby-title">📍 附近电台</span>
         <span class="nearby-count" id="nearbyCount">选择电台后显示</span>
         <span class="nearby-arrow">▼</span>
@@ -2224,17 +2224,6 @@ window.addEventListener('load', () => {
 window.addEventListener('resize', () => {
   document.querySelectorAll('.marquee').forEach(checkMarquee);
 });
-// 附近电台折叠/展开
-document.addEventListener('DOMContentLoaded', () => {
-  const header = document.getElementById('nearbyHeader');
-  const container = document.getElementById('nearbyStations');
-  if (header && container) {
-    header.addEventListener('click', () => {
-      container.classList.toggle('open');
-    });
-  }
-});
-
 function updateNearbyStations() {
   const listEl = document.getElementById('nearbyList');
   const countEl = document.getElementById('nearbyCount');
@@ -2264,7 +2253,7 @@ function updateNearbyStations() {
   nearby.forEach(s => {
     const isPlaying = currentStation && currentStation.id === s.id;
     const distStr = s.distance < 1 ? `${Math.round(s.distance * 1000)}m` : `${Math.round(s.distance)}km`;
-    html += `<div class="nearby-item ${isPlaying ? 'playing' : ''}" onclick="playStation('${s.id}')">
+    html += `<div class="nearby-item ${isPlaying ? 'playing' : ''}" onclick="event.stopPropagation(); playStation('${s.id}')">
       <span class="nearby-name">${s.name}</span>
       <span class="nearby-freq">${s.freq || ''}</span>
       <span class="nearby-lang">${s.language || ''}</span>
