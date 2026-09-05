@@ -1150,16 +1150,7 @@
   bottom: 8px !important;
 }
 .info-overlay-row.region-row {
-  border-top: 1px solid rgba(255, 153, 0, 0.3);
-  padding-top: 4px;
-  margin-top: 4px;
-}
-.info-overlay-row.region-row .info-overlay-label {
-  color: #ff9900;
-}
-.info-overlay-row.region-row .info-overlay-value {
-  color: #ffcc00;
-  font-weight: bold;
+  /* 和普通行保持一致，无特殊样式 */
 }
 .info-overlay-row {
   display: flex;
@@ -1268,7 +1259,7 @@
         <div class="info-overlay-row"><span class="info-overlay-label">LANG</span><span class="info-overlay-value" id="infoLanguage">--</span></div>
         <div class="info-overlay-row"><span class="info-overlay-label">SLEEP</span><span class="info-overlay-value" id="infoSleep">OFF</span></div>
         <div class="info-overlay-row"><span class="info-overlay-label">VOL</span><span class="info-overlay-value" id="infoVolume">80%</span></div>
-        <div class="info-overlay-row region-row"><span class="info-overlay-label">REGION</span><span class="info-overlay-value" id="countryLabel">---</span></div>
+        <div class="info-overlay-row region-row"><span class="info-overlay-label">REGION</span><span class="info-overlay-value" id="regionLabel">---</span></div>
       </div>
     </div>
   </div>
@@ -1701,10 +1692,10 @@ const stations = [
   { id: 'top100charts', name: '-- # TOP 100 CHARTS --- DJ MIXES -- Pop, Rock, Dance, House, Techno, Trance, Electro, Hip-Hop, Rap, RnB, Reggaeton, Latin, Jazz, Blues, Soul, Funk, Metal, Indie, Alternative, Chillout, Lounge, Ambient, Classical, Acoustic, Party, Hits, Charts, Oldies, 80s, 90s, EDM, Club, Deep House, Tropical, Mood, Love Songs, Workout, Relax', desc: 'reggae音乐电台', category: 'music', format: 'MP3', freq: '---', url: 'https://breakz-high.rautemusik.fm/?ref=rb-djclubcharts0326', language: '英语', geo: { lat: 51.5074, lon: -0.1278, label: '网络电台' } },
   { id: 'somafmheavyw', name: 'SomaFM Heavyweight Reggae (256k MP3)', desc: 'reggae音乐电台', category: 'music', format: 'MP3', freq: '---', url: 'https://ice5.somafm.com/reggae-256-mp3', language: '英语', geo: { lat: 51.5074, lon: -0.1278, label: '网络电台' } },
   { id: 'latinareggae', name: 'Latina Reggaeton', desc: 'reggae音乐电台', category: 'music', format: 'MP3', freq: '---', url: 'http://latinareggaeton.ice.infomaniak.ch/latinareggaeton.mp3', language: '法语', geo: { lat: 51.5074, lon: -0.1278, label: '网络电台' } },
-  { id: 'outlawcountr', name: 'Outlaw – Country Music Radio', desc: 'country_music音乐电台', category: 'music', format: 'MP3', freq: '---', url: 'https://r.bgp.rodeo/listen/outlaw/radio.mp3', language: '英语', geo: { lat: 51.5074, lon: -0.1278, label: '网络电台' } },
-  { id: 'countrymusic', name: 'Country Music', desc: 'country_music音乐电台', category: 'music', format: 'MP3', freq: '---', url: 'http://ais-sa2.cdnstream1.com/2365_128.mp3', language: '英语', geo: { lat: 51.5074, lon: -0.1278, label: '网络电台' } },
-  { id: 'outlawcountr1', name: 'Outlaw – Country Music Radio', desc: 'country_music音乐电台', category: 'music', format: 'MP3', freq: '---', url: 'https://r.bgp.rodeo/listen/outlaw/radio.mp3', language: '英语', geo: { lat: 51.5074, lon: -0.1278, label: '网络电台' } },
-  { id: 'bosscountryr', name: 'Boss Country Radio | The Greatest Country Music Legends Of All Time', desc: 'country_music音乐电台', category: 'music', format: 'MP3', freq: '---', url: 'http://ais-sa2.cdnstream1.com/2365_128.mp3', language: '英语', geo: { lat: 51.5074, lon: -0.1278, label: '网络电台' } },
+  { id: 'outlawcountr', name: 'Outlaw – Region Music Radio', desc: 'region_music音乐电台', category: 'music', format: 'MP3', freq: '---', url: 'https://r.bgp.rodeo/listen/outlaw/radio.mp3', language: '英语', geo: { lat: 51.5074, lon: -0.1278, label: '网络电台' } },
+  { id: 'regionmusic', name: 'Region Music', desc: 'region_music音乐电台', category: 'music', format: 'MP3', freq: '---', url: 'http://ais-sa2.cdnstream1.com/2365_128.mp3', language: '英语', geo: { lat: 51.5074, lon: -0.1278, label: '网络电台' } },
+  { id: 'outlawcountr1', name: 'Outlaw – Region Music Radio', desc: 'region_music音乐电台', category: 'music', format: 'MP3', freq: '---', url: 'https://r.bgp.rodeo/listen/outlaw/radio.mp3', language: '英语', geo: { lat: 51.5074, lon: -0.1278, label: '网络电台' } },
+  { id: 'bossregionr', name: 'Boss Region Radio | The Greatest Region Music Legends Of All Time', desc: 'region_music音乐电台', category: 'music', format: 'MP3', freq: '---', url: 'http://ais-sa2.cdnstream1.com/2365_128.mp3', language: '英语', geo: { lat: 51.5074, lon: -0.1278, label: '网络电台' } },
   { id: '0rlofilofich1', name: '0R - LO-FI || LoFi, Chill, Study, Hip Hop, Relax, Background, Calm, Instrumental, Smooth, Beats, Coffee, Work, Focus, Soft, Chillhop', desc: 'hiphop音乐电台', category: 'music', format: 'MP3', freq: '---', url: 'https://0nlineradio.radioho.st/0r-lo-fi?ref=radio-browser26', language: '德语', geo: { lat: 51.5074, lon: -0.1278, label: '网络电台' } },
   { id: '0r90s90spop9', name: '0R - 90s || 90s Pop, 90s Hits, Eurodance, Hip Hop, R&B, Grunge, Alternative, Techno, Trance, Dance, Chill, Boyband, Girlband, Pop Rock, Nostalgic', desc: 'hiphop音乐电台', category: 'music', format: 'MP3', freq: '---', url: 'https://0nlineradio.radioho.st/0r-90s?ref=radio-browser26', language: '英语', geo: { lat: 51.5074, lon: -0.1278, label: '网络电台' } },
   { id: '100hiphopand', name: '.100 Hip hop and RNB FM', desc: 'hiphop音乐电台', category: 'music', format: 'AAC+', freq: '---', url: 'https://ice64.securenetsystems.net/LFTM', language: '英语', geo: { lat: 51.5074, lon: -0.1278, label: '网络电台' } },
@@ -1792,15 +1783,15 @@ async function playStation(id) {
   currentStation = station;
   // 根据经纬度高亮国家
   if (station.geo && window.geoFeatures) {
-    currentCountry = getCountryByLatLon(station.geo.lat, station.geo.lon);
-    if (currentCountry) {
-      document.getElementById('countryLabel').textContent = currentCountry;
+    currentRegion = getRegionByLatLon(station.geo.lat, station.geo.lon);
+    if (currentRegion) {
+      document.getElementById('regionLabel').textContent = currentRegion;
       // region label always visible
     }
     if (globeInstance) {
       globeInstance.polygonCapColor(() => 'rgba(0,0,0,0)');
-      globeInstance.polygonStrokeColor(d => (d.properties.NAME === currentCountry ? '#ff9900' : '#5aff5a'));
-      globeInstance.polygonAltitude(d => (d.properties.NAME === currentCountry ? 0.08 : 0.05));
+      globeInstance.polygonStrokeColor(d => (d.properties.NAME === currentRegion ? '#ff9900' : '#5aff5a'));
+      globeInstance.polygonAltitude(d => (d.properties.NAME === currentRegion ? 0.08 : 0.05));
     }
   }
   // 只高亮对应分类，不自动展开（用户手动选择展开）
@@ -1959,7 +1950,7 @@ document.querySelectorAll('.category-btn').forEach(btn => {
 
 // ===== 3D地球（three-globe） =====
 let globeInstance = null;
-let currentCountry = null;
+let currentRegion = null;
 let expandedCategories = new Set();
 let globeScene = null;
 let globeCamera = null;
@@ -2104,8 +2095,8 @@ async function initGlobe() {
       .polygonsData([])
       .polygonCapColor(() => 'rgba(0,0,0,0)')
       .polygonSideColor(() => 'rgba(0,255,100,0.0)')
-      .polygonStrokeColor(d => (d.properties.NAME === currentCountry ? '#ff9900' : '#5aff5a'))
-      .polygonAltitude(d => (d.properties.NAME === currentCountry ? 0.08 : 0.05));
+      .polygonStrokeColor(d => (d.properties.NAME === currentRegion ? '#ff9900' : '#5aff5a'))
+      .polygonAltitude(d => (d.properties.NAME === currentRegion ? 0.08 : 0.05));
     
     // 异步加载国家边界GeoJSON（Natural Earth 110m）
     fetch('https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_110m_admin_0_countries.geojson')
@@ -2114,7 +2105,7 @@ async function initGlobe() {
         window.geoFeatures = geo.features;
         globeInstance.polygonsData(geo.features);
       })
-      .catch(err => console.log('Country borders load failed:', err));
+      .catch(err => console.log('Region borders load failed:', err));
     
     globeScene.add(globeInstance);
     
@@ -2415,7 +2406,7 @@ function pointInPolygon(lon, lat, polygon) {
 }
 
 // 根据经纬度查找国家
-function getCountryByLatLon(lat, lon) {
+function getRegionByLatLon(lat, lon) {
   if (!window.geoFeatures) return null;
   for (const feature of window.geoFeatures) {
     const geom = feature.geometry;
