@@ -1109,7 +1109,7 @@
   color: #555;
 }
 
-/* 地球内左下角迷你雷达面板 */
+/* 地球内左下角迷你雷达面板（SVG实现） */
 .globe-container .radar-panel {
   position: absolute;
   bottom: 8px;
@@ -1120,62 +1120,25 @@
   pointer-events: none;
   opacity: 0.9;
   border-radius: 50%;
-  background: rgba(0, 20, 0, 0.6);
+  background: rgba(0, 20, 0, 0.65);
   border: 1px solid rgba(74, 255, 74, 0.3);
   overflow: hidden;
 }
-/* 三个圆环：全部居中 */
-.globe-container .radar-panel .radar-ring {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  border-radius: 50%;
-  border: 1px solid rgba(74, 255, 74, 0.35);
-}
-.globe-container .radar-panel .radar-ring.r1 {
-  width: 54px;
-  height: 54px;
-}
-.globe-container .radar-panel .radar-ring.r2 {
-  width: 36px;
-  height: 36px;
-}
-.globe-container .radar-panel .radar-ring.r3 {
-  width: 18px;
-  height: 18px;
-}
-/* 扫描线：占满容器，从中心旋转 */
-.globe-container .radar-panel .radar-sweep {
-  position: absolute;
-  top: 0;
-  left: 0;
+.globe-container .radar-panel svg {
+  display: block;
   width: 100%;
   height: 100%;
-  border-radius: 50%;
-  background: conic-gradient(from 0deg, transparent 0deg, transparent 300deg, rgba(74, 255, 74, 0.15) 340deg, rgba(74, 255, 74, 0.6) 360deg);
-  animation: radar-sweep-rotate 3s linear infinite;
 }
-@keyframes radar-sweep-rotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+.globe-container .radar-panel .radar-sweep-svg {
+  transform-origin: 30px 30px;
+  animation: radar-svg-rotate 3s linear infinite;
 }
-/* 暂停时停止旋转 */
-.globe-container .radar-panel.paused .radar-sweep {
+.globe-container .radar-panel.paused .radar-sweep-svg {
   animation-play-state: paused;
 }
-/* 中心点 */
-.globe-container .radar-panel .radar-center {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 4px;
-  height: 4px;
-  transform: translate(-50%, -50%);
-  background: #4aff4a;
-  border-radius: 50%;
-  box-shadow: 0 0 6px #4aff4a;
-  z-index: 2;
+@keyframes radar-svg-rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 /* info-panel现在独占一行 */
 .radio-radar-info .info-panel {
@@ -1238,13 +1201,18 @@
     <span class="panel-label">MAP</span>
     <div id="globeContainer" style="width:100%;height:180px;position:relative;overflow:hidden;border-radius:4px;" class="globe-container">
       <canvas id="globeCanvas" style="width:100%;height:100%;display:block;touch-action:none;cursor:grab;"></canvas>
-      <!-- 左下角迷你雷达面板 -->
+      <!-- 左下角迷你雷达面板（SVG实现） -->
       <div class="radar-panel paused" id="radarPanel">
-        <div class="radar-ring r1"></div>
-        <div class="radar-ring r2"></div>
-        <div class="radar-ring r3"></div>
-        <div class="radar-sweep"></div>
-        <div class="radar-center"></div>
+        <svg width="60" height="60" viewBox="0 0 60 60">
+          <circle cx="30" cy="30" r="27" fill="none" stroke="rgba(74,255,74,0.35)" stroke-width="1"/>
+          <circle cx="30" cy="30" r="18" fill="none" stroke="rgba(74,255,74,0.35)" stroke-width="1"/>
+          <circle cx="30" cy="30" r="9" fill="none" stroke="rgba(74,255,74,0.35)" stroke-width="1"/>
+          <g class="radar-sweep-svg">
+            <path d="M30,30 L30,3 A27,27 0 0,1 53,12 Z" fill="rgba(74,255,74,0.45)"/>
+            <line x1="30" y1="30" x2="30" y2="3" stroke="rgba(74,255,74,0.8)" stroke-width="1"/>
+          </g>
+          <circle cx="30" cy="30" r="2.5" fill="#4aff4a"/>
+        </svg>
       </div>
       <div id="globeLoading" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#4a8a4a;font-family:Courier New;font-size:11px;letter-spacing:1px;">INITIALIZING 3D GLOBE...</div>
       <div id="globeHint" style="position:absolute;bottom:4px;right:8px;color:#3a5a3a;font-family:Courier New;font-size:9px;pointer-events:none;">DRAG: ROTATE | SCROLL/PINCH: ZOOM | TAP: PLAY</div>
