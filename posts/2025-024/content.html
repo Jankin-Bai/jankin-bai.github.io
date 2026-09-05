@@ -2093,7 +2093,7 @@ async function playStation(id) {
   document.getElementById('infoLanguage').textContent = station.language || '多语言';
 
   // 3D地球聚焦到播放位置
-  if (typeof focusGlobeOnStation === 'function') focusGlobeOnStation(id, randomPlayMode);
+  if (typeof focusGlobeOnStation === 'function') focusGlobeOnStation(id);
 
   // 清理旧的播放实例和超时
   if (playTimeout) { clearTimeout(playTimeout); playTimeout = null; }
@@ -2945,8 +2945,8 @@ function getRegionByLatLon(lat, lon) {
   return null;
 }
 
-function focusGlobeOnStation(stationId, isRandom) {
-  if (!globeInstance) { setTimeout(() => focusGlobeOnStation(stationId, isRandom), 500); return; }
+function focusGlobeOnStation(stationId) {
+  if (!globeInstance) { setTimeout(() => focusGlobeOnStation(stationId), 500); return; }
   const station = stations.find(s => s.id === stationId);
   if (!station || !station.geo) return;
   // 旋转到目标经纬度（经度取反，纬度限制范围）
@@ -2958,58 +2958,21 @@ function focusGlobeOnStation(stationId, isRandom) {
   while (deltaY < -Math.PI) deltaY += 2 * Math.PI;
   targetRotY = userRotY + deltaY;
   globeAutoRotate = false;
+  // 平滑过渡
   const startY = userRotY;
   const startX = userRotX;
-  const startZ = globeCamera ? globeCamera.position.z : 300;
-  const GLOBAL_Z = 300;   // 全球视角距离
-  const REGION_Z = 210;   // 地区视角距离（推近）
-
-  function easeInOut(t) { return t < 0.5 ? 2*t*t : -1+(4-2*t)*t; }
-
-  // 随机播放模式：拉远→旋转→推近，有视角拉伸感
-  if (isRandom && currentStation && currentStation.id !== stationId) {
-    // 阶段1：拉远到全球视角 (400ms)
-    const pullBackStart = Date.now();
-    function animatePullBack() {
-      const t = Math.min((Date.now() - pullBackStart) / 400, 1);
-      const e = easeInOut(t);
-      globeCamera.position.z = startZ + (GLOBAL_Z - startZ) * e;
-      globeCamera.lookAt(0, 0, 0);
-      if (t < 1) requestAnimationFrame(animatePullBack);
-      else animateRotateZoom();
-    }
-    // 阶段2：旋转到新地点 + 推近到地区视角 (1100ms)
-    function animateRotateZoom() {
-      const startTime = Date.now();
-      function animate() {
-        const t = Math.min((Date.now() - startTime) / 1100, 1);
-        const e = easeInOut(t);
-        userRotY = startY + (targetRotY - startY) * e;
-        userRotX = startX + (targetRotX - startX) * e;
-        // 前30%保持全球视角，后70%推近
-        const zoomT = Math.max(0, (t - 0.25) / 0.75);
-        globeCamera.position.z = GLOBAL_Z + (REGION_Z - GLOBAL_Z) * easeInOut(zoomT);
-        globeCamera.lookAt(0, 0, 0);
-        if (t < 1) requestAnimationFrame(animate);
-        else setTimeout(() => { globeAutoRotate = true; }, 3000);
-      }
-      animate();
-    }
-    animatePullBack();
-  } else {
-    // 手动选择或第一次：直接旋转，相机保持全球视角
-    const duration = 1200;
-    const startTime = Date.now();
-    function animateRotation() {
-      const t = Math.min((Date.now() - startTime) / duration, 1);
-      const e = easeInOut(t);
-      userRotY = startY + (targetRotY - startY) * e;
-      userRotX = startX + (targetRotX - startX) * e;
-      if (t < 1) requestAnimationFrame(animateRotation);
-      else setTimeout(() => { globeAutoRotate = true; }, 3000);
-    }
-    animateRotation();
+  const duration = 1200;
+  const startTime = Date.now();
+  function animateRotation() {
+    const elapsed = Date.now() - startTime;
+    const t = Math.min(elapsed / duration, 1);
+    const ease = t < 0.5 ? 2*t*t : -1+(4-2*t)*t;
+    userRotY = startY + (targetRotY - startY) * ease;
+    userRotX = startX + (targetRotX - startX) * ease;
+    if (t < 1) requestAnimationFrame(animateRotation);
+    else setTimeout(() => { globeAutoRotate = true; }, 3000);
   }
+  animateRotation();
   // 更新点颜色
   globeInstance.pointColor(d => d.id === stationId ? '#ff4757' : '#00e5ff');
 }
