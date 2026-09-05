@@ -2602,7 +2602,7 @@ document.getElementById('sleepCustomInput').addEventListener('keypress', (e) => 
 audio.volume = 0.8;
 renderStations('all');
 
-// 动态计算信息项宽度，实时排序避免头重脚轻
+// 动态计算信息项宽度，实时排序：上边小下边大（短的在上，长的在下）
 function reorderInfoItems() {
   const valuesContainer = document.querySelector('.info-overlay-values');
   const labelsContainer = document.querySelector('.info-overlay-labels');
@@ -2613,30 +2613,19 @@ function reorderInfoItems() {
   
   if (valueItems.length < 2) return;
   
-  // 计算每个值的实际显示宽度
+  // 计算每个值的实际字数/宽度
   const items = valueItems.map((el, i) => ({
     valueEl: el,
     labelEl: labelItems[i],
-    width: el.scrollWidth || el.offsetWidth || 0,
+    width: (el.textContent || '').length || el.scrollWidth || 0,
     text: el.textContent || ''
   }));
   
-  // 按宽度降序排列
-  items.sort((a, b) => b.width - a.width);
-  
-  // 平衡排序：最长放中间，向上下交替，避免头重脚轻
-  const reordered = [];
-  const mid = Math.floor(items.length / 2);
-  for (let i = 0; i < items.length; i++) {
-    if (i % 2 === 0) {
-      reordered.push(items[i]); // 长的往上放
-    } else {
-      reordered.unshift(items[i]); // 短的往下放
-    }
-  }
+  // 按宽度/字数升序排列：短的在上，长的在下（上边小下边大）
+  items.sort((a, b) => a.width - b.width);
   
   // 重新排列DOM
-  reordered.forEach(item => {
+  items.forEach(item => {
     valuesContainer.appendChild(item.valueEl);
     labelsContainer.appendChild(item.labelEl);
   });
