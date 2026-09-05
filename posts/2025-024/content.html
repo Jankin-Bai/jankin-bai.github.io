@@ -1951,10 +1951,10 @@ async function playStation(id) {
   // 3D地球聚焦到播放位置
   if (typeof focusGlobeOnStation === 'function') focusGlobeOnStation(id);
 
-  if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
-  audio.pause();
-  audio.removeAttribute('src');
-  audio.load();
+  // 清理旧的播放实例和超时
+  if (playTimeout) { clearTimeout(playTimeout); playTimeout = null; }
+  if (hlsInstance) { try { hlsInstance.destroy(); } catch(e) {} hlsInstance = null; }
+  try { audio.pause(); audio.removeAttribute('src'); audio.load(); } catch(e) {}
 
   playerStatus.textContent = '● CONNECTING...';
   document.getElementById('infoStatus').textContent = 'CONNECTING';
@@ -1963,9 +1963,15 @@ async function playStation(id) {
   // 设置播放超时：500ms未成功则自动切换（仅随机播放模式）
   if (playTimeout) { clearTimeout(playTimeout); playTimeout = null; }
   if (randomPlayMode) {
+    // 确保清除旧超时
+    if (playTimeout) { clearTimeout(playTimeout); playTimeout = null; }
     playTimeout = setTimeout(() => {
+      playTimeout = null;
       if (!isPlaying && randomPlayMode) {
-        console.log('播放超时，切换下一个随机电台');
+        console.log('播放超时(' + PLAY_TIMEOUT_MS + 'ms)，切换下一个随机电台:', currentStation ? currentStation.name : 'unknown');
+        // 立即清理当前播放实例
+        if (hlsInstance) { try { hlsInstance.destroy(); } catch(e) {} hlsInstance = null; }
+        try { audio.pause(); audio.removeAttribute('src'); audio.load(); } catch(e) {}
         playNextRandom();
       }
     }, PLAY_TIMEOUT_MS);
@@ -1980,7 +1986,15 @@ async function playStation(id) {
         audio.play().then(startPlaying).catch(err => showError('play failed: ' + err.message));
       });
       hlsInstance.on(Hls.Events.ERROR, (event, data) => {
-        if (data.fatal) showError('stream error: ' + data.type);
+        if (data.fatal) {
+          showError('stream error: ' + data.type);
+          // 随机模式下自动切换下一个
+          if (randomPlayMode && !isPlaying) {
+            console.log('HLS fatal error, switching to next random station');
+            if (playTimeout) { clearTimeout(playTimeout); playTimeout = null; }
+            setTimeout(() => playNextRandom(), 100);
+          }
+        }
       });
     } else {
       audio.src = station.url;
@@ -1989,7 +2003,7 @@ async function playStation(id) {
         audio.removeEventListener('canplay', startPlay);
         audio.play().then(startPlaying).catch(err => showError('play failed: ' + err.message));
       }, { once: true });
-      setTimeout(() => { if (!isPlaying) showError('连接超时，请尝试其他电台'); }, 10000);
+      // 非HLS流也由统一的500ms超时机制处理
     }
   } catch (e) {
     showError('exception: ' + e.message);
