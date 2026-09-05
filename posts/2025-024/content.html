@@ -1245,14 +1245,12 @@
 
 /* 附近电台 */
 .nearby-stations {
-  margin-bottom: 12px;
+  margin: 8px 0 0 0;
   border: 1px solid #1a3a1a;
   border-radius: 6px;
   overflow: hidden;
   background: rgba(0, 15, 0, 0.95);
-  position: sticky;
-  z-index: 49;
-  /* top值由JS动态计算，紧跟在地图面板下面 */
+  /* sticky由父容器.sticky-map-nearby处理 */
 }
 .nearby-header {
   display: flex;
@@ -1356,6 +1354,13 @@
   color: #c8a060;
   font-family: 'Courier New', monospace;
   min-width: 40px;
+}
+
+/* 地图+附近电台 吸顶容器（纯CSS原生sticky） */
+.sticky-map-nearby {
+  position: sticky;
+  top: 42px;
+  z-index: 50;
 }
 </style>
 
@@ -1466,19 +1471,19 @@
         <div class="info-overlay-hint">DRAG: ROTATE | SCROLL/PINCH: ZOOM | TAP: PLAY</div>
       </div>
     </div>
-  </div>
-
-  <!-- 附近电台 -->
-  <div class="nearby-stations" id="nearbyStations">
-    <div class="nearby-header" onclick="document.getElementById('nearbyList').classList.toggle('open')">
-      <span class="nearby-title">📍 附近电台</span>
-      <span class="nearby-count" id="nearbyCount">选择电台后显示</span>
-      <span class="nearby-arrow">▼</span>
+  
+    <!-- 附近电台 -->
+    <div class="nearby-stations" id="nearbyStations">
+      <div class="nearby-header" onclick="document.getElementById('nearbyList').classList.toggle('open')">
+        <span class="nearby-title">📍 附近电台</span>
+        <span class="nearby-count" id="nearbyCount">选择电台后显示</span>
+        <span class="nearby-arrow">▼</span>
+      </div>
+      <div class="nearby-list" id="nearbyList">
+        <div class="nearby-empty">播放一个电台后，显示附近的其他电台</div>
+      </div>
     </div>
-    <div class="nearby-list" id="nearbyList">
-      <div class="nearby-empty">播放一个电台后，显示附近的其他电台</div>
-    </div>
-  </div>
+</div>
 
   <!-- 分类筛选 -->
   <div class="radio-categories" id="categoryButtons" style="display:none;">
@@ -2181,7 +2186,6 @@ function startPlaying() {
 function updateNearbyStations() {
   const listEl = document.getElementById('nearbyList');
   const countEl = document.getElementById('nearbyCount');
-  updateNearbySticky(); // 确保sticky位置正确
   if (!listEl || !countEl || !currentStation || !currentStation.geo) return;
   
   const centerLat = currentStation.geo.lat;
@@ -2938,17 +2942,7 @@ if (document.readyState === 'loading') {
     initGlobe();
 // IP地理定位，聚焦到用户所在地区
 detectUserLocation();
-// 更新附近电台面板的sticky位置（紧跟地图面板）
-function updateNearbySticky() {
-  const mapPanel = document.querySelector('.map-panel');
-  const nearbyPanel = document.getElementById('nearbyStations');
-  if (!mapPanel || !nearbyPanel) return;
-  const mapHeight = mapPanel.offsetHeight;
-  nearbyPanel.style.top = (42 + mapHeight) + 'px';
-}
-window.addEventListener('resize', updateNearbySticky);
-window.addEventListener('load', () => setTimeout(updateNearbySticky, 500));
-setTimeout(updateNearbySticky, 1000);
+
   });
 } else {
   initGlobe();
