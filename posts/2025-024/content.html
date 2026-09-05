@@ -1296,7 +1296,7 @@
   max-height: 40vh;
   overflow-y: auto;
 }
-.nearby-list.open {
+.nearby-stations.open .nearby-list {
   display: block;
 }
 .nearby-empty {
@@ -1315,6 +1315,7 @@
   cursor: pointer;
   transition: all 0.15s;
   border: 1px solid transparent;
+  font-family: 'Courier New', 'Consolas', monospace;
 }
 .nearby-item:hover {
   background: rgba(0, 40, 0, 0.6);
@@ -1338,25 +1339,29 @@
 }
 .nearby-item .nearby-freq {
   font-size: 0.7em;
-  color: #6a8a6a;
-  font-family: 'Courier New', monospace;
+  color: #5a8a5a;
+  font-family: 'Courier New', 'Consolas', monospace;
   min-width: 50px;
+  letter-spacing: 0.5px;
 }
 .nearby-item .nearby-dist {
   font-size: 0.65em;
-  color: #8a8a6a;
-  font-family: 'Courier New', monospace;
-  background: rgba(0,0,0,0.3);
+  color: #7a9a6a;
+  font-family: 'Courier New', 'Consolas', monospace;
+  background: rgba(0, 30, 0, 0.5);
+  border: 1px solid #1a3a1a;
   padding: 2px 6px;
   border-radius: 3px;
   min-width: 50px;
   text-align: right;
+  letter-spacing: 0.5px;
 }
 .nearby-item .nearby-lang {
   font-size: 0.6em;
-  color: #c8a060;
-  font-family: 'Courier New', monospace;
+  color: #8a7a4a;
+  font-family: 'Courier New', 'Consolas', monospace;
   min-width: 40px;
+  letter-spacing: 0.5px;
 }
 
 /* 地图+附近电台 吸顶容器（纯CSS原生sticky） */
@@ -1478,7 +1483,7 @@
   
     <!-- 附近电台 -->
     <div class="nearby-stations" id="nearbyStations">
-      <div class="nearby-header" onclick="document.getElementById('nearbyList').classList.toggle('open')">
+      <div class="nearby-header" onclick="this.parentElement.classList.toggle('open')">
         <span class="nearby-title">📍 附近电台</span>
         <span class="nearby-count" id="nearbyCount">选择电台后显示</span>
         <span class="nearby-arrow">▼</span>
@@ -2247,8 +2252,7 @@ function updateNearbyStations() {
     </div>`;
   });
   listEl.innerHTML = html;
-  // 自动展开附近列表
-  listEl.classList.add('open');
+  // 不自动展开，用户手动控制折叠
 }
 
 
