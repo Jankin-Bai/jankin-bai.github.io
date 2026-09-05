@@ -1899,6 +1899,7 @@ function startPlaying() {
   playerStatus.textContent = '● ON AIR';
   playerStatus.style.color = '#4aff4a';
   document.getElementById('infoStatus').textContent = 'PLAYING';
+    setTimeout(reorderInfoItems, 50);
   document.getElementById('infoStatus').classList.add('playing');
   document.getElementById('displaySignal').textContent = 'SIGNAL: ██████';
   waveform.classList.remove('paused');
@@ -1914,6 +1915,7 @@ function stopPlay() {
   playerStatus.textContent = '● STANDBY';
   playerStatus.style.color = '#8a9a7b';
   document.getElementById('infoStatus').textContent = 'IDLE';
+    setTimeout(reorderInfoItems, 50);
   document.getElementById('infoStatus').classList.remove('playing');
   document.getElementById('displaySignal').textContent = 'SIGNAL: ----';
   waveform.classList.add('paused');
@@ -1932,6 +1934,7 @@ function togglePlay() {
     playerStatus.textContent = '● PAUSED';
     playerStatus.style.color = '#c8a060';
     document.getElementById('infoStatus').textContent = 'PAUSED';
+    setTimeout(reorderInfoItems, 50);
     waveform.classList.add('paused');
     radarPanel.classList.add('paused');
   } else {
@@ -1941,6 +1944,7 @@ function togglePlay() {
       playerStatus.textContent = '● ON AIR';
       playerStatus.style.color = '#4aff4a';
       document.getElementById('infoStatus').textContent = 'PLAYING';
+    setTimeout(reorderInfoItems, 50);
       waveform.classList.remove('paused');
       radarPanel.classList.remove('paused');
     }).catch(err => showError('play failed: ' + err.message));
@@ -2597,4 +2601,47 @@ document.getElementById('sleepCustomInput').addEventListener('keypress', (e) => 
 
 audio.volume = 0.8;
 renderStations('all');
+
+// 动态计算信息项宽度，实时排序避免头重脚轻
+function reorderInfoItems() {
+  const valuesContainer = document.querySelector('.info-overlay-values');
+  const labelsContainer = document.querySelector('.info-overlay-labels');
+  if (!valuesContainer || !labelsContainer) return;
+  
+  const valueItems = Array.from(valuesContainer.querySelectorAll('.info-val'));
+  const labelItems = Array.from(labelsContainer.querySelectorAll('.info-lab'));
+  
+  if (valueItems.length < 2) return;
+  
+  // 计算每个值的实际显示宽度
+  const items = valueItems.map((el, i) => ({
+    valueEl: el,
+    labelEl: labelItems[i],
+    width: el.scrollWidth || el.offsetWidth || 0,
+    text: el.textContent || ''
+  }));
+  
+  // 按宽度降序排列
+  items.sort((a, b) => b.width - a.width);
+  
+  // 平衡排序：最长放中间，向上下交替，避免头重脚轻
+  const reordered = [];
+  const mid = Math.floor(items.length / 2);
+  for (let i = 0; i < items.length; i++) {
+    if (i % 2 === 0) {
+      reordered.push(items[i]); // 长的往上放
+    } else {
+      reordered.unshift(items[i]); // 短的往下放
+    }
+  }
+  
+  // 重新排列DOM
+  reordered.forEach(item => {
+    valuesContainer.appendChild(item.valueEl);
+    labelsContainer.appendChild(item.labelEl);
+  });
+}
+
+// 在信息更新后调用
+const originalSetStation = window.setStationInfo;
 </script>
