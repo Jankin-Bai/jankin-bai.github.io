@@ -1144,6 +1144,26 @@
 .radio-radar-info .info-panel {
   width: 100%;
 }
+
+/* 地球右下角信息覆盖层 */
+#infoOverlay {
+  bottom: 70px !important;
+}
+.info-overlay-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 10px;
+  line-height: 1.6;
+}
+.info-overlay-label {
+  color: rgba(74, 255, 74, 0.6);
+  letter-spacing: 1px;
+}
+.info-overlay-value {
+  color: #4aff4a;
+  text-align: right;
+}
 </style>
 
 <div class="radio-container">
@@ -1185,17 +1205,6 @@
 
   <!-- 品牌标识 -->
   <!-- 雷达 + 信息面板 -->
-  <div class="radio-radar-info">
-    <div class="info-panel">
-      <div class="info-row"><span class="info-label">STATUS</span><span class="info-value" id="infoStatus">IDLE</span></div>
-      <div class="info-row"><span class="info-label">FORMAT</span><span class="info-value" id="infoFormat">--</span></div>
-      <div class="info-row"><span class="info-label">CATEGORY</span><span class="info-value" id="infoCategory">--</span></div>
-      <div class="info-row"><span class="info-label">LANGUAGE</span><span class="info-value" id="infoLanguage">--</span></div>
-      <div class="info-row"><span class="info-label">SLEEP TIMER</span><span class="info-value" id="infoSleep">OFF</span></div>
-      <div class="info-row"><span class="info-label">VOLUME</span><span class="info-value" id="infoVolume">80%</span></div>
-    </div>
-  </div>
-
   <!-- 世界地图 -->
   <div class="map-panel">
     <span class="panel-label">MAP</span>
@@ -1239,6 +1248,15 @@
         </foreignObject>
       </svg>
       <!-- 右下角国家显示面板 -->
+      <!-- 右下角信息面板 -->
+      <div id="infoOverlay" style="position:absolute;bottom:8px;right:8px;background:rgba(0,15,0,0.85);border:1px solid rgba(74,255,74,0.4);border-radius:4px;padding:6px 10px;z-index:11;pointer-events:none;font-family:Courier New;min-width:120px;">
+        <div class="info-overlay-row"><span class="info-overlay-label">STATUS</span><span class="info-overlay-value" id="infoStatus">IDLE</span></div>
+        <div class="info-overlay-row"><span class="info-overlay-label">FORMAT</span><span class="info-overlay-value" id="infoFormat">--</span></div>
+        <div class="info-overlay-row"><span class="info-overlay-label">CATEGORY</span><span class="info-overlay-value" id="infoCategory">--</span></div>
+        <div class="info-overlay-row"><span class="info-overlay-label">LANG</span><span class="info-overlay-value" id="infoLanguage">--</span></div>
+        <div class="info-overlay-row"><span class="info-overlay-label">SLEEP</span><span class="info-overlay-value" id="infoSleep">OFF</span></div>
+        <div class="info-overlay-row"><span class="info-overlay-label">VOL</span><span class="info-overlay-value" id="infoVolume">80%</span></div>
+      </div>
       <div id="countryPanel" style="position:absolute;bottom:8px;right:8px;background:rgba(0,15,0,0.9);border:1px solid #ff9900;border-radius:4px;padding:6px 12px;z-index:12;opacity:0;transition:opacity 0.3s;pointer-events:none;">
         <div style="color:#ff9900;font-family:Courier New;font-size:9px;letter-spacing:1px;">COUNTRY</div>
         <div id="countryLabel" style="color:#ffcc00;font-family:Courier New;font-size:12px;font-weight:bold;">---</div>
