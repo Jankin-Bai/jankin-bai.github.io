@@ -1254,10 +1254,14 @@
   align-items: center;
   gap: 8px;
   padding: 6px 12px;
-  background: rgba(0, 30, 30, 0.5);
+  background: rgba(0, 30, 30, 0.95);
   cursor: pointer;
   user-select: none;
   transition: background 0.2s;
+  position: sticky;
+  top: calc(42px + var(--map-panel-height, 320px));
+  z-index: 149;
+  border-bottom: 1px solid rgba(74, 106, 106, 0.5);
 }
 .nearby-header:hover {
   background: rgba(0, 50, 50, 0.6);
@@ -3060,7 +3064,19 @@ async function initGlobe() {
         if (animFrameId) { cancelAnimationFrame(animFrameId); animFrameId = null; }
       }
     });
-    function animate(timestamp) {
+    
+    // 动态计算地球面板高度，更新附近电台header的sticky top
+    function updateNearbyStickyTop() {
+      const mapPanel = document.querySelector('.map-panel');
+      if (mapPanel) {
+        const h = mapPanel.offsetHeight;
+        document.documentElement.style.setProperty('--map-panel-height', h + 'px');
+      }
+    }
+    window.addEventListener('resize', updateNearbyStickyTop);
+    setTimeout(updateNearbyStickyTop, 500);
+    setTimeout(updateNearbyStickyTop, 1500);
+function animate(timestamp) {
       animFrameId = requestAnimationFrame(animate);
       // 页面不可见时完全跳过（双保险）
       if (!pageVisible) return;
