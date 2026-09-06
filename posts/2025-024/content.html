@@ -2325,8 +2325,8 @@ function updateNearbyStations() {
       distance: haversineDistanceKm(centerLat, centerLon, s.geo.lat, s.geo.lon),
       isCurrent: false
     }))
-    .sort((a, b) => a.distance - b.distance)
-    .slice(0, 11); // TOP 11（加上当前电台共12个）
+    .sort((a, b) => a.distance - b.distance);
+  // 显示全部附近电台，不限制数量
   
   // 当前电台置顶 + 其他按距离排序
   const allItems = [currentItem, ...nearby];
