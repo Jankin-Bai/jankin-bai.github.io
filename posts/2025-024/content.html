@@ -2682,6 +2682,67 @@ async function initGlobe() {
         }
       `
     });
+
+    // ===== WebGL离屏烘焙：先实时渲染确认效果，再烘焙成静态纹理 =====
+    function bakeGlobeToTexture() {
+      console.log('[Globe] Baking texture via WebGL offscreen render...');
+      const W = 2048, H = 1024;
+      const rt = new THREE.WebGLRenderTarget(W, H, {
+        minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter,
+        format: THREE.RGBAFormat
+      });
+      // 烘焙用材质：复用原fragmentShader，vertexShader根据UV计算球体法向量（保证光照一致）
+      const bakeMat = new THREE.ShaderMaterial({
+        uniforms: {
+          dayTexture: { value: dayTexture },
+          waterTexture: { value: waterTexture },
+          lightDir: { value: new THREE.Vector3(1, 1, 1).normalize() },
+          time: { value: 5.0 }
+        },
+        vertexShader: `
+          varying vec2 vUv;
+          varying vec3 vNormal;
+          varying vec3 vViewPosition;
+          void main() {
+            vUv = uv;
+            // 根据UV计算球体表面法向量（与真实球体一致，保证光照效果相同）
+            float lat = (vUv.y - 0.5) * 3.14159265359;
+            float lon = (vUv.x - 0.5) * 6.28318530718;
+            vNormal = normalize(vec3(
+              cos(lat) * cos(lon),
+              sin(lat),
+              cos(lat) * sin(lon)
+            ));
+            vViewPosition = vec3(0.0, 0.0, 1.0);
+            gl_Position = vec4(position.xy, 0.0, 1.0);
+          }
+        `,
+        fragmentShader: greenTechMaterial.fragmentShader
+      });
+      const bakeScene = new THREE.Scene();
+      const plane = new THREE.Mesh(new THREE.PlaneGeometry(2, 1), bakeMat);
+      bakeScene.add(plane);
+      const bakeCam = new THREE.OrthographicCamera(-1, 1, 0.5, -0.5, 0, 1);
+      globeRenderer.setRenderTarget(rt);
+      globeRenderer.render(bakeScene, bakeCam);
+      globeRenderer.setRenderTarget(null);
+      plane.geometry.dispose();
+      bakeMat.dispose();
+      console.log('[Globe] Bake complete, switching to static material');
+      return rt.texture;
+    }
+    // 延迟烘焙：先实时渲染30帧确保效果稳定，再切换到静态纹理
+    let bakeFrameCount = 0;
+    function tryBakeAfterWarmup() {
+      bakeFrameCount++;
+      if (bakeFrameCount >= 30) {
+        const bakedTex = bakeGlobeToTexture();
+        globeInstance.globeMaterial(new THREE.MeshBasicMaterial({ map: bakedTex }));
+        console.log('[Globe] Switched to baked static texture, GPU load reduced');
+        return true;
+      }
+      return false;
+    }
     
     globeInstance = new ThreeGlobe({ waitForGlobeReady: true, animateIn: true })
       .showAtmosphere(false)
@@ -2944,6 +3005,7 @@ async function initGlobe() {
     let lastAnimTime = 0;
     let lastRenderTime = 0;
     let pageVisible = true;
+    let globeBaked = false;
     let animFrameId = null;
     let visiblePointsCache = [];
     let lastPointsUpdate = 0;
