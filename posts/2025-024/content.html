@@ -1260,8 +1260,15 @@
   margin: 0 0 12px 0;
   border-radius: 6px;
 }
-/* 所有折叠项的header统一sticky（附近电台+23个分类），containing block = content-wrapper */
-.station-group-header {
+/* 折叠时：整个模块sticky吸顶（因为containing block只有header高，header单独sticky没有滚动空间） */
+.nearby-group:not(.open) {
+  position: sticky;
+  top: calc(42px + var(--map-panel-height, 320px));
+  z-index: 148;
+  background: rgba(10, 20, 15, 0.98);
+}
+/* 展开时：只有header sticky，content正常滚动（containing block足够高，header有滚动空间） */
+.nearby-group.open .station-group-header {
   position: sticky;
   top: calc(42px + var(--map-panel-height, 320px));
   z-index: 148;
@@ -1530,8 +1537,6 @@
         </div>
   </div>
 
-  <!-- 内容区：所有折叠项共享这个父容器作为sticky的containing block -->
-  <div class="content-wrapper" id="contentWrapper">
   <!-- 附近电台 -->
     <div class="station-group nearby-group" id="nearbyStations" data-category="nearby">
       <div class="station-group-header" onclick="toggleStationGroup(this)">
@@ -1571,8 +1576,8 @@
     <button class="category-btn" data-category="language">语言学习</button>
   </div>
 
-  <!-- 分类列表由JS动态追加到contentWrapper -->
-  </div><!-- /content-wrapper -->
+  <!-- 电台列表 -->
+  <div id="radioList" class="radio-grid"></div>
 
 </div>
 
@@ -2101,10 +2106,7 @@ const categoryNames = { cnr: '央广系列', local: '地方电台', hkmt: '港�
 
 function renderStations(category) {
   category = category || 'all';
-  const wrapper = document.getElementById('contentWrapper');
-  if (!wrapper) return;
-  // 删除旧的分类station-group（保留nearby-group和categoryButtons）
-  wrapper.querySelectorAll('.station-group:not(.nearby-group)').forEach(el => el.remove());
+  const list = document.getElementById('radioList');
   // 按分类分组
   const groups = {};
   const filtered = category === 'all' ? stations : stations.filter(s => s.category === category);
@@ -2112,7 +2114,7 @@ function renderStations(category) {
     if (!groups[s.category]) groups[s.category] = [];
     groups[s.category].push(s);
   });
-  // 生成折叠面板，追加到contentWrapper
+  // 生成折叠面板
   let html = '';
   for (const cat in groups) {
     const catStations = groups[cat];
@@ -2134,7 +2136,7 @@ function renderStations(category) {
     ).join('');
     html += '</div></div>';
   }
-  wrapper.insertAdjacentHTML('beforeend', html);
+  list.innerHTML = html;
   // 恢复之前展开的分类
   expandedCategories.forEach(cat => {
     const group = list.querySelector('.station-group[data-category="' + cat + '"]');
