@@ -2330,7 +2330,7 @@ function updateNearbyStations() {
   
   let html = '';
   allItems.forEach(s => {
-    const distStr = s.distance === 0 ? '正在播放' : (s.distance < 1 ? `${Math.round(s.distance * 1000)}m` : `${Math.round(s.distance)}km`);
+    const distStr = s.distance < 1 ? `${Math.round(s.distance * 1000)}m` : `${Math.round(s.distance)}km`;
     const redDot = s.isCurrent ? '<span class="nearby-playing-dot"></span>' : '';
     html += `<div class="nearby-item ${s.isCurrent ? 'playing current-station' : ''}" onclick="event.stopPropagation(); playStation('${s.id}')">
       ${redDot}
