@@ -1327,6 +1327,25 @@
   height: 28px;
   box-sizing: border-box;
 }
+    .nearby-playing-dot {
+      display: inline-block;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #ff4757;
+      box-shadow: 0 0 6px #ff4757;
+      margin-right: 6px;
+      flex-shrink: 0;
+      animation: pulse-dot 1.5s ease-in-out infinite;
+    }
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+    .nearby-item.current-station {
+      background: rgba(255, 71, 87, 0.12) !important;
+      border-left: 3px solid #ff4757 !important;
+    }
+
 .nearby-item:hover {
   background: rgba(0, 50, 30, 0.75);
   border-color: #3a7a4a;
@@ -2286,28 +2305,35 @@ function updateNearbyStations() {
   const centerLat = currentStation.geo.lat;
   const centerLon = currentStation.geo.lon;
   
-  // 计算所有电台到当前电台的距离
+  // 当前电台置顶（距离0km）
+  const currentItem = {
+    ...currentStation,
+    distance: 0,
+    isCurrent: true
+  };
+  
+  // 计算其他电台到当前电台的距离
   const nearby = stations
     .filter(s => s.id !== currentStation.id && s.geo && s.geo.lat)
     .map(s => ({
       ...s,
-      distance: haversineDistanceKm(centerLat, centerLon, s.geo.lat, s.geo.lon)
+      distance: haversineDistanceKm(centerLat, centerLon, s.geo.lat, s.geo.lon),
+      isCurrent: false
     }))
     .sort((a, b) => a.distance - b.distance)
-    .slice(0, 12); // TOP 12
+    .slice(0, 11); // TOP 11（加上当前电台共12个）
   
-  countEl.textContent = `附近 ${nearby.length} 个电台`;
+  // 当前电台置顶 + 其他按距离排序
+  const allItems = [currentItem, ...nearby];
   
-  if (nearby.length === 0) {
-    listEl.innerHTML = '<div class="nearby-empty">附近没有其他电台</div>';
-    return;
-  }
+  countEl.textContent = `附近 ${allItems.length} 个电台`;
   
   let html = '';
-  nearby.forEach(s => {
-    const isPlaying = currentStation && currentStation.id === s.id;
-    const distStr = s.distance < 1 ? `${Math.round(s.distance * 1000)}m` : `${Math.round(s.distance)}km`;
-    html += `<div class="nearby-item ${isPlaying ? 'playing' : ''}" onclick="event.stopPropagation(); playStation('${s.id}')">
+  allItems.forEach(s => {
+    const distStr = s.distance === 0 ? '正在播放' : (s.distance < 1 ? `${Math.round(s.distance * 1000)}m` : `${Math.round(s.distance)}km`);
+    const redDot = s.isCurrent ? '<span class="nearby-playing-dot"></span>' : '';
+    html += `<div class="nearby-item ${s.isCurrent ? 'playing current-station' : ''}" onclick="event.stopPropagation(); playStation('${s.id}')">
+      ${redDot}
       <span class="nearby-name">${s.name}</span>
       <span class="nearby-freq">${s.freq || ''}</span>
       <span class="nearby-lang">${s.language || ''}</span>
@@ -2315,7 +2341,6 @@ function updateNearbyStations() {
     </div>`;
   });
   listEl.innerHTML = html;
-  // 保持用户的折叠/展开状态，不自动改变
 }
 
 
