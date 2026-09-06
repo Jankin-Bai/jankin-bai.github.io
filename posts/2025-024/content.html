@@ -1309,67 +1309,71 @@
 .nearby-empty {
   text-align: center;
   padding: 20px;
-  color: #4a6a4a;
-  font-size: 0.75em;
+  color: #7a9a7a;
+  font-size: 0.82em;
   font-family: 'Courier New', monospace;
 }
 .nearby-item {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 5px 8px;
-  border-radius: 3px;
+  padding: 6px 10px;
+  border-radius: 4px;
   cursor: pointer;
   transition: all 0.15s;
-  border: 1px solid transparent;
+  border: 1px solid rgba(40, 80, 50, 0.3);
+  background: rgba(0, 25, 15, 0.6);
   font-family: 'Courier New', 'Consolas', monospace;
   height: 28px;
   box-sizing: border-box;
 }
 .nearby-item:hover {
-  background: rgba(0, 40, 0, 0.6);
-  border-color: #2a5a2a;
+  background: rgba(0, 50, 30, 0.75);
+  border-color: #3a7a4a;
 }
 .nearby-item.playing {
-  background: rgba(0, 60, 0, 0.6);
-  border-color: #4a8a4a;
+  background: rgba(0, 70, 40, 0.8);
+  border-color: #6aff6a;
+  box-shadow: 0 0 8px rgba(106, 255, 106, 0.2);
 }
 .nearby-item .nearby-name {
   flex: 1;
-  font-size: 0.8em;
-  color: #a0b0a0;
+  font-size: 0.88em;
+  color: #d8f0d8;
   font-family: 'Courier New', monospace;
+  font-weight: 500;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 .nearby-item.playing .nearby-name {
-  color: #4aff4a;
+  color: #6aff6a;
+  font-weight: bold;
 }
 .nearby-item .nearby-freq {
-  font-size: 0.7em;
-  color: #5a8a5a;
+  font-size: 0.78em;
+  color: #8ac88a;
   font-family: 'Courier New', 'Consolas', monospace;
-  min-width: 50px;
+  min-width: 55px;
   letter-spacing: 0.5px;
 }
 .nearby-item .nearby-dist {
-  font-size: 0.65em;
-  color: #7a9a6a;
+  font-size: 0.7em;
+  color: #a0d890;
   font-family: 'Courier New', 'Consolas', monospace;
-  background: rgba(0, 30, 0, 0.5);
-  border: 1px solid #1a3a1a;
-  padding: 2px 6px;
+  background: rgba(0, 45, 25, 0.7);
+  border: 1px solid #2a5a3a;
+  padding: 3px 8px;
   border-radius: 3px;
   min-width: 50px;
   text-align: right;
   letter-spacing: 0.5px;
 }
 .nearby-item .nearby-lang {
-  font-size: 0.6em;
-  color: #8a7a4a;
+  font-size: 0.68em;
+  color: #d8c878;
   font-family: 'Courier New', 'Consolas', monospace;
-  min-width: 40px;
+  min-width: 45px;
   letter-spacing: 0.5px;
 }
 
