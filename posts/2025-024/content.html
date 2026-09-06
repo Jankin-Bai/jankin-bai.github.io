@@ -2616,8 +2616,14 @@ async function initGlobe() {
     // 创建地球
     // 绿色科技感纹理（NASA Blue Marble + 自定义Shader映射）
     const textureLoader = new THREE.TextureLoader();
-    const dayTexture = textureLoader.load('https://unpkg.com/three-globe@2.31.0/example/img/earth-blue-marble.jpg');
-    const waterTexture = textureLoader.load('https://unpkg.com/three-globe@2.31.0/example/img/earth-water.png');
+    const loadTex = (url) => new Promise((res, rej) => {
+      textureLoader.load(url, t => { t.colorSpace = THREE.SRGBColorSpace; res(t); }, undefined, rej);
+    });
+    const [dayTexture, waterTexture] = await Promise.all([
+      loadTex('https://unpkg.com/three-globe@2.31.0/example/img/earth-blue-marble.jpg'),
+      loadTex('https://unpkg.com/three-globe@2.31.0/example/img/earth-water.png')
+    ]);
+    console.log('[Globe] Textures loaded, starting bake...');
     
     // 绿色科技感Shader：把真实纹理映射成绿色调
     const greenTechMaterial = new THREE.ShaderMaterial({
@@ -2711,7 +2717,7 @@ async function initGlobe() {
     
     
       const bakedTex = bakeGlobeTexture();
-      console.log('[Globe] Texture baked, using static material');
+      console.log('[Globe] Texture baked (2048x1024), using static material');
       globeInstance = new ThreeGlobe({ waitForGlobeReady: true, animateIn: true })
       .showAtmosphere(false)
       .atmosphereColor('#2aff6a')
