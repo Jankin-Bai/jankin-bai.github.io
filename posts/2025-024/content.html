@@ -2446,6 +2446,32 @@ let globeAutoRotate = true;
 let globeTargetRotation = null;
 let userRotX = 0, userRotY = 0;
 
+// ===== 自适应渲染配置（根据设备性能分级，降低发热） =====
+function detectRenderTier() {
+  const w = window.innerWidth;
+  const isTouch = window.matchMedia('(pointer: coarse)').matches;
+  const cores = navigator.hardwareConcurrency || 4;
+  const memory = navigator.deviceMemory || 4;
+  // 综合评分
+  let score = 0;
+  if (w > 1024) score += 2;
+  else if (w >= 768) score += 1;
+  if (!isTouch) score += 2;       // 非触屏=PC
+  if (cores >= 8) score += 1;
+  if (memory >= 8) score += 1;
+  // 分级
+  if (score >= 5) return 'HIGH';
+  if (score >= 3) return 'MEDIUM';
+  return 'LOW';
+}
+const RENDER_TIER = detectRenderTier();
+const RENDER_CONFIG = {
+  HIGH:   { pixelRatio: 2,   fps: 30, antialias: true,  rotateSpeed: 0.12, pointSize: 1.0 },
+  MEDIUM: { pixelRatio: 1.5, fps: 24, antialias: true,  rotateSpeed: 0.10, pointSize: 0.9 },
+  LOW:    { pixelRatio: 1,   fps: 20, antialias: false, rotateSpeed: 0.08, pointSize: 0.8 }
+}[RENDER_TIER];
+console.log('[Globe] Render tier:', RENDER_TIER, RENDER_CONFIG);
+
 // 动态加载three-globe
 function loadScript(src) {
   return new Promise((resolve, reject) => {
@@ -2536,9 +2562,9 @@ async function initGlobe() {
     globeCamera.position.z = 300;
     
     // 渲染器
-    globeRenderer = new THREE.WebGLRenderer({ canvas: document.getElementById('globeCanvas'), antialias: true, alpha: true });
+    globeRenderer = new THREE.WebGLRenderer({ canvas: document.getElementById('globeCanvas'), antialias: RENDER_CONFIG.antialias, alpha: true });
     globeRenderer.setSize(width, height);
-    globeRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    globeRenderer.setPixelRatio(Math.min(window.devicePixelRatio, RENDER_CONFIG.pixelRatio));
     
     // 灯光（模拟太阳+环境光）
     globeScene.add(new THREE.AmbientLight(0x404060, 0.5));
@@ -2880,7 +2906,7 @@ async function initGlobe() {
     let lastAnimTime = 0;
     let lastRenderTime = 0;
     let pageVisible = true;
-    const FRAME_INTERVAL = 1000 / 30; // 30fps
+    const FRAME_INTERVAL = 1000 / RENDER_CONFIG.fps; // 自适应帧率
     // 页面切后台时暂停渲染，防止发热
     document.addEventListener('visibilitychange', () => {
       pageVisible = !document.hidden;
@@ -2899,7 +2925,7 @@ async function initGlobe() {
       // 基于时间差的旋转（速度恒定，不受帧率影响）
       // 原60fps时每帧0.001 = 每秒0.06弧度
       if (globeAutoRotate && !isDragging) {
-        userRotY += 0.12 * (delta / 1000);
+        userRotY += RENDER_CONFIG.rotateSpeed * (delta / 1000);
       }
       globeInstance.rotation.y = userRotY;
       globeInstance.rotation.x = userRotX;
