@@ -1327,7 +1327,16 @@
   height: 28px;
   box-sizing: border-box;
 }
-    .nearby-playing-dot {
+    
+    .radio-card-distance {
+      color: #6aff6a;
+      font-weight: bold;
+    }
+    .radio-card.current-station {
+      border-left: 3px solid #ff4757 !important;
+      background: rgba(255, 71, 87, 0.08) !important;
+    }
+.nearby-playing-dot {
       display: inline-block;
       width: 8px; height: 8px;
       border-radius: 50%;
@@ -2332,12 +2341,15 @@ function updateNearbyStations() {
   allItems.forEach(s => {
     const distStr = s.distance < 1 ? `${Math.round(s.distance * 1000)}m` : `${Math.round(s.distance)}km`;
     const redDot = s.isCurrent ? '<span class="nearby-playing-dot"></span>' : '';
-    html += `<div class="nearby-item ${s.isCurrent ? 'playing current-station' : ''}" onclick="event.stopPropagation(); playStation('${s.id}')">
-      ${redDot}
-      <span class="nearby-name">${s.name}</span>
-      <span class="nearby-freq">${s.freq || ''}</span>
-      <span class="nearby-lang">${s.language || ''}</span>
-      <span class="nearby-dist">${distStr}</span>
+    html += `<div class="radio-card ${s.isCurrent ? 'playing current-station' : ''}" data-id="${s.id}" onclick="event.stopPropagation(); playStation('${s.id}')">
+      <div class="radio-card-name">${redDot}${s.name}</div>
+      <div class="radio-card-desc">${s.desc || ''}</div>
+      <div class="radio-card-meta">
+        <span class="radio-card-format">${s.format || ''}</span>
+        <span>${s.freq || ''} MHz</span>
+        <span class="radio-card-lang">${s.language || '多语言'}</span>
+        <span class="radio-card-distance">${distStr}</span>
+      </div>
     </div>`;
   });
   listEl.innerHTML = html;
