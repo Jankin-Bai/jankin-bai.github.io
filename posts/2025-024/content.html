@@ -1332,10 +1332,6 @@
       color: #6aff6a;
       font-weight: bold;
     }
-    .radio-card.current-station {
-      border-left: 3px solid #ff4757 !important;
-      background: rgba(255, 71, 87, 0.08) !important;
-    }
 .nearby-playing-dot {
       display: inline-block;
       width: 8px; height: 8px;
@@ -1345,10 +1341,6 @@
       margin-right: 6px;
       flex-shrink: 0;
       animation: pulse-dot 1.5s ease-in-out infinite;
-    }
-    @keyframes pulse-dot {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.5; transform: scale(0.8); }
     }
     .nearby-item.current-station {
       background: rgba(255, 71, 87, 0.12) !important;
@@ -2340,8 +2332,8 @@ function updateNearbyStations() {
   let html = '';
   allItems.forEach(s => {
     const distStr = s.distance < 1 ? `${Math.round(s.distance * 1000)}m` : `${Math.round(s.distance)}km`;
-    const redDot = s.isCurrent ? '<span class="nearby-playing-dot"></span>' : '';
-    html += `<div class="radio-card ${s.isCurrent ? 'playing current-station' : ''}" data-id="${s.id}" onclick="event.stopPropagation(); playStation('${s.id}')">
+    const redDot = '';
+    html += `<div class="radio-card ${s.isCurrent ? 'playing' : ''}" data-id="${s.id}" onclick="event.stopPropagation(); playStation('${s.id}')">
       <div class="radio-card-name">${redDot}${s.name}</div>
       <div class="radio-card-desc">${s.desc || ''}</div>
       <div class="radio-card-meta">
