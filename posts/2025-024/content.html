@@ -2647,7 +2647,7 @@ async function initGlobe() {
       const coast = [51, 204, 89];     // 海岸线高亮
       const grid  = [51, 204, 89];     // 经纬线
       for (let y = 0; y < H; y++) {
-        const v = y / H;  // 0=南极, 1=北极
+        const v = 1 - y / H;  // Canvas y=0在顶部=北极(v=1), y=H在底部=南极(v=0)
         const lat = (v - 0.5) * 180;
         for (let x = 0; x < W; x++) {
           const i = (y * W + x) * 4;
@@ -2680,6 +2680,7 @@ async function initGlobe() {
       }
       ctx.putImageData(out, 0, 0);
       const tex = new THREE.CanvasTexture(canvas);
+      tex.flipY = false;  // Canvas已按北极在上绘制，不需要three.js再翻转
       tex.wrapS = THREE.RepeatWrapping;
       tex.wrapT = THREE.ClampToEdgeWrapping;
       tex.colorSpace = THREE.SRGBColorSpace;
