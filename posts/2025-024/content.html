@@ -429,11 +429,6 @@
 .station-group.open .station-group-header {
   border-bottom-color: #1a4a1a;
 }
-.station-group.open .station-group-content {
-  display: block;
-  max-height: none;
-  overflow: visible;
-}
 .group-arrow {
   color: #2aff6a;
   font-size: 10px;
@@ -841,11 +836,6 @@
 }
 .station-group.open .station-group-header {
   border-bottom-color: #1a4a1a;
-}
-.station-group.open .station-group-content {
-  display: block;
-  max-height: none;
-  overflow: visible;
 }
 .group-arrow {
   color: #2aff6a;
@@ -1258,32 +1248,16 @@
 /* 附近电台 - 复用station-group样式 */
 .nearby-group {
   margin: 0 0 12px 0;
-  border-radius: 6px;
-}
-/* 折叠时：整个模块sticky吸顶（因为containing block只有header高，header单独sticky没有滚动空间） */
-.nearby-group:not(.open) {
-  position: sticky;
-  top: calc(42px + var(--map-panel-height, 320px));
-  z-index: 148;
-  background: rgba(10, 20, 15, 0.98);
-}
-/* 展开时：只有header sticky，content正常滚动（containing block足够高，header有滚动空间） */
-.nearby-group.open .station-group-header {
-  position: sticky;
-  top: calc(42px + var(--map-panel-height, 320px));
-  z-index: 148;
-  background: rgba(0, 30, 30, 0.98);
 }
 .nearby-header {
   display: flex;
   align-items: center;
   gap: 8px;
   padding: 6px 12px;
-  background: rgba(0, 30, 30, 0.95);
+  background: rgba(0, 30, 30, 0.5);
   cursor: pointer;
   user-select: none;
   transition: background 0.2s;
-  border-bottom: 1px solid rgba(74, 106, 106, 0.5);
 }
 .nearby-header:hover {
   background: rgba(0, 50, 50, 0.6);
@@ -1353,12 +1327,7 @@
   height: 28px;
   box-sizing: border-box;
 }
-    
-    .radio-card-distance {
-      color: #6aff6a;
-      font-weight: bold;
-    }
-.nearby-playing-dot {
+    .nearby-playing-dot {
       display: inline-block;
       width: 8px; height: 8px;
       border-radius: 50%;
@@ -1367,6 +1336,10 @@
       margin-right: 6px;
       flex-shrink: 0;
       animation: pulse-dot 1.5s ease-in-out infinite;
+    }
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
     }
     .nearby-item.current-station {
       background: rgba(255, 71, 87, 0.12) !important;
@@ -2348,7 +2321,7 @@ function updateNearbyStations() {
       isCurrent: false
     }))
     .sort((a, b) => a.distance - b.distance)
-    .slice(0, 19); // TOP 19 + 当前电台 = 20个
+    .slice(0, 11); // TOP 11（加上当前电台共12个）
   
   // 当前电台置顶 + 其他按距离排序
   const allItems = [currentItem, ...nearby];
@@ -2358,20 +2331,16 @@ function updateNearbyStations() {
   let html = '';
   allItems.forEach(s => {
     const distStr = s.distance < 1 ? `${Math.round(s.distance * 1000)}m` : `${Math.round(s.distance)}km`;
-    const redDot = '';
-    html += `<div class="radio-card ${s.isCurrent ? 'playing' : ''}" data-id="${s.id}" onclick="event.stopPropagation(); playStation('${s.id}')">
-      <div class="radio-card-name">${redDot}${s.name}</div>
-      <div class="radio-card-desc">${s.desc || ''}</div>
-      <div class="radio-card-meta">
-        <span class="radio-card-format">${s.format || ''}</span>
-        <span>${s.freq || ''} MHz</span>
-        <span class="radio-card-lang">${s.language || '多语言'}</span>
-        <span class="radio-card-distance">${distStr}</span>
-      </div>
+    const redDot = s.isCurrent ? '<span class="nearby-playing-dot"></span>' : '';
+    html += `<div class="nearby-item ${s.isCurrent ? 'playing current-station' : ''}" onclick="event.stopPropagation(); playStation('${s.id}')">
+      ${redDot}
+      <span class="nearby-name">${s.name}</span>
+      <span class="nearby-freq">${s.freq || ''}</span>
+      <span class="nearby-lang">${s.language || ''}</span>
+      <span class="nearby-dist">${distStr}</span>
     </div>`;
   });
   listEl.innerHTML = html;
-  // 附近列表全部展开无滚动条，重新排序后当前电台自然在顶部，不需要滚动页面
 }
 
 
@@ -3079,24 +3048,7 @@ async function initGlobe() {
         if (animFrameId) { cancelAnimationFrame(animFrameId); animFrameId = null; }
       }
     });
-    
-    // 动态计算地球面板高度，更新附近电台header的sticky top
-    function updateNearbyStickyTop() {
-      const mapPanel = document.querySelector('.map-panel');
-      if (mapPanel) {
-        const h = mapPanel.offsetHeight;
-        document.documentElement.style.setProperty('--map-panel-height', h + 'px');
-      }
-    }
-    window.addEventListener('resize', updateNearbyStickyTop);
-    setTimeout(updateNearbyStickyTop, 500);
-    setTimeout(updateNearbyStickyTop, 1500);
-    setTimeout(updateNearbyStickyTop, 3000);
-    // 地球加载完成后更新高度
-    if (typeof globeInstance !== 'undefined' && globeInstance) {
-      globeInstance.onGlobeReady(() => setTimeout(updateNearbyStickyTop, 100));
-    }
-function animate(timestamp) {
+    function animate(timestamp) {
       animFrameId = requestAnimationFrame(animate);
       // 页面不可见时完全跳过（双保险）
       if (!pageVisible) return;
