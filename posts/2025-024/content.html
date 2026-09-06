@@ -2199,7 +2199,17 @@ async function playStation(id) {
             setTimeout(() => playNextRandom(), 100);
           }
         });
-      }, { once: true });
+      },
+  // === 贵州电台 (8个，归local分类) ===
+  { id: 'gzzwzh', name: '贵州综合广播', desc: '贵州广播电视台新闻综合频率 FM94.6，全省覆盖，新闻+时政+服务', category: 'local', language: '普通话', format: 'HLS', freq: '94.6', url: 'https://satellitepull.cnr.cn/live/wx32gzwxwzhgb/playlist.m3u8', geo: { lat: 26.6470, lon: 106.6302, label: '贵州贵阳' } },
+  { id: 'gzyygb', name: '贵州音乐广播', desc: '贵州广播电视台音乐频率 FM91.6，流行音乐+经典老歌+娱乐资讯', category: 'local', language: '普通话', format: 'HLS', freq: '91.6', url: 'https://satellitepull.cnr.cn/live/wx32gzyygb/playlist.m3u8', geo: { lat: 26.6470, lon: 106.6302, label: '贵州贵阳' } },
+  { id: 'gzjjgb', name: '贵州经济广播', desc: '贵州广播电视台经济频率 FM98.9，财经资讯+投资理财+生活服务', category: 'local', language: '普通话', format: 'HLS', freq: '98.9', url: 'https://satellitepull.cnr.cn/live/wx32gzjjgb/playlist.m3u8', geo: { lat: 26.6470, lon: 106.6302, label: '贵州贵阳' } },
+  { id: 'gzqygb', name: '贵州都市广播', desc: '贵州广播电视台都市频率 FM106.2，都市生活+情感谈话+汽车服务', category: 'local', language: '普通话', format: 'HLS', freq: '106.2', url: 'https://satellitepull.cnr.cn/live/wx32gzqcgb/playlist.m3u8', geo: { lat: 26.6470, lon: 106.6302, label: '贵州贵阳' } },
+  { id: 'gzgsgb', name: '贵州故事广播', desc: '贵州广播电视台故事频率，小说连播+评书+有声读物+历史故事', category: 'local', language: '普通话', format: 'HLS', freq: '---', url: 'https://satellitepull.cnr.cn/live/wx32gzgsgb/playlist.m3u8', geo: { lat: 26.6470, lon: 106.6302, label: '贵州贵阳' } },
+  { id: 'gzjtgb', name: '贵州交通广播', desc: '贵州广播电视台交通频率 FM95.2，路况信息+汽车服务+音乐娱乐', category: 'local', language: '普通话', format: 'MP3', freq: '95.2', url: 'https://lhttp.qtfm.cn/live/20057/64k.mp3', geo: { lat: 26.6470, lon: 106.6302, label: '贵州贵阳' } },
+  { id: 'gyzhgb', name: '贵阳综合广播', desc: '贵阳广播电视台新闻综合频率 FM88.9，本地新闻+民生+音乐典藏', category: 'local', language: '普通话', format: 'MP3', freq: '88.9', url: 'https://lhttp.qtfm.cn/live/1773/64k.mp3', geo: { lat: 26.6470, lon: 106.6302, label: '贵州贵阳' } },
+  { id: 'qxggb', name: '七星关人民广播', desc: '毕节市七星关区人民广播电台，县域新闻+农业科技+地方音乐', category: 'local', language: '普通话', format: 'MP3', freq: '---', url: 'https://lhttp.qtfm.cn/live/5021866/64k.mp3', geo: { lat: 27.3044, lon: 105.2854, label: '贵州毕节' } },
+ { once: true });
       // 非HLS流也由统一的500ms超时机制处理
     }
   } catch (e) {
