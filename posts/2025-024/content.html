@@ -2340,8 +2340,8 @@ function updateNearbyStations() {
       distance: haversineDistanceKm(centerLat, centerLon, s.geo.lat, s.geo.lon),
       isCurrent: false
     }))
-    .sort((a, b) => a.distance - b.distance);
-  // 显示全部附近电台，不限制数量
+    .sort((a, b) => a.distance - b.distance)
+    .slice(0, 19); // TOP 19 + 当前电台 = 20个
   
   // 当前电台置顶 + 其他按距离排序
   const allItems = [currentItem, ...nearby];
@@ -3084,6 +3084,11 @@ async function initGlobe() {
     window.addEventListener('resize', updateNearbyStickyTop);
     setTimeout(updateNearbyStickyTop, 500);
     setTimeout(updateNearbyStickyTop, 1500);
+    setTimeout(updateNearbyStickyTop, 3000);
+    // 地球加载完成后更新高度
+    if (typeof globeInstance !== 'undefined' && globeInstance) {
+      globeInstance.onGlobeReady(() => setTimeout(updateNearbyStickyTop, 100));
+    }
 function animate(timestamp) {
       animFrameId = requestAnimationFrame(animate);
       // 页面不可见时完全跳过（双保险）
