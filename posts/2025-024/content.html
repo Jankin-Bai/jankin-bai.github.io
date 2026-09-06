@@ -2504,9 +2504,9 @@ function detectRenderTier() {
 }
 const RENDER_TIER = detectRenderTier();
 const RENDER_CONFIG = {
-  HIGH:   { pixelRatio: 2,   fps: 30, antialias: true,  rotateSpeed: 0.12, pointSize: 1.0 },
-  MEDIUM: { pixelRatio: 1.5, fps: 24, antialias: true,  rotateSpeed: 0.10, pointSize: 0.9 },
-  LOW:    { pixelRatio: 1,   fps: 20, antialias: false, rotateSpeed: 0.08, pointSize: 0.8 }
+  HIGH:   { pixelRatio: 2, fps: 30, antialias: true, rotateSpeed: 0.12, pointSize: 1.0 },
+  MEDIUM: { pixelRatio: 2, fps: 30, antialias: true, rotateSpeed: 0.12, pointSize: 1.0 },
+  LOW:    { pixelRatio: 2, fps: 30, antialias: true, rotateSpeed: 0.12, pointSize: 1.0 }
 }[RENDER_TIER];
 console.log('[Globe] Render tier:', RENDER_TIER, RENDER_CONFIG);
 
@@ -2682,13 +2682,42 @@ async function initGlobe() {
         }
       `
     });
+
+    // ===== 纹理烘焙：Shader计算一次，后续只用纹理采样 =====
+    function bakeGlobeTexture() {
+      const rt = new THREE.WebGLRenderTarget(2048, 1024, {
+        minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter
+      });
+      const bakeMat = new THREE.ShaderMaterial({
+        uniforms: {
+          dayTexture: { value: dayTexture },
+          waterTexture: { value: waterTexture },
+          lightDir: { value: new THREE.Vector3(1,1,1).normalize() },
+          time: { value: 5.0 }
+        },
+        vertexShader: `varying vec2 vUv; varying vec3 vNormal; varying vec3 vViewPosition;
+          void main(){ vUv=uv; vNormal=vec3(0.,0.,1.); vViewPosition=vec3(0.,0.,1.);
+          gl_Position=vec4(position.xy,0.,1.); }`,
+        fragmentShader: greenTechMaterial.fragmentShader
+      });
+      const scene = new THREE.Scene();
+      scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2,1), bakeMat));
+      const cam = new THREE.OrthographicCamera(-1,1,0.5,-0.5,0,1);
+      globeRenderer.setRenderTarget(rt);
+      globeRenderer.render(scene, cam);
+      globeRenderer.setRenderTarget(null);
+      return rt.texture;
+    }
     
-    globeInstance = new ThreeGlobe({ waitForGlobeReady: true, animateIn: true })
+    
+      const bakedTex = bakeGlobeTexture();
+      console.log('[Globe] Texture baked, using static material');
+      globeInstance = new ThreeGlobe({ waitForGlobeReady: true, animateIn: true })
       .showAtmosphere(false)
       .atmosphereColor('#2aff6a')
       .atmosphereAltitude(0.15)
       .showGraticules(false)
-      .globeMaterial(greenTechMaterial)
+      .globeMaterial(new THREE.MeshBasicMaterial({ map: bakedTex }))
       .pointsData(stations.filter(s => s.geo))
       .pointLat(d => d.geo.lat)
       .pointLng(d => d.geo.lon)
@@ -2949,7 +2978,7 @@ async function initGlobe() {
     let lastPointsUpdate = 0;
     function getFrameInterval() {
       // 播放时降为15fps省电，暂停/待机时用自适应帧率
-      return isPlaying ? (1000 / 15) : (1000 / RENDER_CONFIG.fps);
+      return 1000 / RENDER_CONFIG.fps;
     }
     // 页面切后台时完全停止渲染循环，防止发热
     document.addEventListener('visibilitychange', () => {
