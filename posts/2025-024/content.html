@@ -2345,6 +2345,14 @@ function updateNearbyStations() {
     </div>`;
   });
   listEl.innerHTML = html;
+  // 选择新电台后，附近列表滚动回顶部
+  listEl.scrollTop = 0;
+  // 同时把最近的可滚动父容器也滚到顶部
+  let scrollParent = listEl.parentElement;
+  while (scrollParent && scrollParent.scrollHeight <= scrollParent.clientHeight + 5) {
+    scrollParent = scrollParent.parentElement;
+  }
+  if (scrollParent) scrollParent.scrollTop = 0;
 }
 
 
