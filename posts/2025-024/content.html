@@ -2680,7 +2680,7 @@ async function initGlobe() {
       }
       ctx.putImageData(out, 0, 0);
       const tex = new THREE.CanvasTexture(canvas);
-      tex.flipY = false;  // Canvas已按北极在上绘制，不需要three.js再翻转
+      // flipY保持默认true: Canvas顶部(北极)→纹理v=1→球体北极，正确映射
       tex.wrapS = THREE.RepeatWrapping;
       tex.wrapT = THREE.ClampToEdgeWrapping;
       tex.colorSpace = THREE.SRGBColorSpace;
