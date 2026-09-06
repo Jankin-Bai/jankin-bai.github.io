@@ -1260,15 +1260,8 @@
   margin: 0 0 12px 0;
   border-radius: 6px;
 }
-/* 折叠时整个模块sticky吸顶 */
-.nearby-group:not(.open) {
-  position: sticky;
-  top: calc(42px + var(--map-panel-height, 320px));
-  z-index: 148;
-  background: rgba(10, 20, 15, 0.98);
-}
-/* 展开时只有header sticky，content正常滚动 */
-.nearby-group.open .station-group-header {
+/* 附近电台header始终sticky吸顶（折叠展开都一样），content正常滚动 */
+.nearby-group .station-group-header {
   position: sticky;
   top: calc(42px + var(--map-panel-height, 320px));
   z-index: 148;
