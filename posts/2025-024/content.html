@@ -1258,6 +1258,11 @@
 /* 附近电台 - 复用station-group样式 */
 .nearby-group {
   margin: 0 0 12px 0;
+  position: sticky;
+  top: calc(42px + var(--map-panel-height, 320px));
+  z-index: 148;
+  background: rgba(10, 20, 15, 0.98);
+  border-radius: 6px;
 }
 .nearby-header {
   display: flex;
@@ -1268,9 +1273,6 @@
   cursor: pointer;
   user-select: none;
   transition: background 0.2s;
-  position: sticky;
-  top: calc(42px + var(--map-panel-height, 320px));
-  z-index: 149;
   border-bottom: 1px solid rgba(74, 106, 106, 0.5);
 }
 .nearby-header:hover {
