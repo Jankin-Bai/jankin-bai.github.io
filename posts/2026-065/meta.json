@@ -1,0 +1,17 @@
+{
+  "id": "2026-065",
+  "title": "Memory MCP 技术原理深度解析：从 507 行源码看 AI 如何记住你",
+  "date": "2026-09-08T15:00:00",
+  "tags": ["tech", "works"],
+  "milestone": false,
+  "summary": "从 507 行源码深度解析 Memory MCP 的知识图谱模型、原子写入存储、九大工具、搜索与订阅机制，附局限性与改进方向。",
+  "theme": "mono",
+  "image": "",
+  "links": [
+    {"text": "Memory MCP 指南（claude-world）", "url": "https://claude-world.com/zh-tw/articles/memory-mcp-guide/"},
+    {"text": "MCP 官方规范", "url": "https://modelcontextprotocol.io"},
+    {"text": "MCP servers 源码仓库", "url": "https://github.com/modelcontextprotocol/servers"},
+    {"text": "npm 包 @modelcontextprotocol/server-memory", "url": "https://www.npmjs.com/package/@modelcontextprotocol/server-memory"}
+  ],
+  "format": "markdown"
+}
