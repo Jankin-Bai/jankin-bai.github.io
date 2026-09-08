@@ -1,0 +1,16 @@
+{
+  "id": "2026-064",
+  "title": "全球 SDR 接收器网络：3D 地球可视化调谐平台",
+  "date": "2026-09-08T10:00:00",
+  "tags": ["tech", "works", "无线电"],
+  "milestone": false,
+  "summary": "基于 3D 地球架构的全球在线 SDR 接收器可视化平台，覆盖 WebSDR/KiwiSDR/OpenWebRX 三大体系 30+ 节点，支持点击节点查看详情、频率快捷预设一键调谐、新标签页打开接收器界面。",
+  "theme": "mono",
+  "image": "",
+  "links": [
+    {"text": "ReceiverBook 全球 SDR 目录", "url": "https://www.receiverbook.de"},
+    {"text": "KiwiSDR 官方列表", "url": "http://rx.kiwisdr.com"},
+    {"text": "WebSDR 官方站点", "url": "http://www.websdr.org"}
+  ],
+  "format": "html"
+}
