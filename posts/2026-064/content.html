@@ -1,9 +1,8 @@
 <!-- Post: 全球 SDR 接收器网络 | ID: 2026-064 | Created: 2026-09-08 | Tags: tech, works, 无线电 | Format: html -->
 
 <style>
-/* ========== SDR 接收器终端风格 ========== */
 .sdr-container {
-  max-width: 760px;
+  max-width: 820px;
   margin: 0 auto;
   padding: 16px 0;
   font-family: 'Courier New', 'Consolas', monospace;
@@ -15,10 +14,10 @@
   background: linear-gradient(145deg, #9aa88a, #7d8b6f);
   border: 3px solid #2a2a2a;
   border-radius: 12px;
-  padding: 16px 20px;
-  margin-bottom: 12px;
+  padding: 14px 18px;
+  margin-bottom: 10px;
   position: relative;
-  min-height: 120px;
+  min-height: 100px;
   box-shadow: inset 0 2px 8px rgba(0,0,0,0.3), 0 4px 12px rgba(0,0,0,0.5);
   clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
 }
@@ -29,143 +28,153 @@
   pointer-events: none;
 }
 .display-rx-name {
-  font-size: 1.4em; font-weight: bold; color: #2a3a2a;
-  text-shadow: 0 1px 0 rgba(255,255,255,0.3); margin-bottom: 4px; letter-spacing: 1px;
+  font-size: 1.3em; font-weight: bold; color: #1a2a1a;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.3); margin-bottom: 3px; letter-spacing: 1px;
 }
-.display-rx-desc { font-size: 0.82em; color: #4a5a4a; margin-bottom: 8px; }
+.display-rx-desc { font-size: 0.78em; color: #3a4a3a; margin-bottom: 6px; line-height: 1.4; }
 .display-rx-meta {
-  display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
-  font-size: 0.75em; color: #3a4a3a;
-  border-top: 1px dashed rgba(0,0,0,0.2); padding-top: 8px;
+  display: flex; justify-content: space-between; flex-wrap: wrap; gap: 6px;
+  font-size: 0.72em; color: #2a3a2a;
+  border-top: 1px dashed rgba(0,0,0,0.2); padding-top: 6px;
 }
-.display-rx-meta span { display: flex; align-items: center; gap: 4px; }
 .type-badge {
   display: inline-block; padding: 1px 6px; border-radius: 3px;
-  font-size: 0.7em; font-weight: bold; color: #fff;
+  font-size: 0.85em; font-weight: bold; color: #fff;
 }
-.type-websdr { background: #0088aa; }
-.type-kiwisdr { background: #228833; }
-.type-openwebrx { background: #cc7700; }
+.type-websdr { background: #0077aa; }
+.type-kiwisdr { background: #1a7722; }
+.type-openwebrx { background: #aa6600; }
 
 /* ---- 频谱动画 ---- */
-.spectrum {
-  display: flex; align-items: flex-end; gap: 2px; height: 24px; margin-top: 6px;
-}
-.spectrum .bar {
-  width: 3px; background: #3a5a3a; border-radius: 1px;
-  animation: spec 1.2s ease-in-out infinite;
-}
+.spectrum { display: flex; align-items: flex-end; gap: 2px; height: 20px; margin-top: 4px; }
+.spectrum .bar { width: 3px; background: #2a4a2a; border-radius: 1px; animation: spec 1.2s ease-in-out infinite; }
 @keyframes spec { 0%,100%{transform:scaleY(0.4);} 50%{transform:scaleY(1);} }
 .spectrum.paused .bar { animation-play-state: paused; opacity: 0.4; }
 
 /* ---- 调谐控制面板 ---- */
 .tune-panel {
-  background: #1a2a1a; border: 2px solid #3a5a3a; border-radius: 8px;
-  padding: 12px 16px; margin-bottom: 12px;
+  background: #121e12; border: 2px solid #2a4a2a; border-radius: 8px;
+  padding: 10px 14px; margin-bottom: 10px;
 }
 .tune-panel-title {
-  font-size: 0.75em; color: #5aff5a; letter-spacing: 2px; margin-bottom: 8px;
-  text-transform: uppercase;
+  font-size: 0.72em; color: #5aff5a; letter-spacing: 2px; margin-bottom: 8px; text-transform: uppercase;
 }
-.freq-presets {
-  display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px;
-}
+.freq-presets { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 8px; }
 .freq-preset-btn {
-  background: #2a3a2a; border: 1px solid #4a6a4a; color: #8aff8a;
-  padding: 4px 10px; border-radius: 4px; cursor: pointer;
-  font-family: 'Courier New', monospace; font-size: 0.72em;
-  transition: all 0.2s;
+  background: #1a2a1a; border: 1px solid #3a5a3a; color: #7aff7a;
+  padding: 3px 8px; border-radius: 4px; cursor: pointer;
+  font-family: 'Courier New', monospace; font-size: 0.7em;
+  transition: all 0.15s;
 }
-.freq-preset-btn:hover { background: #3a5a3a; border-color: #6aff6a; color: #fff; }
+.freq-preset-btn:hover { background: #2a4a2a; border-color: #5aff5a; color: #fff; }
 .freq-preset-btn:active { transform: scale(0.95); }
-.custom-tune {
-  display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
-}
+.freq-preset-btn.active { background: #2a6a2a; border-color: #8aff8a; color: #fff; }
+.custom-tune { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
 .custom-tune input, .custom-tune select {
-  background: #0a1a0a; border: 1px solid #3a5a3a; color: #8aff8a;
-  padding: 5px 8px; border-radius: 4px; font-family: 'Courier New', monospace;
-  font-size: 0.8em;
+  background: #0a140a; border: 1px solid #2a4a2a; color: #7aff7a;
+  padding: 4px 6px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 0.75em;
 }
-.custom-tune input { width: 90px; }
-.open-rx-btn {
-  background: #2a6a2a; border: 1px solid #5aff5a; color: #fff;
-  padding: 6px 16px; border-radius: 4px; cursor: pointer;
-  font-family: 'Courier New', monospace; font-size: 0.8em; font-weight: bold;
-  transition: all 0.2s;
+.custom-tune input { width: 80px; }
+.tune-btn {
+  background: #1a5a1a; border: 1px solid #5aff5a; color: #fff;
+  padding: 4px 12px; border-radius: 4px; cursor: pointer;
+  font-family: 'Courier New', monospace; font-size: 0.75em; font-weight: bold;
 }
-.open-rx-btn:hover { background: #3a8a3a; box-shadow: 0 0 10px rgba(90,255,90,0.4); }
-.open-rx-btn:disabled { background: #333; border-color: #555; color: #666; cursor: not-allowed; }
+.tune-btn:hover { background: #2a7a2a; }
+.tune-btn:disabled { background: #222; border-color: #444; color: #555; cursor: not-allowed; }
 
 /* ---- 3D 地球面板 ---- */
 .globe-panel {
-  position: relative; width: 100%; height: 320px;
-  border: 2px solid #3a5a3a; border-radius: 8px; overflow: hidden;
-  background: #0a1a0a; margin-bottom: 12px;
+  position: relative; width: 100%; height: 280px;
+  border: 2px solid #2a4a2a; border-radius: 8px; overflow: hidden;
+  background: #050d05; margin-bottom: 10px;
 }
 #globeCanvas { width:100%; height:100%; display:block; touch-action:none; cursor:grab; }
 .globe-loading {
   position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
   color:#4a8a4a; font-family:'Courier New'; font-size:11px; letter-spacing:1px;
+  text-align: center;
 }
-/* 迷你雷达 */
-.radar-panel {
-  position:absolute; bottom:8px; left:8px; opacity:0.8;
+.globe-error {
+  position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  color:#ff6666; font-family:'Courier New'; font-size:11px; text-align:center; max-width:80%;
 }
-.radar-panel.paused { opacity:0.3; }
-/* 十字瞄准镜 */
+.radar-panel { position:absolute; bottom:6px; left:6px; opacity:0.7; }
+.radar-panel.paused { opacity:0.25; }
 #globeCrosshair {
   position:absolute; pointer-events:none; opacity:0; transition:opacity 0.3s;
   z-index:10; transform:translate(-50%,-50%);
 }
-/* 引线+标签 */
-#globeConnector {
-  position:absolute; top:0; left:0; width:100%; height:100%;
-  pointer-events:none; z-index:9; opacity:0; transition:opacity 0.3s; overflow:visible;
-}
 
-/* ---- 接收器列表 ---- */
-.rx-list-panel {
-  background: #1a2a1a; border: 2px solid #3a5a3a; border-radius: 8px;
-  padding: 12px; margin-bottom: 12px;
+/* ---- SDR 内嵌界面 ---- */
+.sdr-embed-panel {
+  background: #0a140a; border: 2px solid #2a4a2a; border-radius: 8px;
+  margin-bottom: 10px; overflow: hidden;
 }
-.rx-list-title {
-  font-size: 0.75em; color: #5aff5a; letter-spacing: 2px; margin-bottom: 8px;
-  text-transform: uppercase; display: flex; justify-content: space-between; align-items: center;
+.sdr-embed-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 6px 12px; background: #121e12; border-bottom: 1px solid #2a4a2a;
 }
-.type-filters { display: flex; gap: 6px; }
-.type-filter-btn {
-  background: transparent; border: 1px solid #3a5a3a; color: #6a8a6a;
+.sdr-embed-title { font-size: 0.75em; color: #5aff5a; letter-spacing: 1px; }
+.sdr-embed-freq { font-size: 0.75em; color: #ffcc66; }
+.sdr-embed-actions { display: flex; gap: 6px; }
+.sdr-embed-actions button {
+  background: #1a2a1a; border: 1px solid #3a5a3a; color: #7aff7a;
   padding: 2px 8px; border-radius: 3px; cursor: pointer;
   font-family: 'Courier New', monospace; font-size: 0.7em;
 }
-.type-filter-btn.active { background: #2a5a2a; color: #8aff8a; border-color: #5aff5a; }
-.rx-list { max-height: 300px; overflow-y: auto; }
-.rx-item {
-  display: flex; align-items: center; gap: 8px; padding: 6px 8px;
-  border-bottom: 1px solid #2a3a2a; cursor: pointer; transition: background 0.2s;
+.sdr-embed-actions button:hover { background: #2a4a2a; }
+.sdr-iframe-wrap {
+  width: 100%; height: 520px; background: #000; position: relative;
 }
-.rx-item:hover { background: #2a3a2a; }
-.rx-item.active { background: #2a4a2a; border-left: 3px solid #5aff5a; }
-.rx-item-name { flex: 1; font-size: 0.8em; color: #8aff8a; }
-.rx-item-loc { font-size: 0.7em; color: #5a7a5a; }
-.rx-item-type { font-size: 0.65em; padding: 1px 5px; border-radius: 3px; color: #fff; }
+.sdr-iframe-wrap iframe {
+  width: 100%; height: 100%; border: none; display: block;
+}
+.sdr-iframe-placeholder {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  color: #3a5a3a; font-size: 0.85em; text-align: center;
+}
+.sdr-iframe-placeholder .big { font-size: 2em; margin-bottom: 8px; opacity: 0.5; }
 
-/* ---- 说明文字 ---- */
-.sdr-info {
-  font-size: 0.78em; color: #6a8a6a; line-height: 1.6; padding: 0 4px;
+/* ---- 接收器列表 ---- */
+.rx-list-panel {
+  background: #121e12; border: 2px solid #2a4a2a; border-radius: 8px;
+  padding: 10px 12px; margin-bottom: 10px;
 }
-.sdr-info h4 { color: #8aff8a; margin: 12px 0 6px; font-size: 1em; }
-.sdr-info code {
-  background: #1a2a1a; padding: 1px 5px; border-radius: 3px;
-  color: #8aff8a; font-size: 0.9em;
+.rx-list-title {
+  font-size: 0.72em; color: #5aff5a; letter-spacing: 2px; margin-bottom: 8px;
+  text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px;
 }
-.sdr-info table {
-  width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 0.9em;
+.type-filters { display: flex; gap: 4px; }
+.type-filter-btn {
+  background: transparent; border: 1px solid #2a4a2a; color: #5a7a5a;
+  padding: 2px 7px; border-radius: 3px; cursor: pointer;
+  font-family: 'Courier New', monospace; font-size: 0.68em;
 }
-.sdr-info th, .sdr-info td {
-  border: 1px solid #3a5a3a; padding: 5px 8px; text-align: left;
+.type-filter-btn.active { background: #1a4a1a; color: #8aff8a; border-color: #5aff5a; }
+.rx-list { max-height: 240px; overflow-y: auto; }
+.rx-item {
+  display: flex; align-items: center; gap: 6px; padding: 5px 8px;
+  border-bottom: 1px solid #1a2a1a; cursor: pointer; transition: background 0.15s;
 }
-.sdr-info th { background: #2a3a2a; color: #8aff8a; }
+.rx-item:hover { background: #1a2a1a; }
+.rx-item.active { background: #1a3a1a; border-left: 3px solid #5aff5a; }
+.rx-item-name { flex: 1; font-size: 0.75em; color: #7aff7a; }
+.rx-item-loc { font-size: 0.68em; color: #4a6a4a; }
+.rx-item-type { font-size: 0.62em; padding: 1px 4px; border-radius: 3px; color: #fff; white-space: nowrap; }
+
+/* ---- 说明 ---- */
+.sdr-info { font-size: 0.75em; color: #5a7a5a; line-height: 1.6; padding: 0 4px; }
+.sdr-info h4 { color: #7aff7a; margin: 10px 0 5px; font-size: 0.95em; }
+.sdr-info code { background: #121e12; padding: 1px 4px; border-radius: 3px; color: #7aff7a; font-size: 0.9em; }
+.sdr-info table { width: 100%; border-collapse: collapse; margin: 6px 0; font-size: 0.9em; }
+.sdr-info th, .sdr-info td { border: 1px solid #2a4a2a; padding: 4px 6px; text-align: left; }
+.sdr-info th { background: #1a2a1a; color: #7aff7a; }
+
+/* 滚动条 */
+.rx-list::-webkit-scrollbar { width: 6px; }
+.rx-list::-webkit-scrollbar-track { background: #0a140a; }
+.rx-list::-webkit-scrollbar-thumb { background: #2a4a2a; border-radius: 3px; }
 </style>
 
 <div class="sdr-container">
@@ -173,7 +182,7 @@
   <!-- 顶部接收器显示屏 -->
   <div class="sdr-top-display">
     <div class="display-rx-name" id="rxName">SELECT RECEIVER</div>
-    <div class="display-rx-desc" id="rxDesc">点击地球上的节点或从下方列表选择一个 SDR 接收器</div>
+    <div class="display-rx-desc" id="rxDesc">点击地球上的节点或从下方列表选择 SDR 接收器，界面将内嵌显示在下方</div>
     <div class="spectrum paused" id="spectrum">
       <div class="bar" style="animation-delay:0s;height:40%"></div>
       <div class="bar" style="animation-delay:0.1s;height:70%"></div>
@@ -185,8 +194,6 @@
       <div class="bar" style="animation-delay:0.7s;height:75%"></div>
       <div class="bar" style="animation-delay:0.8s;height:55%"></div>
       <div class="bar" style="animation-delay:0.9s;height:85%"></div>
-      <div class="bar" style="animation-delay:1.0s;height:65%"></div>
-      <div class="bar" style="animation-delay:1.1s;height:50%"></div>
     </div>
     <div class="display-rx-meta">
       <span id="rxTypeBadge">类型: --</span>
@@ -198,56 +205,63 @@
 
   <!-- 调谐控制面板 -->
   <div class="tune-panel" id="tunePanel" style="display:none;">
-    <div class="tune-panel-title">▸ TUNING CONTROL / 调谐控制</div>
+    <div class="tune-panel-title">▸ TUNING CONTROL / 调谐控制（点击预设直接内嵌调谐）</div>
     <div class="freq-presets" id="freqPresets"></div>
     <div class="custom-tune">
       <input type="number" id="customFreq" placeholder="频率 kHz" min="10" max="1800000" step="1">
       <select id="customMode">
-        <option value="am">AM 调幅</option>
-        <option value="usb">USB 上边带</option>
-        <option value="lsb">LSB 下边带</option>
-        <option value="cw">CW 等幅报</option>
-        <option value="fm">FM 调频</option>
-        <option value="sam">SAM 同步检波</option>
+        <option value="am">AM</option>
+        <option value="usb">USB</option>
+        <option value="lsb">LSB</option>
+        <option value="cw">CW</option>
+        <option value="fm">FM</option>
+        <option value="sam">SAM</option>
       </select>
-      <button class="open-rx-btn" onclick="openReceiverCustom()">⚡ 打开接收器并调谐</button>
+      <button class="tune-btn" onclick="tuneCustom()">⚡ 调谐</button>
     </div>
   </div>
 
   <!-- 3D 地球 -->
   <div class="globe-panel">
     <canvas id="globeCanvas"></canvas>
-    <div class="globe-loading" id="globeLoading">INITIALIZING 3D GLOBE...</div>
+    <div class="globe-loading" id="globeLoading">INITIALIZING 3D GLOBE...<br><span style="font-size:10px;color:#3a5a3a">加载 three.js + three-globe</span></div>
     <div class="radar-panel paused" id="radarPanel">
-      <svg width="50" height="50" viewBox="0 0 60 60">
+      <svg width="44" height="44" viewBox="0 0 60 60">
         <circle cx="30" cy="30" r="27" fill="none" stroke="rgba(74,255,74,0.35)" stroke-width="1"/>
         <circle cx="30" cy="30" r="18" fill="none" stroke="rgba(74,255,74,0.35)" stroke-width="1"/>
         <circle cx="30" cy="30" r="9" fill="none" stroke="rgba(74,255,74,0.35)" stroke-width="1"/>
-        <g class="radar-sweep-svg">
-          <path d="M30,30 L30,3 A27,27 0 0,0 7,12 Z" fill="rgba(74,255,74,0.4)"/>
-          <line x1="30" y1="30" x2="30" y2="3" stroke="rgba(74,255,74,0.8)" stroke-width="1"/>
-        </g>
+        <g><path d="M30,30 L30,3 A27,27 0 0,0 7,12 Z" fill="rgba(74,255,74,0.4)"/><line x1="30" y1="30" x2="30" y2="3" stroke="rgba(74,255,74,0.8)" stroke-width="1"/></g>
         <circle cx="30" cy="30" r="2.5" fill="#4aff4a"/>
       </svg>
     </div>
     <div id="globeCrosshair">
-      <svg width="28" height="28" viewBox="-14 -14 28 28" style="overflow:visible;">
-        <line x1="-12" y1="0" x2="-5" y2="0" stroke="#ff9900" stroke-width="2.5"/>
-        <line x1="5" y1="0" x2="12" y2="0" stroke="#ff9900" stroke-width="2.5"/>
-        <line x1="0" y1="-12" x2="0" y2="-5" stroke="#ff9900" stroke-width="2.5"/>
-        <line x1="0" y1="5" x2="0" y2="12" stroke="#ff9900" stroke-width="2.5"/>
-        <circle cx="0" cy="0" r="4" fill="#ff9900" opacity="0.9"/>
-        <circle cx="0" cy="0" r="8" fill="none" stroke="#ff9900" stroke-width="1.5" opacity="0.6"/>
+      <svg width="24" height="24" viewBox="-12 -12 24 24" style="overflow:visible;">
+        <line x1="-10" y1="0" x2="-4" y2="0" stroke="#ff9900" stroke-width="2"/>
+        <line x1="4" y1="0" x2="10" y2="0" stroke="#ff9900" stroke-width="2"/>
+        <line x1="0" y1="-10" x2="0" y2="-4" stroke="#ff9900" stroke-width="2"/>
+        <line x1="0" y1="4" x2="0" y2="10" stroke="#ff9900" stroke-width="2"/>
+        <circle cx="0" cy="0" r="3" fill="#ff9900" opacity="0.9"/>
       </svg>
     </div>
-    <svg id="globeConnector">
-      <line id="connectorLine" x1="0" y1="0" x2="0" y2="0" stroke="#ff9900" stroke-width="1.5" stroke-dasharray="4,2"/>
-      <circle id="connectorDot" cx="0" cy="0" r="4" fill="#ff9900"/>
-      <g id="connectorLabelFO" transform="translate(0,0)">
-        <rect id="connectorLabelBg" x="0" y="0" width="120" height="22" rx="3" fill="rgba(0,0,0,0.85)" stroke="#ff9900" stroke-width="1"/>
-        <text id="connectorLabelText" x="6" y="15" fill="#ffcc66" font-family="Courier New" font-size="11" font-weight="bold">RECEIVER</text>
-      </g>
-    </svg>
+  </div>
+
+  <!-- SDR 内嵌界面 -->
+  <div class="sdr-embed-panel" id="sdrEmbedPanel">
+    <div class="sdr-embed-header">
+      <span class="sdr-embed-title" id="embedTitle">▸ SDR RECEIVER / 接收器界面</span>
+      <span class="sdr-embed-freq" id="embedFreq">--</span>
+      <div class="sdr-embed-actions">
+        <button onclick="reloadEmbed()">↻ 刷新</button>
+        <button onclick="openExternal()">↗ 新窗口</button>
+      </div>
+    </div>
+    <div class="sdr-iframe-wrap" id="iframeWrap">
+      <div class="sdr-iframe-placeholder" id="iframePlaceholder">
+        <div class="big">📡</div>
+        选择一个 SDR 接收器后<br>界面将在此处内嵌显示
+      </div>
+      <iframe id="sdrIframe" style="display:none;" sandbox="allow-scripts allow-same-origin allow-forms allow-popups" referrerpolicy="no-referrer"></iframe>
+    </div>
   </div>
 
   <!-- 接收器列表 -->
@@ -267,240 +281,257 @@
   <!-- 使用说明 -->
   <div class="sdr-info">
     <h4>▸ 操作指南</h4>
-    <p><strong>1. 选择接收器：</strong>点击 3D 地球上的发光节点，或从下方列表中选择。节点颜色区分类型：<span style="color:#00ccff">■WebSDR</span> / <span style="color:#44ff44">■KiwiSDR</span> / <span style="color:#ffaa00">■OpenWebRX</span>。</p>
-    <p><strong>2. 快捷调谐：</strong>选中接收器后，调谐面板会显示常用频率预设。点击预设按钮，会在新标签页打开 SDR 界面并自动调谐到目标频率和模式。</p>
-    <p><strong>3. 自定义频率：</strong>输入频率（单位 kHz）和解调模式，点击"打开接收器并调谐"。例如输入 <code>14200</code> + <code>USB</code> 即可收听 20 米业余波段。</p>
-    <p><strong>4. 地球操作：</strong>鼠标拖拽旋转地球，滚轮缩放；移动端单指旋转、双指缩放。</p>
+    <p><strong>1. 选择接收器：</strong>点击 3D 地球上的发光节点，或从下方列表选择。节点颜色：<span style="color:#00ccff">■WebSDR</span> / <span style="color:#44ff44">■KiwiSDR</span> / <span style="color:#ffaa00">■OpenWebRX</span>。</p>
+    <p><strong>2. 内嵌显示：</strong>选中后，SDR 接收器的完整操作界面会直接内嵌显示在上方黑色区域中，可以直接在页面内调谐、收听、看频谱瀑布图。</p>
+    <p><strong>3. 快捷调谐：</strong>调谐面板提供 12 个常用频率预设，点击后自动在 iframe 中调谐到目标频率和模式。</p>
+    <p><strong>4. 自定义频率：</strong>输入频率（kHz）和解调模式，点击"调谐"按钮。</p>
+    <p><strong>5. 地球操作：</strong>鼠标拖拽旋转，滚轮缩放；移动端单指旋转、双指缩放。</p>
 
-    <h4>▸ URL 调谐参数说明</h4>
+    <h4>▸ URL 调谐参数</h4>
     <table>
-      <tr><th>SDR 类型</th><th>URL 格式</th><th>示例</th></tr>
-      <tr><td>KiwiSDR</td><td><code>?f={频率kHz}{模式}</code></td><td><code>?f=10119cw</code></td></tr>
-      <tr><td>WebSDR</td><td><code>?tune={频率},{模式}</code></td><td><code>?tune=9600,am</code></td></tr>
-      <tr><td>OpenWebRX</td><td>不支持直接调谐参数</td><td>打开后手动调谐</td></tr>
-    </table>
-
-    <h4>▸ 推荐收听频率</h4>
-    <table>
-      <tr><th>频率</th><th>内容</th><th>模式</th><th>最佳时段</th></tr>
-      <tr><td>5.0 MHz</td><td>标准时间发播 WWV/BPM</td><td>AM</td><td>全天</td></tr>
-      <tr><td>10.0 MHz</td><td>标准时间发播 WWV/WVH</td><td>AM</td><td>全天</td></tr>
-      <tr><td>15.0 MHz</td><td>标准时间发播 WWV</td><td>AM</td><td>白天</td></tr>
-      <tr><td>9.6 MHz</td><td>国际广播</td><td>AM</td><td>夜间</td></tr>
-      <tr><td>14.2 MHz</td><td>业余 20m 话音</td><td>USB</td><td>全天</td></tr>
-      <tr><td>7.1 MHz</td><td>业余 40m 话音</td><td>LSB</td><td>夜间</td></tr>
-      <tr><td>3.8 MHz</td><td>业余 80m 话音</td><td>LSB</td><td>夜间</td></tr>
-      <tr><td>28.5 MHz</td><td>业余 10m 话音</td><td>USB</td><td>白天</td></tr>
-      <tr><td>10.119 MHz</td><td>业余 30m CW</td><td>CW</td><td>全天</td></tr>
+      <tr><th>类型</th><th>格式</th><th>示例</th></tr>
+      <tr><td>KiwiSDR</td><td><code>?f=频率kHz模式</code></td><td><code>?f=10119cw</code></td></tr>
+      <tr><td>WebSDR</td><td><code>?tune=频率,模式</code></td><td><code>?tune=9600,am</code></td></tr>
+      <tr><td>OpenWebRX</td><td>不支持 URL 调谐</td><td>打开后手动操作</td></tr>
     </table>
 
     <h4>▸ 数据来源</h4>
-    <p>接收器数据综合自 <a href="https://www.receiverbook.de" target="_blank" rel="noopener" style="color:#8aff8a">ReceiverBook</a>、<a href="http://rx.kiwisdr.com" target="_blank" rel="noopener" style="color:#8aff8a">KiwiSDR 官方列表</a>、<a href="http://www.websdr.org" target="_blank" rel="noopener" style="color:#8aff8a">WebSDR 官方站点</a>。节点在线状态可能随时变化，如无法访问请尝试其他节点。</p>
+    <p>接收器数据综合自 <a href="https://www.receiverbook.de" target="_blank" style="color:#7aff7a">ReceiverBook</a>、<a href="http://rx.kiwisdr.com" target="_blank" style="color:#7aff7a">KiwiSDR 官方列表</a>、<a href="http://www.websdr.org" target="_blank" style="color:#7aff7a">WebSDR 官方站点</a>。节点在线状态可能变化，如无法加载请尝试其他节点。</p>
   </div>
 
 </div>
 
 <script>
 // ===== SDR 接收器数据 =====
-const sdrReceivers = [
-  // ===== 欧洲 =====
-  { id:'twente', name:'University of Twente', type:'websdr', desc:'荷兰特文特大学，全球最经典的 WebSDR 节点，运行超15年，Mini-Whip 有源天线，底噪极低', freqRange:'0-29.16 MHz', url:'http://websdr.ewi.utwente.nl:8901/', antenna:'Mini-Whip', geo:{lat:52.2215, lon:6.8937, label:'荷兰 Enschede'} },
-  { id:'almere', name:'KiwiSDR Almere', type:'kiwisdr', desc:'荷兰阿尔梅勒 KiwiSDR，低噪声环境，0-30MHz 全波段覆盖', freqRange:'0-30 MHz', url:'http://kiwisdr.pa7ey.nl:8073/', antenna:'有源天线', geo:{lat:52.3712, lon:5.2186, label:'荷兰 Almere'} },
-  { id:'pi4utr', name:'PI4UTR WebSDR', type:'websdr', desc:'荷兰 PI4UTR 业余电台俱乐部 WebSDR', freqRange:'HF', url:'http://sdr.pi4utr.nl:8073/', antenna:'多波段', geo:{lat:52.0918, lon:5.1206, label:'荷兰 Utrecht'} },
-  { id:'dk0te_web', name:'DK0TE WebSDR', type:'websdr', desc:'德国康斯坦茨应用技术大学 DHBW Friedrichshafen 校园 WebSDR', freqRange:'HF', url:'http://dk0te.dhbw-ravensburg.de:8901/', antenna:'宽带天线', geo:{lat:47.6512, lon:9.4815, label:'德国 Friedrichshafen'} },
-  { id:'dk0te_kiwi', name:'DK0TE KiwiSDR', type:'kiwisdr', desc:'德国 DHBW Ravensburg 校园 KiwiSDR，与 WebSDR 同址', freqRange:'0-30 MHz', url:'http://kiwisdr.inf.dhbw-ravensburg.de:8073/', antenna:'宽带天线', geo:{lat:47.6512, lon:9.4815, label:'德国 Friedrichshafen'} },
-  { id:'dd5jfk', name:'DD5JFK OpenWebRX', type:'openwebrx', desc:'德国 OpenWebRX 实验节点，支持多种数字模式解码', freqRange:'HF', url:'http://sdr2.justjakob.de/', antenna:'SDRplay', geo:{lat:50.1109, lon:8.6821, label:'德国 Frankfurt'} },
-  { id:'db0hal', name:'DB0HAL Halle KiwiSDR', type:'kiwisdr', desc:'德国哈雷市 KiwiSDR，0-30MHz，位于前东德地区', freqRange:'0-30 MHz', url:'http://db0hal.dyndns.org:8073/', antenna:'长线天线', geo:{lat:51.4823, lon:11.9692, label:'德国 Halle'} },
-  { id:'dl8las', name:'DL8LAS Trent SDR', type:'kiwisdr', desc:'德国 DL8LAS 0-30MHz KiwiSDR', freqRange:'0-30 MHz', url:'http://dl8las.dyndns.org:8073/', antenna:'环形天线', geo:{lat:51.9612, lon:7.6216, label:'德国 Münster'} },
-  { id:'edc2_1', name:'EDDC2 KiwiSDR #1', type:'kiwisdr', desc:'德国德累斯顿 EDDC2 航空信息服务 KiwiSDR 节点 1', freqRange:'0-30 MHz', url:'http://edc2.proxy.kiwisdr.com:8073/', antenna:'宽带', geo:{lat:51.0504, lon:13.7373, label:'德国 Dresden'} },
-  { id:'edc2_2', name:'EDDC2 KiwiSDR #2', type:'kiwisdr', desc:'德国德累斯顿 EDDC2 KiwiSDR 节点 2', freqRange:'0-30 MHz', url:'http://edc2-2.proxy.kiwisdr.com:8073/', antenna:'宽带', geo:{lat:51.0504, lon:13.7373, label:'德国 Dresden'} },
-  { id:'hasenberg1', name:'Hasenberg KiwiSDR #1', type:'kiwisdr', desc:'瑞士 Hasenberg 700m 高山 KiwiSDR，Sirio Gain-Master 天线', freqRange:'0-30 MHz', url:'http://hasenberg01.proxy.kiwisdr.com:8073/', antenna:'Sirio Gain-Master', geo:{lat:47.4245, lon:8.557, label:'瑞士 Zürich'} },
-  { id:'hasenberg_air', name:'Hasenberg AirBand', type:'kiwisdr', desc:'瑞士 Hasenberg 航空波段专用 KiwiSDR，110-142MHz', freqRange:'110-142 MHz', url:'http://hasenberg04.proxy.kiwisdr.com:8073/', antenna:'VHF Omni', geo:{lat:47.4245, lon:8.557, label:'瑞士 Zürich'} },
-  { id:'hackgreen', name:'Hack Green WebSDR', type:'websdr', desc:'英国 Nantwich 秘密核掩体 WebSDR，冷战遗迹改造', freqRange:'HF', url:'http://hackgreensdr.org:8901/', antenna:'宽带', geo:{lat:53.0667, lon:2.5167, label:'英国 Nantwich'} },
-  { id:'oh5liz', name:'OH5LIZ NDB KiwiSDR', type:'kiwisdr', desc:'芬兰 OH5LIZ 专用 NDB（无方向信标）监测 KiwiSDR', freqRange:'0-30 MHz', url:'http://oh5liz.proxy.kiwisdr.com:8073/', antenna:'环形天线', geo:{lat:60.1699, lon:24.9384, label:'芬兰 Helsinki'} },
-  { id:'oh5ae', name:'OH5AE SDR', type:'kiwisdr', desc:'芬兰 Elimäki OH5AE/OH5R KiwiSDR', freqRange:'0-30 MHz', url:'http://oh5ae.dyndns.org:8073/', antenna:'有源天线', geo:{lat:60.8225, lon:23.9348, label:'芬兰 Elimäki'} },
-  { id:'sdrpal', name:'SDR-PAL-1 KiwiSDR', type:'kiwisdr', desc:'芬兰拉普兰 Enontekiö Pallas 山 KiwiSDR，MEGALOOP 天线', freqRange:'0-30 MHz', url:'http://sdrpal.proxy.kiwisdr.com:8073/', antenna:'MEGALOOP', geo:{lat:68.0333, lon:23.8833, label:'芬兰 Enontekiö'} },
-  { id:'plonsk', name:'PLOŃSK KiwiSDR', type:'kiwisdr', desc:'波兰普沃茨克 KiwiSDR，2.5m 有源铜管环形天线', freqRange:'0-30 MHz', url:'http://plonsk.proxy.kiwisdr.com:8073/', antenna:'2.5m Active Loop', geo:{lat:52.6223, lon:19.6803, label:'波兰 Płońsk'} },
-  { id:'dk0ffo', name:'DK0FFO KiwiSDR', type:'kiwisdr', desc:'德国奥得河畔法兰克福 DK0FFO KiwiSDR', freqRange:'0-30 MHz', url:'http://kiwisdr-dk0ffo.hamspirit.de:8073/', antenna:'宽带', geo:{lat:52.3428, lon:14.5553, label:'德国 Frankfurt/Oder'} },
-  { id:'witikiwi', name:'Wels KiwiSDR', type:'kiwisdr', desc:'奥地利韦尔斯 KiwiSDR', freqRange:'0-30 MHz', url:'http://witikiwi.ddns.net:8073/', antenna:'宽带', geo:{lat:48.1566, lon:14.0244, label:'奥地利 Wels'} },
-  { id:'dab956', name:'DAB956 Cottbus SDR', type:'kiwisdr', desc:'德国科特布斯 DAB956 KiwiSDR', freqRange:'0-30 MHz', url:'http://dab956kiwi.proxy.kiwisdr.com:8073/', antenna:'宽带', geo:{lat:51.7582, lon:14.3291, label:'德国 Cottbus'} },
-
-  // ===== 北美 =====
-  { id:'utah1', name:'Northern Utah WebSDR #1', type:'websdr', desc:'美国犹他州北部 WebSDR，覆盖 160m-6m 业余波段，TCI 530 对数周期天线', freqRange:'1.8-54 MHz', url:'http://websdr1.sdrutah.org/', antenna:'TCI 530 Log Periodic', geo:{lat:41.4211, lon:-112.001, label:'美国 Utah'} },
-  { id:'utah2', name:'Northern Utah WebSDR #2', type:'websdr', desc:'美国犹他州 WebSDR 第二台，覆盖 30m-6m，Cushcraft AR6 天线', freqRange:'10-54 MHz', url:'http://websdr2.sdrutah.org:8902/', antenna:'Cushcraft AR6 Ringo', geo:{lat:41.4211, lon:-112.001, label:'美国 Utah'} },
-  { id:'n1nte1', name:'N1NTE-1 KiwiSDR', type:'kiwisdr', desc:'美国马萨诸塞/康涅狄格州边界 KiwiSDR 节点 1', freqRange:'0-30 MHz', url:'http://sigmasdr.ddns.net:8073/', antenna:'宽带', geo:{lat:42.0594, lon:-73.3195, label:'美国 MA/CT'} },
-  { id:'n1nte3', name:'N1NTE-3 KiwiSDR', type:'kiwisdr', desc:'美国 N1NTE KiwiSDR 节点 3', freqRange:'0-30 MHz', url:'http://sigmasdr.ddns.net:8075/', antenna:'宽带', geo:{lat:42.0594, lon:-73.3195, label:'美国 MA/CT'} },
-  { id:'wpc4alp', name:'WPC4ALP KiwiSDR', type:'kiwisdr', desc:'美国田纳西州中部 KiwiSDR', freqRange:'0-30 MHz', url:'http://midtn.dynu.net:8073/', antenna:'宽带', geo:{lat:35.9606, lon:-86.8245, label:'美国 Tennessee'} },
-  { id:'kj6eo', name:'KJ6EO WebSDR', type:'websdr', desc:'美国加州圣塔克拉利塔 WebSDR，洛杉矶以北45英里', freqRange:'HF', url:'http://kj6eo.com:8901/', antenna:'宽带', geo:{lat:34.3917, lon:-118.5426, label:'美国 California'} },
-  { id:'ve6jy', name:'VE6JY KiwiSDR', type:'kiwisdr', desc:'加拿大阿尔伯塔省 Lamont KiwiSDR', freqRange:'0-30 MHz', url:'http://kiwisdr.ve6slp.ca:8173/', antenna:'宽带', geo:{lat:53.7601, lon:-112.7706, label:'加拿大 Alberta'} },
-
-  // ===== 亚太地区 =====
-  { id:'marahau1', name:'Marahau KiwiSDR #1', type:'kiwisdr', desc:'新西兰塔斯曼湾 Marahau KiwiSDR 五台机组之一，亚太地区低延迟首选', freqRange:'0.5-30 MHz', url:'http://kiwisdr.owdjim.gen.nz:8073/', antenna:'宽带', geo:{lat:-40.9833, lon:173.0, label:'新西兰 Marahau'} },
-  { id:'marahau2', name:'Marahau KiwiSDR #2', type:'kiwisdr', desc:'新西兰 Marahau KiwiSDR 五台机组之二', freqRange:'0.5-30 MHz', url:'http://kiwisdr.owdjim.gen.nz:8074/', antenna:'宽带', geo:{lat:-40.9833, lon:173.0, label:'新西兰 Marahau'} },
-  { id:'zl2p', name:'ZL2P H6 Masterton', type:'kiwisdr', desc:'新西兰马斯特顿 ZL2P KiwiSDR，60m 高塔天线', freqRange:'0-30 MHz', url:'http://h6.proxy.kiwisdr.com/', antenna:'60m Tower', geo:{lat:-40.9513, lon:175.6565, label:'新西兰 Masterton'} },
-  { id:'zl2daa', name:'ZL2DAA Ohau SDR', type:'kiwisdr', desc:'新西兰 Ohau ZL2DAA KiwiSDR', freqRange:'0-30 MHz', url:'http://kiwisdr.annett.co.nz:8073/', antenna:'宽带', geo:{lat:-40.6833, lon:174.3, label:'新西兰 Ohau'} },
-  { id:'vk2atz', name:'VK2ATZ KiwiSDR', type:'kiwisdr', desc:'澳大利亚新南威尔士州 Teralba VK2ATZ KiwiSDR，SNR 33dB 优秀', freqRange:'0-30 MHz', url:'http://vk2atz.proxy.kiwisdr.com:8073/', antenna:'宽带', geo:{lat:-32.8167, lon:151.6833, label:'澳洲 NSW'} },
-  { id:'vk3khz', name:'VK3KHZ ×6 KiwiSDR', type:'kiwisdr', desc:'澳大利亚维多利亚州 VK3KHZ，6 张 KiwiSDR 卡组成的接收阵列', freqRange:'0-30 MHz', url:'http://vk3khz.proxy.kiwisdr.com:8073/', antenna:'多天线阵列', geo:{lat:-37.8136, lon:144.9631, label:'澳洲 Victoria'} },
-  { id:'jh1pgf', name:'JH1PGF Tokyo KiwiSDR', type:'kiwisdr', desc:'日本东京 JH1PGF KiwiSDR，双 SDR 服务器提供 8 通道', freqRange:'0-30 MHz', url:'http://kiwisdr.hirokinet.com:8073/', antenna:'宽带', geo:{lat:35.6762, lon:139.6503, label:'日本东京'} },
-  { id:'shibuya', name:'Shibuya KiwiSDR', type:'kiwisdr', desc:'日本东京涩谷 KiwiSDR，城市环境接收', freqRange:'0-30 MHz', url:'http://shibuya.proxy.kiwisdr.com:8073/', antenna:'宽带', geo:{lat:35.6595, lon:139.7004, label:'日本东京涩谷'} },
-  { id:'gnss_tokyo', name:'GNSS Tokyo KiwiSDR', type:'kiwisdr', desc:'日本东京 GNSS 项目 KiwiSDR，GPS 校准频率', freqRange:'0-30 MHz', url:'http://gnss.0am.jp:8073/', antenna:'宽带', geo:{lat:35.6762, lon:139.6503, label:'日本东京'} },
-  { id:'web888_nagano', name:'Web-888 Nagano', type:'websdr', desc:'日本长野 Web-888 宽带 WebSDR', freqRange:'HF', url:'http://web888-nagano.proxy.kiwisdr.com:8073/', antenna:'宽带', geo:{lat:36.6486, lon:138.1949, label:'日本长野'} },
-  { id:'web888_tokyo', name:'Web-888 Tokyo', type:'websdr', desc:'日本东京 Web-888 宽带 WebSDR', freqRange:'HF', url:'http://web888-tokyo.proxy.kiwisdr.com:8073/', antenna:'宽带', geo:{lat:35.6762, lon:139.6503, label:'日本东京'} },
-
-  // ===== 中国地区 =====
-  { id:'cq_railgun', name:'Chongqing KiwiSDR', type:'kiwisdr', desc:'中国重庆 KiwiSDR 节点（代理访问，稳定性不保证）', freqRange:'0-30 MHz', url:'http://railgun.proxy.kiwisdr.com:8073/', antenna:'宽带', geo:{lat:29.5630, lon:106.5516, label:'中国重庆'} },
-  { id:'wx_21599', name:'Wuxi KiwiSDR', type:'kiwisdr', desc:'中国江苏无锡 KiwiSDR 节点（代理访问）', freqRange:'0-30 MHz', url:'http://21599.proxy.kiwisdr.com:8073/', antenna:'宽带', geo:{lat:31.4912, lon:120.3119, label:'中国无锡'} },
-  { id:'cz_cangzhou', name:'Cangzhou KiwiSDR', type:'kiwisdr', desc:'中国河北沧州 KiwiSDR 节点（代理访问）', freqRange:'0-30 MHz', url:'http://czsdr.proxy.kiwisdr.com:8073/', antenna:'宽带', geo:{lat:38.3034, lon:116.8386, label:'中国沧州'} },
-  { id:'sz_sdr', name:'Shenzhen KiwiSDR', type:'kiwisdr', desc:'中国广东深圳 KiwiSDR 节点（可能已下线）', freqRange:'0-30 MHz', url:'http://szsdr.ddns.net:8073/', antenna:'宽带', geo:{lat:22.5431, lon:114.0579, label:'中国深圳'} },
+var sdrReceivers = [
+  // 欧洲
+  { id:'twente', name:'University of Twente', type:'websdr', desc:'荷兰特文特大学，全球最经典 WebSDR，Mini-Whip 天线，底噪极低', freqRange:'0-29.16 MHz', url:'http://websdr.ewi.utwente.nl:8901/', antenna:'Mini-Whip', geo:{lat:52.2215, lon:6.8937, label:'荷兰 Enschede'} },
+  { id:'almere', name:'KiwiSDR Almere', type:'kiwisdr', desc:'荷兰阿尔梅勒 KiwiSDR，低噪声环境', freqRange:'0-30 MHz', url:'http://kiwisdr.pa7ey.nl:8073/', antenna:'有源天线', geo:{lat:52.3712, lon:5.2186, label:'荷兰 Almere'} },
+  { id:'pi4utr', name:'PI4UTR WebSDR', type:'websdr', desc:'荷兰 PI4UTR 业余电台俱乐部', freqRange:'HF', url:'http://sdr.pi4utr.nl:8073/', antenna:'多波段', geo:{lat:52.0918, lon:5.1206, label:'荷兰 Utrecht'} },
+  { id:'dk0te_web', name:'DK0TE WebSDR', type:'websdr', desc:'德国康斯坦茨应用技术大学校园', freqRange:'HF', url:'http://dk0te.dhbw-ravensburg.de:8901/', antenna:'宽带', geo:{lat:47.6512, lon:9.4815, label:'德国 Friedrichshafen'} },
+  { id:'dk0te_kiwi', name:'DK0TE KiwiSDR', type:'kiwisdr', desc:'德国 DHBW Ravensburg 校园 KiwiSDR', freqRange:'0-30 MHz', url:'http://kiwisdr.inf.dhbw-ravensburg.de:8073/', antenna:'宽带', geo:{lat:47.6512, lon:9.4815, label:'德国 Friedrichshafen'} },
+  { id:'dd5jfk', name:'DD5JFK OpenWebRX', type:'openwebrx', desc:'德国 OpenWebRX 实验节点', freqRange:'HF', url:'http://sdr2.justjakob.de/', antenna:'SDRplay', geo:{lat:50.1109, lon:8.6821, label:'德国 Frankfurt'} },
+  { id:'db0hal', name:'DB0HAL Halle', type:'kiwisdr', desc:'德国哈雷市 KiwiSDR', freqRange:'0-30 MHz', url:'http://db0hal.dyndns.org:8073/', antenna:'长线', geo:{lat:51.4823, lon:11.9692, label:'德国 Halle'} },
+  { id:'dl8las', name:'DL8LAS Trent', type:'kiwisdr', desc:'德国 DL8LAS 0-30MHz', freqRange:'0-30 MHz', url:'http://dl8las.dyndns.org:8073/', antenna:'环形', geo:{lat:51.9612, lon:7.6216, label:'德国 Münster'} },
+  { id:'hasenberg1', name:'Hasenberg KiwiSDR', type:'kiwisdr', desc:'瑞士 700m 高山 KiwiSDR，Sirio Gain-Master 天线', freqRange:'0-30 MHz', url:'http://hasenberg01.proxy.kiwisdr.com:8073/', antenna:'Sirio Gain-Master', geo:{lat:47.4245, lon:8.557, label:'瑞士 Zürich'} },
+  { id:'hasenberg_air', name:'Hasenberg AirBand', type:'kiwisdr', desc:'瑞士航空波段专用 110-142MHz', freqRange:'110-142 MHz', url:'http://hasenberg04.proxy.kiwisdr.com:8073/', antenna:'VHF Omni', geo:{lat:47.4245, lon:8.557, label:'瑞士 Zürich'} },
+  { id:'hackgreen', name:'Hack Green WebSDR', type:'websdr', desc:'英国 Nantwich 冷战核掩体改造', freqRange:'HF', url:'http://hackgreensdr.org:8901/', antenna:'宽带', geo:{lat:53.0667, lon:-2.5167, label:'英国 Nantwich'} },
+  { id:'oh5liz', name:'OH5LIZ NDB KiwiSDR', type:'kiwisdr', desc:'芬兰专用 NDB 信标监测', freqRange:'0-30 MHz', url:'http://oh5liz.proxy.kiwisdr.com:8073/', antenna:'环形', geo:{lat:60.1699, lon:24.9384, label:'芬兰 Helsinki'} },
+  { id:'oh5ae', name:'OH5AE SDR', type:'kiwisdr', desc:'芬兰 Elimäki KiwiSDR', freqRange:'0-30 MHz', url:'http://oh5ae.dyndns.org:8073/', antenna:'有源', geo:{lat:60.8225, lon:23.9348, label:'芬兰 Elimäki'} },
+  { id:'sdrpal', name:'SDR-PAL-1 KiwiSDR', type:'kiwisdr', desc:'芬兰拉普兰 Pallas 山，MEGALOOP 天线', freqRange:'0-30 MHz', url:'http://sdrpal.proxy.kiwisdr.com:8073/', antenna:'MEGALOOP', geo:{lat:68.0333, lon:23.8833, label:'芬兰 Enontekiö'} },
+  { id:'plonsk', name:'PLOŃSK KiwiSDR', type:'kiwisdr', desc:'波兰普沃茨克，2.5m 有源铜管环形天线', freqRange:'0-30 MHz', url:'http://plonsk.proxy.kiwisdr.com:8073/', antenna:'2.5m Active Loop', geo:{lat:52.6223, lon:19.6803, label:'波兰 Płońsk'} },
+  { id:'dk0ffo', name:'DK0FFO KiwiSDR', type:'kiwisdr', desc:'德国奥得河畔法兰克福', freqRange:'0-30 MHz', url:'http://kiwisdr-dk0ffo.hamspirit.de:8073/', antenna:'宽带', geo:{lat:52.3428, lon:14.5553, label:'德国 Frankfurt/Oder'} },
+  { id:'witikiwi', name:'Wels KiwiSDR', type:'kiwisdr', desc:'奥地利韦尔斯', freqRange:'0-30 MHz', url:'http://witikiwi.ddns.net:8073/', antenna:'宽带', geo:{lat:48.1566, lon:14.0244, label:'奥地利 Wels'} },
+  // 北美
+  { id:'utah1', name:'Northern Utah WebSDR', type:'websdr', desc:'美国犹他州，TCI 530 对数周期天线', freqRange:'1.8-54 MHz', url:'http://websdr1.sdrutah.org/', antenna:'TCI 530', geo:{lat:41.4211, lon:-112.001, label:'美国 Utah'} },
+  { id:'n1nte1', name:'N1NTE-1 KiwiSDR', type:'kiwisdr', desc:'美国马萨诸塞/康涅狄格边界', freqRange:'0-30 MHz', url:'http://sigmasdr.ddns.net:8073/', antenna:'宽带', geo:{lat:42.0594, lon:-73.3195, label:'美国 MA/CT'} },
+  { id:'wpc4alp', name:'WPC4ALP KiwiSDR', type:'kiwisdr', desc:'美国田纳西州中部', freqRange:'0-30 MHz', url:'http://midtn.dynu.net:8073/', antenna:'宽带', geo:{lat:35.9606, lon:-86.8245, label:'美国 Tennessee'} },
+  { id:'kj6eo', name:'KJ6EO WebSDR', type:'websdr', desc:'美国加州圣塔克拉利塔', freqRange:'HF', url:'http://kj6eo.com:8901/', antenna:'宽带', geo:{lat:34.3917, lon:-118.5426, label:'美国 California'} },
+  { id:'ve6jy', name:'VE6JY KiwiSDR', type:'kiwisdr', desc:'加拿大阿尔伯塔省', freqRange:'0-30 MHz', url:'http://kiwisdr.ve6slp.ca:8173/', antenna:'宽带', geo:{lat:53.7601, lon:-112.7706, label:'加拿大 Alberta'} },
+  // 亚太
+  { id:'marahau1', name:'Marahau KiwiSDR #1', type:'kiwisdr', desc:'新西兰塔斯曼湾，亚太低延迟首选', freqRange:'0.5-30 MHz', url:'http://kiwisdr.owdjim.gen.nz:8073/', antenna:'宽带', geo:{lat:-40.9833, lon:173.0, label:'新西兰 Marahau'} },
+  { id:'marahau2', name:'Marahau KiwiSDR #2', type:'kiwisdr', desc:'新西兰 Marahau 五台机组之二', freqRange:'0.5-30 MHz', url:'http://kiwisdr.owdjim.gen.nz:8074/', antenna:'宽带', geo:{lat:-40.9833, lon:173.0, label:'新西兰 Marahau'} },
+  { id:'zl2p', name:'ZL2P H6 Masterton', type:'kiwisdr', desc:'新西兰马斯特顿，60m 高塔天线', freqRange:'0-30 MHz', url:'http://h6.proxy.kiwisdr.com/', antenna:'60m Tower', geo:{lat:-40.9513, lon:175.6565, label:'新西兰 Masterton'} },
+  { id:'vk2atz', name:'VK2ATZ KiwiSDR', type:'kiwisdr', desc:'澳大利亚新南威尔士，SNR 33dB', freqRange:'0-30 MHz', url:'http://vk2atz.proxy.kiwisdr.com:8073/', antenna:'宽带', geo:{lat:-32.8167, lon:151.6833, label:'澳洲 NSW'} },
+  { id:'vk3khz', name:'VK3KHZ ×6 KiwiSDR', type:'kiwisdr', desc:'澳大利亚维多利亚，6 卡接收阵列', freqRange:'0-30 MHz', url:'http://vk3khz.proxy.kiwisdr.com:8073/', antenna:'阵列', geo:{lat:-37.8136, lon:144.9631, label:'澳洲 Victoria'} },
+  { id:'jh1pgf', name:'JH1PGF Tokyo KiwiSDR', type:'kiwisdr', desc:'日本东京，双 SDR 服务器 8 通道', freqRange:'0-30 MHz', url:'http://kiwisdr.hirokinet.com:8073/', antenna:'宽带', geo:{lat:35.6762, lon:139.6503, label:'日本东京'} },
+  { id:'shibuya', name:'Shibuya KiwiSDR', type:'kiwisdr', desc:'日本东京涩谷', freqRange:'0-30 MHz', url:'http://shibuya.proxy.kiwisdr.com:8073/', antenna:'宽带', geo:{lat:35.6595, lon:139.7004, label:'日本东京涩谷'} },
+  { id:'gnss_tokyo', name:'GNSS Tokyo KiwiSDR', type:'kiwisdr', desc:'日本东京 GPS 校准频率', freqRange:'0-30 MHz', url:'http://gnss.0am.jp:8073/', antenna:'宽带', geo:{lat:35.6762, lon:139.6503, label:'日本东京'} },
+  // 中国
+  { id:'cq_railgun', name:'Chongqing KiwiSDR', type:'kiwisdr', desc:'中国重庆（代理访问）', freqRange:'0-30 MHz', url:'http://railgun.proxy.kiwisdr.com:8073/', antenna:'宽带', geo:{lat:29.5630, lon:106.5516, label:'中国重庆'} },
+  { id:'wx_21599', name:'Wuxi KiwiSDR', type:'kiwisdr', desc:'中国江苏无锡（代理访问）', freqRange:'0-30 MHz', url:'http://21599.proxy.kiwisdr.com:8073/', antenna:'宽带', geo:{lat:31.4912, lon:120.3119, label:'中国无锡'} },
+  { id:'cz_cangzhou', name:'Cangzhou KiwiSDR', type:'kiwisdr', desc:'中国河北沧州（代理访问）', freqRange:'0-30 MHz', url:'http://czsdr.proxy.kiwisdr.com:8073/', antenna:'宽带', geo:{lat:38.3034, lon:116.8386, label:'中国沧州'} },
 ];
 
 // ===== 频率预设 =====
-const freqPresets = [
-  { label:'⏱ 标准时间 5MHz', freq:5000, mode:'am' },
-  { label:'⏱ 标准时间 10MHz', freq:10000, mode:'am' },
-  { label:'⏱ 标准时间 15MHz', freq:15000, mode:'am' },
-  { label:'📡 国际广播 9.6MHz', freq:9600, mode:'am' },
-  { label:'📡 国际广播 11.8MHz', freq:11800, mode:'am' },
-  { label:'📡 国际广播 13.6MHz', freq:13600, mode:'am' },
-  { label:'📡 国际广播 15.4MHz', freq:15400, mode:'am' },
-  { label:'🎙 业余 20m 14.2MHz', freq:14200, mode:'usb' },
-  { label:'🎙 业余 40m 7.1MHz', freq:7100, mode:'lsb' },
-  { label:'🎙 业余 80m 3.8MHz', freq:3800, mode:'lsb' },
-  { label:'🎙 业余 10m 28.5MHz', freq:28500, mode:'usb' },
-  { label:'📻 业余 30m CW 10.119', freq:10119, mode:'cw' },
+var freqPresets = [
+  { label:'⏱ 5MHz 标准时间', freq:5000, mode:'am' },
+  { label:'⏱ 10MHz 标准时间', freq:10000, mode:'am' },
+  { label:'⏱ 15MHz 标准时间', freq:15000, mode:'am' },
+  { label:'📡 9.6MHz 国际广播', freq:9600, mode:'am' },
+  { label:'📡 11.8MHz 国际广播', freq:11800, mode:'am' },
+  { label:'📡 13.6MHz 国际广播', freq:13600, mode:'am' },
+  { label:'📡 15.4MHz 国际广播', freq:15400, mode:'am' },
+  { label:'🎙 14.2MHz 业余20m', freq:14200, mode:'usb' },
+  { label:'🎙 7.1MHz 业余40m', freq:7100, mode:'lsb' },
+  { label:'🎙 3.8MHz 业余80m', freq:3800, mode:'lsb' },
+  { label:'🎙 28.5MHz 业余10m', freq:28500, mode:'usb' },
+  { label:'📻 10.119MHz CW', freq:10119, mode:'cw' },
 ];
 
-// ===== 状态变量 =====
-let currentRx = null;
-let currentFilter = 'all';
-let globeInstance = null;
-let globeScene, globeCamera, globeRenderer;
-let globeAutoRotate = true;
-let userRotX = 0, userRotY = 0;
+// ===== 状态 =====
+var currentRx = null;
+var currentFreq = null;
+var currentFilter = 'all';
+var globeInstance = null;
+var globeScene, globeCamera, globeRenderer;
+var globeAutoRotate = true;
+var userRotX = 0, userRotY = 0;
+var globeInited = false;
 
-// ===== 类型颜色映射 =====
-const typeColors = { websdr:'#00ccff', kiwisdr:'#44ff44', openwebrx:'#ffaa00' };
-const typeNames = { websdr:'WebSDR', kiwisdr:'KiwiSDR', openwebrx:'OpenWebRX' };
+var typeColors = { websdr:'#00ccff', kiwisdr:'#44ff44', openwebrx:'#ffaa00' };
+var typeNames = { websdr:'WebSDR', kiwisdr:'KiwiSDR', openwebrx:'OpenWebRX' };
 
-// ===== 初始化接收器列表 =====
-function initRxList() {
-  const list = document.getElementById('rxList');
-  const filtered = currentFilter === 'all' ? sdrReceivers : sdrReceivers.filter(r => r.type === currentFilter);
-  list.innerHTML = filtered.map(r => `
-    <div class="rx-item ${currentRx && currentRx.id === r.id ? 'active' : ''}" onclick="selectReceiver('${r.id}')">
-      <span class="rx-item-type type-${r.type}">${typeNames[r.type]}</span>
-      <span class="rx-item-name">${r.name}</span>
-      <span class="rx-item-loc">${r.geo.label}</span>
-    </div>
-  `).join('');
+// ===== 构建调谐 URL =====
+function buildTunedUrl(rx, freqKhz, mode) {
+  var base = rx.url;
+  if (rx.type === 'kiwisdr') {
+    return base + (base.indexOf('?') >= 0 ? '&' : '?') + 'f=' + freqKhz + mode;
+  } else if (rx.type === 'websdr') {
+    return base + (base.indexOf('?') >= 0 ? '&' : '?') + 'tune=' + freqKhz + ',' + mode;
+  }
+  return base;
 }
 
-// ===== 类型筛选 =====
-function filterType(type) {
-  currentFilter = type;
-  document.querySelectorAll('.type-filter-btn').forEach(b => {
-    b.classList.toggle('active', b.dataset.type === type);
-  });
-  initRxList();
-  if (globeInstance) {
-    const filtered = type === 'all' ? sdrReceivers : sdrReceivers.filter(r => r.type === type);
-    globeInstance.pointsData(filtered.filter(r => r.geo));
+// ===== 在 iframe 中加载 SDR =====
+function loadSdrInIframe(url, freqLabel) {
+  var iframe = document.getElementById('sdrIframe');
+  var placeholder = document.getElementById('iframePlaceholder');
+  iframe.style.display = 'block';
+  placeholder.style.display = 'none';
+  iframe.src = url;
+  if (freqLabel) {
+    document.getElementById('embedFreq').textContent = freqLabel;
   }
 }
 
 // ===== 选择接收器 =====
 function selectReceiver(id) {
-  const rx = sdrReceivers.find(r => r.id === id);
+  var rx = null;
+  for (var i = 0; i < sdrReceivers.length; i++) {
+    if (sdrReceivers[i].id === id) { rx = sdrReceivers[i]; break; }
+  }
   if (!rx) return;
   currentRx = rx;
+  currentFreq = null;
 
-  // 更新显示屏
   document.getElementById('rxName').textContent = rx.name;
   document.getElementById('rxDesc').textContent = rx.desc;
-  document.getElementById('rxTypeBadge').innerHTML = `类型: <span class="type-badge type-${rx.type}">${typeNames[rx.type]}</span>`;
-  document.getElementById('rxFreqRange').textContent = `频段: ${rx.freqRange}`;
-  document.getElementById('rxAntenna').textContent = `天线: ${rx.antenna}`;
-  document.getElementById('rxLocation').textContent = `位置: ${rx.geo.label}`;
+  document.getElementById('rxTypeBadge').innerHTML = '类型: <span class="type-badge type-' + rx.type + '">' + typeNames[rx.type] + '</span>';
+  document.getElementById('rxFreqRange').textContent = '频段: ' + rx.freqRange;
+  document.getElementById('rxAntenna').textContent = '天线: ' + rx.antenna;
+  document.getElementById('rxLocation').textContent = '位置: ' + rx.geo.label;
+  document.getElementById('embedTitle').textContent = '▸ ' + rx.name;
 
-  // 激活频谱动画
   document.getElementById('spectrum').classList.remove('paused');
   document.getElementById('radarPanel').classList.remove('paused');
-
-  // 显示调谐面板
   document.getElementById('tunePanel').style.display = 'block';
 
-  // 生成频率预设按钮
-  const presetsEl = document.getElementById('freqPresets');
-  presetsEl.innerHTML = freqPresets.map((p, i) =>
-    `<button class="freq-preset-btn" onclick="openReceiverPreset(${i})">${p.label}</button>`
-  ).join('');
+  // 频率预设按钮
+  var presetsEl = document.getElementById('freqPresets');
+  var html = '';
+  for (var j = 0; j < freqPresets.length; j++) {
+    html += '<button class="freq-preset-btn" onclick="tunePreset(' + j + ')">' + freqPresets[j].label + '</button>';
+  }
+  presetsEl.innerHTML = html;
 
-  // 更新列表高亮
+  // 在 iframe 中加载 SDR 主页
+  loadSdrInIframe(rx.url, '主页');
+
   initRxList();
 
   // 聚焦地球
-  if (typeof focusGlobeOnLatLon === 'function') {
+  if (globeInited && globeCamera) {
     focusGlobeOnLatLon(rx.geo.lat, rx.geo.lon);
   }
 }
 
-// ===== 构建带调谐参数的 URL =====
-function buildTunedUrl(rx, freqKhz, mode) {
-  const base = rx.url;
-  if (rx.type === 'kiwisdr') {
-    // KiwiSDR: ?f=频率kHz模式
-    return base + (base.includes('?') ? '&' : '?') + `f=${freqKhz}${mode}`;
-  } else if (rx.type === 'websdr') {
-    // WebSDR: ?tune=频率,模式
-    return base + (base.includes('?') ? '&' : '?') + `tune=${freqKhz},${mode}`;
-  } else {
-    // OpenWebRX 不支持直接调谐参数
-    return base;
+// ===== 预设调谐 =====
+function tunePreset(index) {
+  if (!currentRx) return;
+  var p = freqPresets[index];
+  currentFreq = p;
+  var url = buildTunedUrl(currentRx, p.freq, p.mode);
+  loadSdrInIframe(url, p.freq / 1000 + ' MHz ' + p.mode.toUpperCase());
+
+  // 高亮当前预设
+  var btns = document.querySelectorAll('.freq-preset-btn');
+  for (var i = 0; i < btns.length; i++) {
+    btns[i].classList.toggle('active', i === index);
   }
 }
 
-// ===== 用预设频率打开接收器 =====
-function openReceiverPreset(index) {
+// ===== 自定义调谐 =====
+function tuneCustom() {
   if (!currentRx) return;
-  const p = freqPresets[index];
-  const url = buildTunedUrl(currentRx, p.freq, p.mode);
-  window.open(url, '_blank');
+  var freq = document.getElementById('customFreq').value;
+  var mode = document.getElementById('customMode').value;
+  if (!freq || freq < 10) { alert('请输入有效频率（kHz，最小10）'); return; }
+  currentFreq = { freq: parseInt(freq), mode: mode };
+  var url = buildTunedUrl(currentRx, parseInt(freq), mode);
+  loadSdrInIframe(url, (freq / 1000) + ' MHz ' + mode.toUpperCase());
+
+  var btns = document.querySelectorAll('.freq-preset-btn');
+  for (var i = 0; i < btns.length; i++) btns[i].classList.remove('active');
 }
 
-// ===== 用自定义频率打开接收器 =====
-function openReceiverCustom() {
-  if (!currentRx) return;
-  const freq = document.getElementById('customFreq').value;
-  const mode = document.getElementById('customMode').value;
-  if (!freq || freq < 10) {
-    alert('请输入有效的频率（kHz，最小10）');
-    return;
+// ===== 刷新 iframe =====
+function reloadEmbed() {
+  var iframe = document.getElementById('sdrIframe');
+  if (iframe.src) iframe.src = iframe.src;
+}
+
+// ===== 新窗口打开 =====
+function openExternal() {
+  if (currentRx) {
+    var url = currentFreq ? buildTunedUrl(currentRx, currentFreq.freq, currentFreq.mode) : currentRx.url;
+    window.open(url, '_blank');
   }
-  const url = buildTunedUrl(currentRx, parseInt(freq), mode);
-  window.open(url, '_blank');
+}
+
+// ===== 接收器列表 =====
+function initRxList() {
+  var list = document.getElementById('rxList');
+  var filtered = currentFilter === 'all' ? sdrReceivers : sdrReceivers.filter(function(r){ return r.type === currentFilter; });
+  var html = '';
+  for (var i = 0; i < filtered.length; i++) {
+    var r = filtered[i];
+    var active = currentRx && currentRx.id === r.id ? ' active' : '';
+    html += '<div class="rx-item' + active + '" onclick="selectReceiver(\'' + r.id + '\')">'
+      + '<span class="rx-item-type type-' + r.type + '">' + typeNames[r.type] + '</span>'
+      + '<span class="rx-item-name">' + r.name + '</span>'
+      + '<span class="rx-item-loc">' + r.geo.label + '</span>'
+      + '</div>';
+  }
+  list.innerHTML = html;
+}
+
+function filterType(type) {
+  currentFilter = type;
+  var btns = document.querySelectorAll('.type-filter-btn');
+  for (var i = 0; i < btns.length; i++) {
+    btns[i].classList.toggle('active', btns[i].getAttribute('data-type') === type);
+  }
+  initRxList();
+  if (globeInited && globeInstance) {
+    var filtered = type === 'all' ? sdrReceivers : sdrReceivers.filter(function(r){ return r.type === type; });
+    globeInstance.pointsData(filtered.filter(function(r){ return r.geo; }));
+  }
 }
 
 // ===== 动态加载脚本 =====
-function loadScript(src) {
-  return new Promise((resolve, reject) => {
-    const s = document.createElement('script');
-    s.src = src; s.onload = resolve; s.onerror = reject;
-    document.head.appendChild(s);
-  });
+function loadScript(src, callback) {
+  var s = document.createElement('script');
+  s.src = src;
+  s.onload = callback;
+  s.onerror = function() {
+    document.getElementById('globeLoading').innerHTML = '<span style="color:#ff6666">FAILED TO LOAD: ' + src + '</span>';
+  };
+  document.head.appendChild(s);
 }
 
 // ===== 地球聚焦 =====
 function focusGlobeOnLatLon(lat, lon) {
   if (!globeInstance || !globeCamera) return;
-  const phi = (90 - lat) * Math.PI / 180;
-  const theta = (lon + 180) * Math.PI / 180;
-  const radius = 300;
-  const targetX = -(radius * Math.sin(phi) * Math.cos(theta));
-  const targetY = radius * Math.cos(phi);
-  const targetZ = radius * Math.sin(phi) * Math.sin(theta);
-  const startPos = globeCamera.position.clone();
-  const endPos = new THREE.Vector3(targetX, targetY, targetZ);
-  let progress = 0;
+  var phi = (90 - lat) * Math.PI / 180;
+  var theta = (lon + 180) * Math.PI / 180;
+  var radius = 300;
+  var targetX = -(radius * Math.sin(phi) * Math.cos(theta));
+  var targetY = radius * Math.cos(phi);
+  var targetZ = radius * Math.sin(phi) * Math.sin(theta);
+  var startPos = globeCamera.position.clone();
+  var endPos = new THREE.Vector3(targetX, targetY, targetZ);
+  var progress = 0;
   function animateCamera() {
     progress += 0.025;
     if (progress >= 1) { globeCamera.position.copy(endPos); return; }
@@ -512,198 +543,167 @@ function focusGlobeOnLatLon(lat, lon) {
 }
 
 // ===== 初始化 3D 地球 =====
-async function initGlobe() {
-  const container = document.querySelector('.globe-panel');
+function initGlobe() {
+  var container = document.querySelector('.globe-panel');
   if (!container) return;
-  try {
-    await loadScript('https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js');
-    await loadScript('https://cdn.jsdelivr.net/npm/three-globe@2.31.0/dist/three-globe.min.js');
 
-    document.getElementById('globeLoading').style.display = 'none';
-    const width = container.clientWidth, height = container.clientHeight;
+  var loading = document.getElementById('globeLoading');
 
-    globeScene = new THREE.Scene();
-    globeScene.background = new THREE.Color(0x0a1a0a);
-    globeCamera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
-    globeCamera.position.z = 300;
-    globeRenderer = new THREE.WebGLRenderer({ canvas: document.getElementById('globeCanvas'), antialias: true, alpha: true });
-    globeRenderer.setSize(width, height);
-    globeRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+  loadScript('https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js', function() {
+    loadScript('https://cdn.jsdelivr.net/npm/three-globe@2.31.0/dist/three-globe.min.js', function() {
 
-    globeScene.add(new THREE.AmbientLight(0x404060, 0.5));
-    const sunLight = new THREE.DirectionalLight(0xffffff, 1.2);
-    sunLight.position.set(5, 3, 5); globeScene.add(sunLight);
+      try {
+        loading.style.display = 'none';
+        var width = container.clientWidth || 800;
+        var height = container.clientHeight || 280;
 
-    const textureLoader = new THREE.TextureLoader();
-    const dayTexture = textureLoader.load('https://unpkg.com/three-globe@2.31.0/example/img/earth-blue-marble.jpg');
-    const waterTexture = textureLoader.load('https://unpkg.com/three-globe@2.31.0/example/img/earth-water.png');
+        globeScene = new THREE.Scene();
+        globeScene.background = new THREE.Color(0x050d05);
+        globeCamera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+        globeCamera.position.z = 300;
+        globeRenderer = new THREE.WebGLRenderer({ canvas: document.getElementById('globeCanvas'), antialias: true, alpha: true });
+        globeRenderer.setSize(width, height);
+        globeRenderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
 
-    const greenTechMaterial = new THREE.ShaderMaterial({
-      uniforms: {
-        dayTexture: { value: dayTexture },
-        waterTexture: { value: waterTexture },
-        lightDir: { value: new THREE.Vector3(1, 1, 1).normalize() },
-        time: { value: 0 }
-      },
-      vertexShader: `
-        varying vec2 vUv; varying vec3 vNormal; varying vec3 vViewPosition;
-        void main() { vUv=uv; vNormal=normalize(normalMatrix*normal);
-          vec4 mv=modelViewMatrix*vec4(position,1.0); vViewPosition=-mv.xyz;
-          gl_Position=projectionMatrix*mv; }
-      `,
-      fragmentShader: `
-        uniform sampler2D dayTexture; uniform sampler2D waterTexture;
-        uniform vec3 lightDir; uniform float time;
-        varying vec2 vUv; varying vec3 vNormal; varying vec3 vViewPosition;
-        void main() {
-          vec4 wm=texture2D(waterTexture,vUv); float isWater=wm.r;
-          vec3 ocean=vec3(0.01,0.04,0.025); vec3 land=vec3(0.15,0.6,0.25);
-          float lm=1.0-smoothstep(0.4,0.6,isWater);
-          vec3 color=mix(ocean,land,lm);
-          float diff=max(dot(vNormal,lightDir),0.0); color*=(0.35+diff*0.9);
-          float coast=smoothstep(0.15,0.0,abs(isWater-0.5));
-          color+=vec3(0.2,0.8,0.35)*coast*0.8;
-          float lat=(vUv.y-0.5)*180.0; float lon=(vUv.x-0.5)*360.0;
-          float ld=1.0-abs(fract(lat/15.0)-0.5)*2.0;
-          float lod=1.0-abs(fract(lon/15.0)-0.5)*2.0;
-          float grid=max(smoothstep(0.96,0.99,ld),smoothstep(0.96,0.99,lod))*0.35;
-          grid*=isWater; color+=vec3(0.2,0.8,0.35)*grid;
-          gl_FragColor=vec4(color,1.0);
-        }
-      `
-    });
+        globeScene.add(new THREE.AmbientLight(0x404060, 0.6));
+        var sun = new THREE.DirectionalLight(0xffffff, 1.2);
+        sun.position.set(5, 3, 5);
+        globeScene.add(sun);
 
-    globeInstance = new ThreeGlobe({ waitForGlobeReady: true, animateIn: true })
-      .showAtmosphere(false).showGraticules(false)
-      .globeMaterial(greenTechMaterial)
-      .pointsData(sdrReceivers.filter(r => r.geo))
-      .pointLat(d => d.geo.lat)
-      .pointLng(d => d.geo.lon)
-      .pointColor(d => currentRx && currentRx.id === d.id ? '#ff9900' : typeColors[d.type])
-      .pointAltitude(0.05).pointRadius(0.6).pointResolution(16);
+        var textureLoader = new THREE.TextureLoader();
+        var dayTexture = textureLoader.load('https://unpkg.com/three-globe@2.31.0/example/img/earth-blue-marble.jpg');
+        var waterTexture = textureLoader.load('https://unpkg.com/three-globe@2.31.0/example/img/earth-water.png');
 
-    globeScene.add(globeInstance);
-
-    // 星空
-    const starGeo = new THREE.BufferGeometry();
-    const starPos = new Float32Array(500 * 3);
-    for (let i = 0; i < 1500; i++) starPos[i] = (Math.random() - 0.5) * 1000;
-    starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
-    globeScene.add(new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0x4a8a4a, size: 0.5, transparent: true, opacity: 0.6 })));
-
-    // 国家边界
-    fetch('https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_110m_admin_0_countries.geojson')
-      .then(r => r.json()).then(geo => globeInstance.polygonsData(geo.features))
-      .catch(() => {});
-
-    // 交互
-    const canvas = document.getElementById('globeCanvas');
-    let isDragging = false, lastX = 0, lastY = 0;
-    canvas.addEventListener('mousedown', e => { isDragging=true; globeAutoRotate=false; lastX=e.clientX; lastY=e.clientY; canvas.style.cursor='grabbing'; });
-    window.addEventListener('mousemove', e => { if(!isDragging) return; userRotY+=(e.clientX-lastX)*0.005; userRotX+=(e.clientY-lastY)*0.005; userRotX=Math.max(-Math.PI/2,Math.min(Math.PI/2,userRotX)); lastX=e.clientX; lastY=e.clientY; });
-    window.addEventListener('mouseup', () => { isDragging=false; canvas.style.cursor='grab'; setTimeout(()=>globeAutoRotate=true,3000); });
-    canvas.addEventListener('wheel', e => { e.preventDefault(); globeCamera.position.z=Math.max(120,Math.min(500,globeCamera.position.z+e.deltaY*0.3)); }, {passive:false});
-
-    // 触摸
-    let touchDist=0, touchZoom=0;
-    canvas.addEventListener('touchstart', e => { if(e.touches.length===1){isDragging=true;globeAutoRotate=false;lastX=e.touches[0].clientX;lastY=e.touches[0].clientY;} else if(e.touches.length===2){isDragging=false;globeAutoRotate=false;const dx=e.touches[0].clientX-e.touches[1].clientX,dy=e.touches[0].clientY-e.touches[1].clientY;touchDist=Math.sqrt(dx*dx+dy*dy);touchZoom=globeCamera.position.z;} },{passive:true});
-    canvas.addEventListener('touchmove', e => { e.preventDefault(); if(e.touches.length===1){userRotY+=(e.touches[0].clientX-lastX)*0.005;userRotX+=(e.touches[0].clientY-lastY)*0.005;userRotX=Math.max(-Math.PI/2,Math.min(Math.PI/2,userRotX));lastX=e.touches[0].clientX;lastY=e.touches[0].clientY;} else if(e.touches.length===2){const dx=e.touches[0].clientX-e.touches[1].clientX,dy=e.touches[0].clientY-e.touches[1].clientY;const scale=touchDist/Math.sqrt(dx*dx+dy*dy);globeCamera.position.z=Math.max(120,Math.min(500,touchZoom*scale));} },{passive:false});
-    canvas.addEventListener('touchend', e => { if(e.touches.length===0){isDragging=false;setTimeout(()=>globeAutoRotate=true,3000);} });
-
-    // 点击检测
-    const raycaster = new THREE.Raycaster();
-    const mouse = new THREE.Vector2();
-    canvas.addEventListener('click', e => {
-      const rect = canvas.getBoundingClientRect();
-      mouse.x = ((e.clientX-rect.left)/rect.width)*2-1;
-      mouse.y = -((e.clientY-rect.top)/rect.height)*2+1;
-      raycaster.setFromCamera(mouse, globeCamera);
-      const intersects = raycaster.intersectObjects(globeInstance.children, true);
-      if (intersects.length > 0) {
-        let closest = null, minDist = Infinity;
-        sdrReceivers.filter(r => r.geo).forEach(r => {
-          const coords = globeInstance.getCoords(r.geo.lat, r.geo.lon, 0.02);
-          const point = new THREE.Vector3(coords.x, coords.y, coords.z);
-          globeInstance.localToWorld(point);
-          const dist = point.distanceTo(intersects[0].point);
-          if (dist < minDist && dist < 12) { minDist = dist; closest = r; }
+        var greenMat = new THREE.ShaderMaterial({
+          uniforms: {
+            dayTexture: { value: dayTexture },
+            waterTexture: { value: waterTexture },
+            lightDir: { value: new THREE.Vector3(1, 1, 1).normalize() }
+          },
+          vertexShader: 'varying vec2 vUv; varying vec3 vNormal; void main(){vUv=uv;vNormal=normalize(normalMatrix*normal);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',
+          fragmentShader: 'uniform sampler2D dayTexture; uniform sampler2D waterTexture; uniform vec3 lightDir; varying vec2 vUv; varying vec3 vNormal; void main(){vec4 wm=texture2D(waterTexture,vUv);float isWater=wm.r;vec3 ocean=vec3(0.01,0.04,0.025);vec3 land=vec3(0.12,0.5,0.2);float lm=1.0-smoothstep(0.4,0.6,isWater);vec3 color=mix(ocean,land,lm);float diff=max(dot(vNormal,lightDir),0.0);color*=(0.35+diff*0.9);float coast=smoothstep(0.15,0.0,abs(isWater-0.5));color+=vec3(0.2,0.8,0.35)*coast*0.6;gl_FragColor=vec4(color,1.0);}'
         });
-        if (closest) selectReceiver(closest.id);
+
+        globeInstance = new ThreeGlobe()
+          .showAtmosphere(false)
+          .showGraticules(false)
+          .globeMaterial(greenMat)
+          .pointsData(sdrReceivers.filter(function(r){ return r.geo; }))
+          .pointLat(function(d){ return d.geo.lat; })
+          .pointLng(function(d){ return d.geo.lon; })
+          .pointColor(function(d){ return currentRx && currentRx.id === d.id ? '#ff9900' : typeColors[d.type]; })
+          .pointAltitude(0.05)
+          .pointRadius(0.6)
+          .pointResolution(16);
+
+        globeScene.add(globeInstance);
+
+        // 星空
+        var starGeo = new THREE.BufferGeometry();
+        var starPos = new Float32Array(1500);
+        for (var si = 0; si < 1500; si++) starPos[si] = (Math.random() - 0.5) * 1000;
+        starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+        globeScene.add(new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0x3a6a3a, size: 0.5, transparent: true, opacity: 0.5 })));
+
+        // 国家边界
+        try {
+          fetch('https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_110m_admin_0_countries.geojson')
+            .then(function(r){ return r.json(); })
+            .then(function(geo){ globeInstance.polygonsData(geo.features); })
+            .catch(function(){});
+        } catch(e) {}
+
+        globeInited = true;
+
+        // 交互
+        var canvas = document.getElementById('globeCanvas');
+        var isDragging = false, lastX = 0, lastY = 0;
+        canvas.addEventListener('mousedown', function(e){ isDragging=true; globeAutoRotate=false; lastX=e.clientX; lastY=e.clientY; canvas.style.cursor='grabbing'; });
+        window.addEventListener('mousemove', function(e){ if(!isDragging) return; userRotY+=(e.clientX-lastX)*0.005; userRotX+=(e.clientY-lastY)*0.005; userRotX=Math.max(-Math.PI/2,Math.min(Math.PI/2,userRotX)); lastX=e.clientX; lastY=e.clientY; });
+        window.addEventListener('mouseup', function(){ isDragging=false; canvas.style.cursor='grab'; setTimeout(function(){globeAutoRotate=true;},3000); });
+        canvas.addEventListener('wheel', function(e){ e.preventDefault(); globeCamera.position.z=Math.max(120,Math.min(500,globeCamera.position.z+e.deltaY*0.3)); }, {passive:false});
+
+        // 触摸
+        var touchDist=0, touchZoom=0;
+        canvas.addEventListener('touchstart', function(e){ if(e.touches.length===1){isDragging=true;globeAutoRotate=false;lastX=e.touches[0].clientX;lastY=e.touches[0].clientY;} else if(e.touches.length===2){isDragging=false;globeAutoRotate=false;var dx=e.touches[0].clientX-e.touches[1].clientX,dy=e.touches[0].clientY-e.touches[1].clientY;touchDist=Math.sqrt(dx*dx+dy*dy);touchZoom=globeCamera.position.z;} },{passive:true});
+        canvas.addEventListener('touchmove', function(e){ e.preventDefault(); if(e.touches.length===1){userRotY+=(e.touches[0].clientX-lastX)*0.005;userRotX+=(e.touches[0].clientY-lastY)*0.005;userRotX=Math.max(-Math.PI/2,Math.min(Math.PI/2,userRotX));lastX=e.touches[0].clientX;lastY=e.touches[0].clientY;} else if(e.touches.length===2){var dx=e.touches[0].clientX-e.touches[1].clientX,dy=e.touches[0].clientY-e.touches[1].clientY;var scale=touchDist/Math.sqrt(dx*dx+dy*dy);globeCamera.position.z=Math.max(120,Math.min(500,touchZoom*scale));} },{passive:false});
+        canvas.addEventListener('touchend', function(e){ if(e.touches.length===0){isDragging=false;setTimeout(function(){globeAutoRotate=true;},3000);} });
+
+        // 点击
+        var raycaster = new THREE.Raycaster();
+        var mouse = new THREE.Vector2();
+        canvas.addEventListener('click', function(e){
+          var rect = canvas.getBoundingClientRect();
+          mouse.x = ((e.clientX-rect.left)/rect.width)*2-1;
+          mouse.y = -((e.clientY-rect.top)/rect.height)*2+1;
+          raycaster.setFromCamera(mouse, globeCamera);
+          var intersects = raycaster.intersectObjects(globeInstance.children, true);
+          if (intersects.length > 0) {
+            var closest = null, minDist = Infinity;
+            var visible = currentFilter === 'all' ? sdrReceivers : sdrReceivers.filter(function(r){ return r.type === currentFilter; });
+            for (var ci = 0; ci < visible.length; ci++) {
+              var r = visible[ci];
+              if (!r.geo) continue;
+              var coords = globeInstance.getCoords(r.geo.lat, r.geo.lon, 0.02);
+              var point = new THREE.Vector3(coords.x, coords.y, coords.z);
+              globeInstance.localToWorld(point);
+              var dist = point.distanceTo(intersects[0].point);
+              if (dist < minDist && dist < 14) { minDist = dist; closest = r; }
+            }
+            if (closest) selectReceiver(closest.id);
+          }
+        });
+
+        // 动画循环
+        function animate() {
+          requestAnimationFrame(animate);
+          if (globeAutoRotate) userRotY += 0.001;
+          if (globeInstance) {
+            globeInstance.rotation.y = userRotY;
+            globeInstance.rotation.x = userRotX;
+          }
+          updateCrosshair();
+          globeRenderer.render(globeScene, globeCamera);
+        }
+        animate();
+
+        window.addEventListener('resize', function(){
+          var w = container.clientWidth, h = container.clientHeight;
+          globeCamera.aspect = w/h; globeCamera.updateProjectionMatrix();
+          globeRenderer.setSize(w, h);
+        });
+
+      } catch (e) {
+        loading.style.display = 'block';
+        loading.innerHTML = '<span style="color:#ff6666">GLOBE ERROR: ' + e.message + '</span>';
+        console.error('Globe init error:', e);
       }
     });
-
-    // 动画循环
-    function animate() {
-      requestAnimationFrame(animate);
-      if (globeAutoRotate) userRotY += 0.001;
-      globeInstance.rotation.y = userRotY;
-      globeInstance.rotation.x = userRotX;
-      updateCrosshair();
-      globeRenderer.render(globeScene, globeCamera);
-    }
-    animate();
-
-    // 窗口缩放
-    window.addEventListener('resize', () => {
-      const w = container.clientWidth, h = container.clientHeight;
-      globeCamera.aspect = w/h; globeCamera.updateProjectionMatrix();
-      globeRenderer.setSize(w, h);
-    });
-
-  } catch (e) {
-    document.getElementById('globeLoading').textContent = 'GLOBE INIT FAILED: ' + e.message;
-    console.error('Globe init error:', e);
-  }
+  });
 }
 
-// ===== 更新十字瞄准镜和引线标签 =====
+// ===== 十字瞄准镜 =====
 function updateCrosshair() {
-  const crosshair = document.getElementById('globeCrosshair');
-  const connector = document.getElementById('globeConnector');
-  if (!currentRx || !currentRx.geo || !globeInstance) {
-    crosshair.style.opacity = '0'; connector.style.opacity = '0'; return;
-  }
-  const coords = globeInstance.getCoords(currentRx.geo.lat, currentRx.geo.lon, 0.05);
-  const point = new THREE.Vector3(coords.x, coords.y, coords.z);
+  var crosshair = document.getElementById('globeCrosshair');
+  if (!currentRx || !currentRx.geo || !globeInstance) { crosshair.style.opacity = '0'; return; }
+  var coords = globeInstance.getCoords(currentRx.geo.lat, currentRx.geo.lon, 0.05);
+  var point = new THREE.Vector3(coords.x, coords.y, coords.z);
   globeInstance.localToWorld(point);
-  const projected = point.clone().project(globeCamera);
-  const container = document.querySelector('.globe-panel');
-  const rect = container.getBoundingClientRect();
-  const x = (projected.x * 0.5 + 0.5) * rect.width;
-  const y = (-projected.y * 0.5 + 0.5) * rect.height;
-  const camDist = globeCamera.position.distanceTo(point);
-  const center = new THREE.Vector3(0,0,0); globeInstance.localToWorld(center);
-  const centerDist = globeCamera.position.distanceTo(center);
-  const isFront = camDist < centerDist + 5;
-
-  if (isFront && projected.z < 1) {
-    crosshair.style.left = x + 'px'; crosshair.style.top = y + 'px';
-    crosshair.style.opacity = '1'; connector.style.opacity = '1';
-    // 引线方向：根据位置选择上/下/左/右
-    const lineLen = 60;
-    let lx = x, ly = y, labelX = x, labelY = y;
-    const dir = x > rect.width * 0.6 ? 'left' : x < rect.width * 0.4 ? 'right' : y > rect.height * 0.6 ? 'up' : 'down';
-    if (dir === 'left') { lx = x - lineLen; labelX = x - lineLen - 125; labelY = y - 11; }
-    else if (dir === 'right') { lx = x + lineLen; labelX = x + lineLen + 5; labelY = y - 11; }
-    else if (dir === 'up') { ly = y - lineLen; labelX = x - 60; labelY = y - lineLen - 22; }
-    else { ly = y + lineLen; labelX = x - 60; labelY = y + lineLen + 2; }
-    document.getElementById('connectorLine').setAttribute('x1', x);
-    document.getElementById('connectorLine').setAttribute('y1', y);
-    document.getElementById('connectorLine').setAttribute('x2', lx);
-    document.getElementById('connectorLine').setAttribute('y2', ly);
-    document.getElementById('connectorDot').setAttribute('cx', lx);
-    document.getElementById('connectorDot').setAttribute('cy', ly);
-    document.getElementById('connectorLabelFO').setAttribute('transform', `translate(${labelX},${labelY})`);
-    document.getElementById('connectorLabelText').textContent = currentRx.name.substring(0, 16);
-  } else {
-    crosshair.style.opacity = '0.25'; connector.style.opacity = '0.25';
-    crosshair.style.left = x + 'px'; crosshair.style.top = y + 'px';
-  }
+  var projected = point.clone().project(globeCamera);
+  var container = document.querySelector('.globe-panel');
+  var rect = container.getBoundingClientRect();
+  var x = (projected.x * 0.5 + 0.5) * rect.width;
+  var y = (-projected.y * 0.5 + 0.5) * rect.height;
+  var camDist = globeCamera.position.distanceTo(point);
+  var center = new THREE.Vector3(0,0,0); globeInstance.localToWorld(center);
+  var centerDist = globeCamera.position.distanceTo(center);
+  var isFront = camDist < centerDist + 5;
+  crosshair.style.left = x + 'px';
+  crosshair.style.top = y + 'px';
+  crosshair.style.opacity = isFront ? '1' : '0.3';
 }
 
 // ===== 启动 =====
-document.addEventListener('DOMContentLoaded', () => {
-  initRxList();
-  initGlobe();
-});
+initRxList();
+initGlobe();
 </script>
