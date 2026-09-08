@@ -1,289 +1,385 @@
-<!-- Post: 全球在线 SDR 电台巡礼 | ID: 2026-063 | Created: 2026-09-08 | Tags: tech, works | Format: markdown -->
+<!-- Post: 从零搭建在线 SDR 电台完全指南 | ID: 2026-063 | Created: 2026-09-08 | Tags: tech, works | Format: markdown -->
 
-## 开篇：什么是在线 SDR？
+## 开篇：为什么要自己搭一个在线 SDR？
 
-SDR（Software Defined Radio，软件定义无线电）的核心思想是：把传统收音机里用硬件电路完成的调制解调、滤波、混频等工作，全部搬到软件里来做。天线接收到的射频信号经过 ADC（模数转换）采样后，直接变成数字信号，后续所有处理都由 CPU/GPU 完成。
+你可能已经用过别人的在线 SDR（Software Defined Radio，软件定义无线电）——打开浏览器，就能操作一台远在荷兰或新西兰的接收器，收听全世界的电波。但用别人的总有各种限制：用户满了要排队、节点突然下线、你所在的地区没有好节点。
 
-**在线 SDR** 则更进一步：有人把自己的 SDR 接收器连上互联网，开放一个网页界面，让全世界任何人都能通过浏览器远程调谐、收听、看频谱瀑布图。你不需要拥有任何无线电硬件，只要有网，就能操作一台位于荷兰、新西兰、日本或南极的接收器。
+**自己搭一个**，其实没有想象中那么难。最便宜的方案只要一个树莓派（Raspberry Pi，约 300 元人民币）+ 一个 RTL-SDR 电视棒（约 80 元）+ 一根电线做天线，就能让全世界的人通过浏览器操作你的接收器。
 
-> 这是业余无线电精神的极致体现：**搭建、共享、探索**。
-
----
-
-## 四大在线 SDR 体系
-
-目前全球公开的在线 SDR 主要分为四大技术体系，各有优劣：
-
-| 体系 | 开发者 | 典型硬件 | 频率范围 | 同时用户数 | 访问方式 |
-|------|--------|----------|----------|-----------|----------|
-| **WebSDR** | Pieter-Tjerk de Boer (PA3FWM) | 声卡/SDR 设备 | LF~UHF 不等 | 数十人 | 纯浏览器 |
-| **KiwiSDR** | John Seamons (ZL/KF6VO) | BeagleBone + KiwiSDR  cape | 0~30 MHz（部分扩展到 VHF） | 4~8 人 | 纯浏览器 |
-| **OpenWebRX / OpenWebRX+** | Andras Retzler / Marat Fayzullin | RTL-SDR、SDRplay、AirSpy 等 | 取决于硬件 | 数人~数十人 | 纯浏览器 |
-| **SpyServer** | AirSpy / SDR# | Airspy、RTL-SDR | 取决于硬件 | 数人 | 需 SDR# 客户端 |
-
-### WebSDR — 最经典的老牌体系
-
-WebSDR 是在线 SDR 概念的开创者，2008 年由荷兰特文特大学（University of Twente）的 PA3FWM 发起。它的特点是带宽大、用户容量高，经典节点通常覆盖整个 HF 频段（0~30 MHz），可以同时让几十人独立调谐。
-
-**代表节点：** 特文特大学 WebSDR 是全球最著名的节点，运行超过 15 年，天线是 Mini-Whip 有源天线，底噪极低。
-
-### KiwiSDR — 最精致的分布式网络
-
-KiwiSDR 是一个树莓派大小的设备（BeagleBone Black + 专用 SDR cape），14-bit ADC，覆盖 0~30 MHz，支持 4~8 个用户同时使用。全球目前有 **800+ 台** KiwiSDR 公开运行，形成了最庞大的分布式接收网络。
-
-KiwiSDR 的杀手锏是内置 **WSPR 解码**和 **TDoA（到达时间差）测向**功能，可以在浏览器里直接对信号进行定位。
-
-### OpenWebRX — 最开放的开源方案
-
-OpenWebRX 是完全开源的项目，支持几乎所有主流 SDR 硬件（RTL-SDR、SDRplay、AirSpy、HackRF 等）。OpenWebRX+ 是其增强分支，增加了更多数字模式解码（DMR、YSF、NXDN、P25 等）。
-
-### SpyServer — 最高音质的远程流
-
-SpyServer 是 AirSpy 推出的远程 SDR 流协议，传输的是压缩后的 I/Q 数据，需要在本地用 SDR# 软件接收。优点是音质和灵活性最高，缺点是不能直接用浏览器访问。
+这篇文章会从零开始，讲清楚四种主流方案的优劣、硬件怎么选、天线怎么做、软件怎么装、网络怎么配，最后把你的节点发布到全球目录里。
 
 ---
 
-## 全球 SDR 聚合平台
+## 一、四种主流方案对比
 
-不要一个个记节点地址，以下平台会自动汇总所有在线节点：
+目前搭建在线 SDR 服务器主要有四条技术路线，各有取舍：
 
-### 1. ReceiverBook — 最全面的目录
+| 方案 | 难度 | 成本 | 同时用户数 | 频率范围 | 适合人群 |
+|------|------|------|-----------|----------|----------|
+| **KiwiSDR** | ⭐ 最简单 | ￥1500-2500 | 4-8 人 | 0-30 MHz | 不想折腾，买了插电即用 |
+| **OpenWebRX / OpenWebRX+** | ⭐⭐ 中等 | ￥400-800 | 数人-数十人 | 取决于硬件 | 有一点 Linux 基础，想灵活搭配硬件 |
+| **WebSDR** | ⭐⭐⭐ 较难 | ￥1000+ | 数十人 | 取决于硬件 | 有 Linux 运维经验，追求大用户容量 |
+| **SpyServer** | ⭐⭐ 中等 | ￥500-1500 | 数人 | 取决于硬件 | 已有 SDR# 客户端，追求最高音质 |
 
-**地址：** https://www.receiverbook.de
+### 用一个类比理解
 
-目前最好用的 SDR 接收器目录，汇总了 WebSDR、KiwiSDR、OpenWebRX 三大体系。支持按频段、国家、接收器类型筛选，每个节点显示在线状态、用户数、信噪比。
+把在线 SDR 想象成一个**网络电台直播间**：
+- **KiwiSDR** = 买一台现成的直播一体机，插上网线和麦克风就能开播，画质固定但省心
+- **OpenWebRX** = 自己用电脑 + OBS 软件直播，设备可以自由搭配，需要稍微配置
+- **WebSDR** = 搭建专业直播间，需要服务器级设备，但能同时容纳大量观众
+- **SpyServer** = 用专业推流协议，观众需要装专用播放器才能看，但画质最好
 
-### 2. KiwiSDR 官方列表
-
-**列表：** http://rx.kiwisdr.com
-**地图：** http://map.kiwisdr.com（链接到 rx.linkfanel.net）
-
-只列 KiwiSDR 节点，但信息最详细——包括当前用户数、SNR（信噪比）、GPS 锁定状态、天线类型。支持按 SNR 排序，帮你找到接收条件最好的节点。
-
-### 3. WebSDR 官方列表
-
-**地址：** http://www.websdr.org
-
-WebSDR 体系的官方目录，服务器自动注册。可以按频段和地区筛选。
-
-### 4. AirSpy SpyServer 目录
-
-**地址：** https://airspy.com/directory/
-
-SpyServer 节点的地图，需要 SDR# 客户端连接。
-
-### 5. AB9IL 最佳 SDR 列表
-
-**地址：** https://www.ab9il.net/software-defined-radio/best-sdrservers.html
-
-人工维护的精选列表，按 SNR 排序，标注了每个节点的特点和天线配置。
+> **新手推荐：OpenWebRX + Raspberry Pi + RTL-SDR**。总成本不到 500 元，社区资料最多，出了问题好搜答案。
 
 ---
 
-## 精选全球 SDR 电台
+## 二、硬件选择
 
-以下是经过实际连通性测试的精选节点，按地区分类。标注 ✅ 的为本次测试时可直接访问的节点。
+### 2.1 SDR 接收器（核心设备）
 
-### 欧洲
+SDR 接收器的作用是把天线收到的无线电信号转换成电脑能处理的数字信号。就像声卡把麦克风的模拟声音转换成数字音频一样。
 
-| 名称 | 位置 | 类型 | 频率范围 | 地址 | 状态 |
-|------|------|------|----------|------|------|
-| University of Twente | 荷兰 Enschede | WebSDR | 0~29.16 MHz | [websdr.ewi.utwente.nl:8901](http://websdr.ewi.utwente.nl:8901/) | ✅ |
-| KiwiSDR Almere | 荷兰 Almere | KiwiSDR | 0~30 MHz | [kiwisdr.pa7ey.nl:8073](http://kiwisdr.pa7ey.nl:8073/) | ✅ |
-| PI4UTR WebSDR | 荷兰 | WebSDR | HF | [sdr.pi4utr.nl:8073](http://sdr.pi4utr.nl:8073/) | — |
-| DK0TE WebSDR | 德国 Friedrichshafen | WebSDR | HF | [dk0te.dhbw-ravensburg.de:8901](http://dk0te.dhbw-ravensburg.de:8901/) | ⚠️ |
-| DK0TE KiwiSDR | 德国 Friedrichshafen | KiwiSDR | 0~30 MHz | [kiwisdr.inf.dhbw-ravensburg.de:8073](http://kiwisdr.inf.dhbw-ravensburg.de:8073/) | — |
-| DD5JFK OpenWebRX | 德国 | OpenWebRX | HF | [sdr2.justjakob.de](http://sdr2.justjakob.de/) | ✅ |
-| DB0HAL Halle | 德国 Halle | KiwiSDR | 0~30 MHz | [db0hal.dyndns.org:8073](http://db0hal.dyndns.org:8073/) | — |
-| DL8LAS Trent | 德国 | KiwiSDR | 0~30 MHz | [dl8las.dyndns.org:8073](http://dl8las.dyndns.org:8073/) | — |
-| EDDC2 Dresden | 德国 Dresden | KiwiSDR ×2 | 0~30 MHz | — | — |
-| Hack Green | 英国 Nantwich | WebSDR | HF | [hackgreensdr.org:8901](http://hackgreensdr.org:8901/) | ❌ |
-| Hasenberg AG | 瑞士 | KiwiSDR ×5 + AirBand | 0~30 MHz / 110~142 MHz | — | — |
-| OE4XLC | 奥地利 | WebSDR | HF | — | — |
-| OH5LIZ | 芬兰 | KiwiSDR | 0~30 MHz（NDB 专用） | [oh5liz.proxy.kiwisdr.com:8073](http://oh5liz.proxy.kiwisdr.com:8073/) | — |
-| OH5AE | 芬兰 Elimäki | KiwiSDR | 0~30 MHz | [oh5ae.dyndns.org:8073](http://oh5ae.dyndns.org:8073/) | — |
-| SDR-PAL-1 | 芬兰 Lapland | KiwiSDR | 0~30 MHz | — | — |
+| 设备 | 价格(约) | 采样率 | 频率范围 | ADC 精度 | 推荐度 |
+|------|---------|--------|----------|----------|--------|
+| **RTL-SDR Blog V4** | ￥80-120 | 3.2 MSPS | 0.5-1700 MHz | 8 bit | ⭐⭐⭐⭐⭐ 入门首选 |
+| **SDRplay RSP1A** | ￥500-700 | 10 MSPS | 1kHz-2GHz | 14 bit | ⭐⭐⭐⭐ 进阶首选 |
+| **AirSpy Mini** | ￥800-1000 | 6 MSPS | 24-1700 MHz | 12 bit | ⭐⭐⭐ |
+| **AirSpy R2** | ￥1200-1500 | 10 MSPS | 24-1700 MHz | 12 bit | ⭐⭐⭐ |
+| **KiwiSDR cape** | ￥1000-1500 | （专用） | 0-30 MHz | 14 bit | ⭐⭐⭐⭐ 配 BeagleBone |
+| **HackRF One** | ￥2000+ | 20 MSPS | 1MHz-6GHz | 8 bit | ⭐⭐ 可收发，但接收一般 |
 
-### 北美
+**关键概念解释：**
+- **采样率（Sample Rate）**：每秒采集多少个数据点，越高越能同时看更宽的频段。就像相机的像素，像素越高照片越清晰。
+- **ADC 精度（Analog-to-Digital Converter，模数转换器位数）**：8 bit 只有 256 级信号强度，14 bit 有 16384 级。精度越高，弱信号越不容易被噪声淹没。
+- **频率范围**：RTL-SDR 最低只能到 0.5 MHz，想听长波（LW）和中波（MW）广播需要加升频器（Upconverter）；SDRplay 和 KiwiSDR 可以直接从 1kHz 开始。
 
-| 名称 | 位置 | 类型 | 频率范围 | 地址 | 状态 |
-|------|------|------|----------|------|------|
-| Northern Utah WebSDR | 美国 Utah | WebSDR ×2 | 30m~6m 业余波段 | [websdr1.sdrutah.org](http://websdr1.sdrutah.org/) | ✅ |
-| N1NTE-1 | 美国 MA/CT | KiwiSDR | 0~30 MHz | [sigmasdr.ddns.net:8073](http://sigmasdr.ddns.net:8073/) | ⚠️ |
-| WPC4ALP | 美国 Tennessee | KiwiSDR | 0~30 MHz | [midtn.dynu.net:8073](http://midtn.dynu.net:8073/) | — |
-| KJ6EO | 美国 California | WebSDR | HF | [kj6eo.com:8901](http://kj6eo.com:8901/) | — |
-| VE6JY | 加拿大 Alberta | KiwiSDR | 0~30 MHz | [kiwisdr.ve6slp.ca:8173](http://kiwisdr.ve6slp.ca:8173/) | ⚠️ |
+> **新手建议**：先买 RTL-SDR Blog V4（注意买正版，盗版有频率偏差问题）。等玩熟了再升级 SDRplay RSP1A。
 
-### 亚太地区（对中国用户延迟最低）
+### 2.2 主机（运行软件的电脑）
 
-| 名称 | 位置 | 类型 | 频率范围 | 地址 | 状态 |
-|------|------|------|----------|------|------|
-| Marahau SDR ×5 | 新西兰 Tasman | KiwiSDR ×5 | 0.5~30 MHz | [kiwisdr.owdjim.gen.nz:8073](http://kiwisdr.owdjim.gen.nz:8073/) | ✅ |
-| ZL2P H6 | 新西兰 Masterton | KiwiSDR | 0~30 MHz | [h6.proxy.kiwisdr.com](http://h6.proxy.kiwisdr.com/) | — |
-| ZL2DAA | 新西兰 Ohau | KiwiSDR | 0~30 MHz | [kiwisdr.annett.co.nz:8073](http://kiwisdr.annett.co.nz:8073/) | — |
-| VK2ATZ | 澳洲 NSW | KiwiSDR | 0~30 MHz | [vk2atz.proxy.kiwisdr.com:8073](http://vk2atz.proxy.kiwisdr.com:8073/) | ⚠️ |
-| VK3KHZ ×6 | 澳洲 Victoria | KiwiSDR ×6 | 0~30 MHz | — | — |
-| JH1PGF ×2 | 日本东京 | KiwiSDR ×2 | 0~30 MHz | [kiwisdr.hirokinet.com:8073](http://kiwisdr.hirokinet.com:8073/) | ⚠️ |
-| Shibuya SDR | 日本东京涩谷 | KiwiSDR | 0~30 MHz | [shibuya.proxy.kiwisdr.com:8073](http://shibuya.proxy.kiwisdr.com:8073/) | — |
-| Web-888 Nagano | 日本长野 | WebSDR | HF | — | — |
-| Web-888 Tokyo | 日本东京 | WebSDR | HF | — | — |
-| GNSS Tokyo | 日本东京 | KiwiSDR | 0~30 MHz | [gnss.0am.jp:8073](http://gnss.0am.jp:8073/) | ⚠️ |
+| 方案 | 价格(约) | 功耗 | 推荐度 |
+|------|---------|------|--------|
+| **Raspberry Pi 4 / 5** | ￥300-500 | 5-15W | ⭐⭐⭐⭐⭐ 首选，低功耗可 24 小时运行 |
+| **旧笔记本/迷你主机** | ￥0-500 | 15-40W | ⭐⭐⭐⭐ 有闲置设备时首选 |
+| **BeagleBone Black/Green** | ￥300-400 | 5W | ⭐⭐⭐ 仅配合 KiwiSDR cape 使用 |
+| **台式机** | ￥1000+ | 100W+ | ⭐⭐ 不推荐，电费贵 |
 
-### 中国地区
+> **重要**：在线 SDR 需要 24 小时不关机，所以**低功耗的 ARM 开发板（树莓派等）是最佳选择**。一台树莓派 5 一年电费不到 20 元，而台式机可能要 200 元以上。
 
-> **注意：** 中国大陆的公开 SDR 节点非常稀少且不稳定，多数已下线。以下为历史上曾存在的节点，当前可用性不保证。台湾、香港地区节点相对较多。
+### 2.3 天线
 
-| 名称 | 位置 | 类型 | 地址 | 备注 |
-|------|------|------|------|------|
-| railgun | 重庆 | KiwiSDR | [railgun.proxy.kiwisdr.com:8073](http://railgun.proxy.kiwisdr.com:8073/) | 代理重定向，不稳定 |
-| szsdr | 广东深圳 | KiwiSDR | [szsdr.ddns.net:8073](http://szsdr.ddns.net:8073/) | 502，疑似下线 |
-| 21599 | 江苏无锡 | KiwiSDR | [21599.proxy.kiwisdr.com:8073](http://21599.proxy.kiwisdr.com:8073/) | 代理重定向 |
-| czsdr | 河北沧州 | KiwiSDR | [czsdr.proxy.kiwisdr.com:8073](http://czsdr.proxy.kiwisdr.com:8073/) | 代理重定向 |
+天线是最容易被忽视但对接收质量影响最大的部分。一个好天线 + 便宜 SDR，远胜一个差天线 + 贵 SDR。
 
-**建议：** 中国用户优先使用日本、新西兰、澳洲节点，延迟通常在 100~200ms，体验良好。
+| 天线类型 | 价格(约) | 覆盖频段 | 优缺点 |
+|----------|---------|----------|--------|
+| **随机电线（10-20m 长线）** | ￥0 | 全 HF 波段 | 免费但效果一般，需配巴伦（Balun） |
+| **Mini-Whip 有源天线** | ￥50-150 | 10kHz-30MHz | 体积小、宽带、效果好，**新手首选** |
+| **YouLoop 磁环天线** | ￥100-200 | 10kHz-30MHz | 抗干扰强，城市环境首选 |
+| **T2FD 宽带天线** | ￥100-300 | 3-30MHz | 经典宽带天线，需架设空间 |
+| **偶极天线（Dipole）** | ￥50 | 单波段 | 针对特定波段效果最好 |
+| **室外八木天线（Yagi）** | ￥200+ | VHF/UHF | 方向性强，适合航空波段/卫星 |
+
+**天线架设要点：**
+1. **越高越好**：天线离地面越高，接收效果越好。如果只能放室内，尽量靠近窗户。
+2. **远离干扰源**：电脑屏幕、USB3.0 设备、开关电源都是强干扰源，天线要尽量远离。
+3. **接地很重要**：有源天线需要良好的接地，否则噪声会很大。可以用一根导线接到自来水管或专门的接地棒。
+4. **Mini-Whip 是新手最佳选择**：只有火柴盒大小，5V 供电，覆盖整个 HF 波段，室内窗外就能用。
 
 ---
 
-## 怎么玩：快速上手指南
+## 三、方案 A：KiwiSDR —— 开箱即用（最简单）
 
-### 第一步：选一个节点
+如果你完全不想折腾软件配置，KiwiSDR 是最省心的方案。
 
-打开 [ReceiverBook](https://www.receiverbook.de) 或 [KiwiSDR 地图](http://map.kiwisdr.com)，找一个用户数没满、SNR 高的节点。
+### 需要买的东西
 
-**选节点技巧：**
-- **用户数**：KiwiSDR 通常 4~8 人上限，满了就要排队
-- **SNR（信噪比）**：越高越好，20dB 以上算优秀，10dB 以下底噪大
-- **地理位置**：听哪个地区的广播就选哪个地区的节点（短波有天波传播，但本地节点接收本地电台最强）
-- **天线**：同地区下，环形天线（Loop）抗干扰好，长线天线灵敏度高
+| 物品 | 价格(约) | 说明 |
+|------|---------|------|
+| KiwiSDR cape（扩展板） | ￥1000-1500 | 核心 SDR 板，含 14-bit ADC + FPGA + GPS |
+| BeagleBone Black 或 Green | ￥300-400 | 主机，KiwiSDR cape 插在上面 |
+| 5V 电源（2A 以上） | ￥30 | 供电 |
+| 网线 | ￥10 | 必须有线，WiFi 不稳定 |
+| HF 天线（Mini-Whip 等） | ￥50-150 | SMA 接口 |
+| 8GB+ microSD 卡 | ￥30 | 系统盘（部分套件已含） |
 
-### 第二步：调谐收听
+### 搭建步骤
 
-进入网页界面后：
-- **频谱图**：上方是实时频谱，下方是瀑布图（历史频谱的时间轴）
-- **调谐**：点击频谱图上的任意位置即可调谐到该频率
-- **模式**：选择解调模式——AM（调幅广播）、USB/LSB（单边带，业余电台）、CW（摩尔斯电码）、FM（调频）
-- **带宽**：调整滤波器带宽，AM 广播用 6~10 kHz，CW 用 200~500 Hz
+1. **组装硬件**：把 KiwiSDR cape 对准 BeagleBone 的排针插上去（注意 Pin 1 对齐），插上网线、天线、电源。
+2. **获取 IP 地址**：登录路由器管理页面，找到名为 "kiwisdr" 或 "beaglebone" 的设备，记下它的 IP 地址。
+3. **访问管理界面**：浏览器打开 `http://<IP地址>:8073`，就能看到 KiwiSDR 的接收界面了。
+4. **修改管理员密码**：首次登录后进入 admin 页面，设置管理员密码。
+5. **配置网络**：在 admin 页面的 network 标签页，可以设置静态 IP、端口等。
+6. **发布到公共列表**：KiwiSDR 会自动注册到 `rx.kiwisdr.com`，全世界的人就能搜到你的节点了。
 
-### 第三步：推荐收听频率
+> KiwiSDR 的固件是预装在 SD 卡或 eMMC 里的，**不需要手动安装任何软件**，插电就能用。这也是它最贵但最省心的原因。
 
-| 频率 | 内容 | 最佳时段 |
-|------|------|----------|
-| 5.0 MHz | 全球标准时间发播（WWV/WWVH/BPM） | 全天 |
-| 9.5~9.9 MHz | 国际广播（BBC、VOA、Radio Japan 等） | 夜间 |
-| 11.5~12.0 MHz | 国际广播 | 白天 |
-| 13.5~13.9 MHz | 国际广播 | 白天 |
-| 15.1~15.6 MHz | 国际广播 | 白天 |
-| 17.5~17.9 MHz | 国际广播 | 白天 |
-| 21.0~21.45 MHz | 国际广播 + 业余 15m 波段 | 白天 |
-| 14.0~14.35 MHz | 业余 20m 波段（最热闹） | 全天 |
-| 7.0~7.3 MHz | 业余 40m 波段 | 夜间 |
-| 3.5~4.0 MHz | 业余 80m 波段 | 夜间 |
+### KiwiSDR 的优势
+- 内置 GPS（Global Positioning System，全球定位系统），频率精度极高（误差 < 0.1 Hz）
+- 支持 4 个用户同时使用，每人可独立调谐
+- 内置 WSPR（Weak Signal Propagation Reporter，弱信号传播报告）解码和 TDoA（Time Difference of Arrival，到达时间差）测向
+- 自动注册到全球列表，不需要手动配置端口映射（用 KiwiSDR 的代理服务）
 
 ---
 
-## 项目方案：怎么做一个 SDR 电台展示页面
+## 四、方案 B：OpenWebRX + 树莓派 —— 最通用（推荐新手）
 
-基于之前 3D 地球电台项目的经验，SDR 电台展示页面可以采用类似的架构，但有几个关键差异：
+OpenWebRX 是完全开源的项目，支持几乎所有主流 SDR 硬件。OpenWebRX+ 是其增强分支，增加了更多数字模式解码。
 
-### 架构设计
+### 需要的硬件
 
-```
-用户浏览器
-    │
-    ├── 3D 地球（three-globe）── 显示全球 SDR 节点位置
-    │
-    ├── 节点信息面板 ── 点击节点显示详情（类型/频率/用户数/SNR）
-    │
-    └── 内嵌收听 ── iframe 嵌入 SDR 网页界面，或弹出新窗口
+| 物品 | 价格(约) |
+|------|---------|
+| Raspberry Pi 4（4GB 推荐）或 Pi 5 | ￥300-500 |
+| RTL-SDR Blog V4 | ￥80-120 |
+| 16GB+ microSD 卡 | ￥40 |
+| 5V 3A USB-C 电源 | ￥30 |
+| 网线 | ￥10 |
+| Mini-Whip 有源天线 | ￥50-150 |
+
+**总成本：约 ￥500-850**
+
+### 方法一：烧录现成镜像（最简单）
+
+OpenWebRX+ 官方提供了预配置的 Raspberry Pi 镜像，烧录到 SD 卡就能用。
+
+1. **下载镜像**：访问 OpenWebRX+ 官网 `https://fms.komkon.org/OWRX/`，下载最新的 Raspberry Pi 镜像（.img 或 .img.xz 文件）。
+2. **烧录 SD 卡**：用 Raspberry Pi Imager 或 balenaEtcher 把镜像写入 SD 卡。
+3. **组装**：把 RTL-SDR 插入树莓派的 USB 口，插上网线、天线、电源。
+4. **获取 IP**：在路由器管理页面找到树莓派的 IP 地址。
+5. **访问界面**：浏览器打开 `http://<IP地址>:8073`，就能看到 OpenWebRX 界面了。
+6. **管理配置**：访问 `http://<IP地址>:8073/settings`，默认用户名 `admin`，密码需要首次设置。
+
+### 方法二：在现有 Debian/Ubuntu 上安装（适合有闲置电脑）
+
+如果你有一台运行 Debian Bookworm 或 Ubuntu 的电脑/迷你主机，可以直接通过 apt 安装：
+
+```bash
+# 添加 OpenWebRX+ 软件源（以 Debian Bookworm 为例）
+wget -O - https://repo.openwebrx.de/debian/key.gpg.txt | gpg --dearmor -o /usr/share/keyrings/openwebrx.gpg
+echo "deb [signed-by=/usr/share/keyrings/openwebrx.gpg] https://repo.openwebrx.de/debian/ bookworm main" > /etc/apt/sources.list.d/openwebrx.list
+
+# 安装
+apt update
+apt install openwebrx
+
+# 添加管理员用户
+openwebrx admin adduser 你的用户名
+
+# 启动服务
+systemctl enable --now openwebrx
 ```
 
-### 数据来源
+> 以上命令适用于 Debian Bookworm / Ubuntu 22.04+。如果你用的是其他发行版，请参考 OpenWebRX+ 官网的安装说明。安装前请确认你的系统版本和架构（x86_64 / ARM64）。
 
-有三种方式获取 SDR 节点数据：
+### 配置 SDR 设备
 
-**方案 A：手动维护 JSON 列表**
-- 从 ReceiverBook / KiwiSDR 列表手动整理
-- 优点：完全可控，可添加中文标注和推荐等级
-- 缺点：需要定期更新，节点上下线频繁
+在 settings 页面中：
+1. **添加 SDR 设备**：选择你的设备类型（RTL-SDR / SDRplay / AirSpy 等），设置设备序列号。
+2. **设置配置文件（Profile）**：每个配置文件定义一个频段和采样率。例如：
+   - Profile 1：HF 波段，中心频率 14 MHz，采样率 2.4 MSPS
+   - Profile 2：VHF 航空波段，中心频率 125 MHz，采样率 2.4 MSPS
+3. **设置解调模式**：启用 AM、SSB（Single Side Band，单边带）、CW（Continuous Wave，等幅报）、FM 等模式。
+4. **可选：启用数字语音解码**：安装 `codecserver` 和 `mbelib`，可以解码 DMR（Digital Mobile Radio，数字移动无线电）、D-Star、YSF 等数字语音。
 
-**方案 B：抓取 KiwiSDR 官方 JS 数据**
-- KiwiSDR 提供可解析的 JS 格式列表：`http://rx.linkfanel.net/kiwisdr_com.js`
-- 包含所有在线 KiwiSDR 的位置、URL、用户数、SNR
-- 可写一个定时脚本抓取并转换为 GeoJSON
-
-**方案 C：调用 ReceiverBook API**
-- ReceiverBook 可能有 API 接口（需探查）
-- 覆盖 WebSDR + KiwiSDR + OpenWebRX 三种类型
-
-### 关键技术点
-
-| 技术点 | 方案 | 注意事项 |
-|--------|------|----------|
-| 节点定位 | 经纬度坐标，KiwiSDR 数据自带 | 部分节点位置模糊到城市级 |
-| 节点类型区分 | 不同颜色/图标：WebSDR=蓝、KiwiSDR=绿、OpenWebRX=橙 | 与之前广播电台的青色区分 |
-| 在线状态 | 定时 ping 检测，或依赖数据源的在线字段 | KiwiSDR 列表自带用户数，0 用户可能离线 |
-| 收听方式 | 点击节点弹出 iframe 或新标签页 | 部分 SDR 页面禁止 iframe 嵌入（X-Frame-Options），需用新窗口 |
-| 频谱预览 | 无法实时获取，可用截图或静态图 | KiwiSDR 有 `/status` 接口返回基本信息 |
-| 用户容量 | 显示当前用户/最大用户 | KiwiSDR `/status` 接口可获取 |
-
-### 与之前广播电台项目的区别
-
-| 维度 | 广播电台项目 | SDR 电台项目 |
-|------|-------------|-------------|
-| 内容 | 预定义的音频流（固定电台） | 实时可调谐的频谱（用户自己选频率） |
-| 交互 | 点击即播放 | 点击进入 SDR 界面，需手动调谐 |
-| 数据量 | 数百家电台 | 800+ KiwiSDR + 数百家 WebSDR/OpenWebRX |
-| 可用性 | 流地址可能失效 | 节点可能下线，需实时检测 |
-| 嵌入难度 | 音频流可直接播放 | SDR 网页界面可能禁止 iframe |
-
-### 实施步骤建议
-
-1. **第一阶段**：手动整理 30~50 个精选节点（按地区分类，标注类型和推荐等级），做成 3D 地球展示
-2. **第二阶段**：添加 KiwiSDR 自动抓取脚本，定时更新节点列表和在线状态
-3. **第三阶段**：集成 ReceiverBook 数据，覆盖全部三种类型
-4. **第四阶段**：添加频率快捷预设（点击节点后可一键跳到常用频率）
+### OpenWebRX 的优势
+- 完全开源免费
+- 支持硬件最多（RTL-SDR、SDRplay、AirSpy、HackRF、LimeSDR 等）
+- OpenWebRX+ 支持大量数字模式解码
+- 社区活跃，教程多
+- 可以同时运行多个 SDR 设备，覆盖不同频段
 
 ---
 
-## 进阶玩法
+## 五、方案 C：WebSDR —— 最经典（大用户容量）
 
-### 1. 多节点三角定位
+WebSDR 是在线 SDR 概念的开创者，由荷兰特文特大学的 Pieter-Tjerk de Boer（呼号 PA3FWM）开发。它的特点是用户容量大，一台服务器可以同时让几十人独立调谐。
 
-KiwiSDR 内置 TDoA（到达时间差）功能，可以用多个 KiwiSDR 节点对同一个信号进行定位。适合寻找未知信号源、干扰源。
+### 重要前提
 
-### 2. WSPR 信号监测
+WebSDR 的**服务器软件不公开下载**。作者通过邮件免费分发，但要求你满足以下条件：
+- 有合适的 SDR 硬件（通常是专用的宽带 SDR 板卡）
+- 有一台运行 Linux 的电脑
+- 有快速的上行带宽（至少 10 Mbps）
+- 愿意搭建**公开可访问**的服务器（会列在 websdr.org 上）
 
-WSPR（Weak Signal Propagation Reporter）是一种微弱信号传播报告模式。KiwiSDR 可以自动解码 WSPR 信号，帮你实时观测全球短波传播状况。
+如果你满足条件，可以发邮件给 `pa3fwm@websdr.org` 申请，邮件中说明你的硬件配置、网络条件和架设地点。
 
-### 3. 航空波段收听
+### 替代方案
 
-部分 KiwiSDR 扩展到了 VHF 航空波段（118~136 MHz），可以收听机场管制通话。瑞士 Hasenberg 节点就有专门的 AirBand KiwiSDR。
+如果你不想申请，有几个开源的 WebSDR 兼容实现：
 
-### 4. 数字模式解码
+| 项目 | 地址 | 特点 |
+|------|------|------|
+| **raspberry-websdr** | github.com/reynico/raspberry-websdr | 树莓派 + RTL-SDR 的 WebSDR 实现 |
+| **PhantomSDR-Plus** | github.com/sv1btl/PhantomSDR-Plus | 支持 GPU 加速，高性能 |
+| **dj0abr/WebSDR** | github.com/dj0abr/WebSDR | 支持 SDRplay RSP1A/B |
 
-OpenWebRX+ 支持在浏览器里直接解码 DMR、D-Star、YSF、NXDN、P25 等数字语音模式，以及 POCSAG 寻呼、AX.25 数据包等。
+### WebSDR 的硬件要求
+
+WebSDR 通常需要**宽带 SDR**（能同时采样整个 HF 波段 0-30 MHz），常见的有：
+- 专用的 WebSDR 接收板（如 PA3FWM 设计的自制板）
+- RX-888 / Web-888（基于 ADC 的宽带接收器，采样率 64 MSPS）
+- 高性能 SDR 如 USRP
+
+普通的 RTL-SDR 带宽只有 3.2 MHz，不能覆盖整个 HF 波段，所以不适合做经典 WebSDR。
+
+---
+
+## 六、方案 D：SpyServer —— 最高音质（需要客户端）
+
+SpyServer 是 AirSpy 推出的远程 SDR 流协议。它传输的是压缩后的 I/Q（In-phase/Quadrature，同相/正交）数据，而不是解调后的音频，所以用户可以在本地用 SDR# 软件做任意处理，音质和灵活性最高。
+
+### 搭建方法
+
+1. **下载 SpyServer**：从 AirSpy 官网 `https://airspy.com/download/` 下载 SpyServer。
+2. **编辑配置文件** `spyserver.config`：
+   - 设置监听端口（默认 5555）
+   - 设置设备类型（AirSpy 或 RTL-SDR）
+   - 设置最大客户端数量
+3. **运行**：`./spyserver spyserver.config`
+4. **发布到目录**：在配置中设置 `list_in_directory=1`，节点会出现在 `airspy.com/directory/`。
+
+### 注意
+
+SpyServer 的用户**不能用浏览器直接访问**，需要在电脑上安装 SDR#（SDR Sharp）软件，然后在软件里连接你的服务器。所以它更适合有一定基础的无线电爱好者，不适合面向普通大众。
+
+---
+
+## 七、网络配置：让全世界都能访问
+
+SDR 服务器跑起来后，默认只能在你的局域网内访问。要让全世界的人都能用上，需要配置外网访问。
+
+### 7.1 端口映射（Port Forwarding）
+
+你的家庭路由器就像一个小区门卫，外面的人想进来找你的 SDR 服务器，需要门卫知道把请求转到哪台设备。
+
+**操作步骤：**
+1. 登录路由器管理页面（通常是 `192.168.1.1` 或 `192.168.0.1`）。
+2. 找到"端口转发"或"虚拟服务器"设置。
+3. 添加规则：
+   - 外部端口：8073（KiwiSDR/OpenWebRX 默认）或 8901（WebSDR 默认）
+   - 内部 IP：你的 SDR 服务器的局域网 IP
+   - 内部端口：同上
+   - 协议：TCP
+4. 保存设置。
+
+> 不同品牌路由器的设置界面不同，但原理一样。如果找不到，可以搜索你的路由器品牌 + "端口转发"。
+
+### 7.2 动态域名（DDNS，Dynamic Domain Name System）
+
+大多数家庭宽带的公网 IP 是动态的，每隔几天就会变。你需要一个动态域名服务，让域名自动指向最新的 IP。
+
+| 服务 | 价格 | 说明 |
+|------|------|------|
+| **No-IP** | 免费（需每月确认） | 最常用，提供 `xxx.ddns.net` 域名 |
+| **DuckDNS** | 免费 | 简洁，支持 `xxx.duckdns.org` |
+| **花生壳** | 免费/付费 | 国内服务，但可能需要实名认证 |
+| **Cloudflare** | 免费（需自有域名） | 最稳定，但需要自己有域名 |
+
+大多数路由器内置了 DDNS 客户端，在路由器设置里填入账号密码即可。如果路由器不支持，可以在树莓派上运行 DDNS 客户端脚本。
+
+### 7.3 关于 IPv6
+
+如果你的宽带运营商提供了公网 IPv6 地址，那就**不需要端口映射**了！直接用 IPv6 地址就能访问。可以在 `ip.sb` 或 `ipv6-test.com` 检查你是否有公网 IPv6。
+
+### 7.4 发布到全球目录
+
+服务器能外网访问后，把它注册到全球目录，别人才能搜到：
+
+| 目录 | 注册方式 | 覆盖类型 |
+|------|----------|----------|
+| **ReceiverBook** | receiverbook.de 注册账号，添加你的服务器 | WebSDR / KiwiSDR / OpenWebRX |
+| **KiwiSDR 列表** | KiwiSDR 自动注册；手动在 admin 页面开启 | 仅 KiwiSDR |
+| **WebSDR 列表** | 服务器自动注册到 websdr.org | 仅 WebSDR |
+| **AirSpy 目录** | SpyServer 配置中开启 | 仅 SpyServer |
+
+---
+
+## 八、优化与维护
+
+### 8.1 降低噪声
+
+- **用屏蔽良好的 USB 线**连接 SDR 设备，减少电脑干扰
+- **加铁氧体磁环**（Ferrite Bead）在 USB 线和天线馈线上
+- **天线尽量架设在室外**，远离建筑物
+- **使用线性电源**代替开关电源给 SDR 和有源天线供电
+- **RTL-SDR 可以用 USB 延长线**把设备移到离电脑远的地方
+
+### 8.2 带宽估算
+
+在线 SDR 的上行带宽消耗取决于同时用户数和音频编码：
+
+| 用户数 | 上行带宽需求 |
+|--------|-------------|
+| 1-2 人 | 0.5 Mbps |
+| 5 人 | 1.5 Mbps |
+| 10 人 | 3 Mbps |
+| 20 人 | 6 Mbps |
+
+大多数家庭宽带上行只有 10-30 Mbps，所以同时支持 10-20 人是比较合理的。KiwiSDR 硬件限制最多 4-8 人，不会超出带宽。
+
+### 8.3 定期维护
+
+- **每月检查一次**：服务器是否在线、天线是否完好、SD 卡是否有损坏
+- **关注温度**：树莓派在夏天可能过热，可以加个小散热风扇
+- **备份配置**：定期导出 OpenWebRX/KiwiSDR 的配置文件，SD 卡损坏时可以快速恢复
+- **关注社区**：OpenWebRX 和 KiwiSDR 都有活跃的社区，有问题可以在 GitHub Issues 或业余无线电论坛提问
+
+---
+
+## 九、成本估算汇总
+
+| 方案 | 硬件成本 | 年费（电费+域名） | 总拥有成本（首年） |
+|------|---------|------------------|-------------------|
+| **OpenWebRX + Pi4 + RTL-SDR** | ￥550 | ￥50 | **￥600** |
+| **OpenWebRX + 旧电脑 + RTL-SDR** | ￥100 | ￥150 | **￥250** |
+| **KiwiSDR 全套** | ￥1800 | ￥50 | **￥1850** |
+| **WebSDR + 宽带 SDR** | ￥2000+ | ￥200 | **￥2200+** |
+| **SpyServer + AirSpy Mini** | ￥1200 | ￥100 | **￥1300** |
+
+> 最省钱的方案：找一台闲置的旧笔记本 + 一个 RTL-SDR（￥100），装 OpenWebRX，总成本不到 200 元。旧笔记本的电池还能当 UPS（Uninterruptible Power Supply，不间断电源），停电了也能撑一会儿。
+
+---
+
+## 十、常见问题
+
+**Q：没有公网 IP 怎么办？**
+A：可以用内网穿透服务（如 frp、ngrok、Cloudflare Tunnel），把本地服务暴露到公网。但免费版通常有带宽和连接数限制。也可以考虑用支持 IPv6 的网络。
+
+**Q：RTL-SDR 能收到 FM 广播吗？**
+A：可以！FM 广播在 88-108 MHz，RTL-SDR 完全覆盖。但注意 RTL-SDR 的带宽只有 3.2 MHz，不能同时看所有 FM 电台，只能选一个 3.2 MHz 宽的窗口。
+
+**Q：可以同时接多个 SDR 设备吗？**
+A：OpenWebRX 支持同时运行多个 SDR，每个覆盖不同频段。比如一个 RTL-SDR 覆盖 HF（需要升频器），另一个覆盖 VHF 航空波段。
+
+**Q：需要业余无线电执照吗？**
+A：**只接收不需要执照**。任何公民都可以接收无线电信号。但如果要发射信号（比如用 HackRF 发射），就需要考取业余无线电操作证书并申请呼号。
+
+**Q：SD 卡容易坏吗？**
+A：树莓派的 SD 卡在 24 小时运行下确实有一定损坏概率，通常 1-3 年。建议用工业级 SD 卡，或者把系统装在 USB 固态硬盘（SSD）上，更可靠。
 
 ---
 
 ## 参考资源
 
-- [ReceiverBook — 全球 SDR 接收器目录](https://www.receiverbook.de)
-- [KiwiSDR 官方网站](http://kiwisdr.com/)
-- [KiwiSDR 接收器列表](http://rx.kiwisdr.com)
-- [KiwiSDR 世界地图](http://map.kiwisdr.com)
-- [WebSDR 官方网站](http://www.websdr.org)
-- [OpenWebRX 官方网站](https://www.openwebrx.de/)
-- [OpenWebRX+ 增强版](https://fms.komkon.org/OWRX/)
-- [AirSpy SpyServer 目录](https://airspy.com/directory/)
-- [AB9IL 最佳互联网 SDR 列表](https://www.ab9il.net/software-defined-radio/best-sdrservers.html)
-- [Skywave Linux — SDR 专用 Linux 发行版](https://skywavelinux.com/)
+- [OpenWebRX+ 官方网站](https://fms.komkon.org/OWRX/) — 下载镜像和安装文档
+- [OpenWebRX 原版 GitHub](https://github.com/jketterl/openwebrx) — 源代码和 Wiki
+- [KiwiSDR 官方网站](http://kiwisdr.com/) — 购买和快速入门指南
+- [KiwiSDR 快速入门 PDF](http://kiwisdr.com/quickstart/quickstart.pdf) — 官方组装说明
+- [WebSDR 官方 FAQ](https://websdr.org/faq.html) — 申请 WebSDR 软件的说明
+- [AirSpy 下载页](https://airspy.com/download/) — SpyServer 下载
+- [ReceiverBook 全球目录](https://www.receiverbook.de) — 注册你的服务器
+- [RTL-SDR 博客教程](https://www.rtl-sdr.com/) — 大量 SDR 入门教程
+- [Mini-Whip 天线制作教程](https://www.pa0rdt.com/) — PA0RDT 原版 Mini-Whip 设计
 
 ---
 
 ## 结语
 
-在线 SDR 是一个被严重低估的宝藏。不需要花一分钱买硬件，你就能用浏览器操作一台远在地球另一端的专业接收器，收听来自全世界的电波——从国际广播到业余电台通联，从航空管到摩尔斯电码，从标准时间发播到卫星下行信号。
+搭建一个在线 SDR 服务器，本质上就是做了四件事：**接收到信号 → 数字化处理 → 通过网络传输出去 → 让别人能搜到你**。
 
-对于无线电爱好者来说，这是最好的时代；对于好奇的普通人来说，这是一扇通往电磁频谱世界的免费大门。
+最便宜的方案不到 600 元，一个下午就能搭好。当你看到 `rx.kiwisdr.com` 上出现自己的节点，有来自世界各地的人在使用你的接收器时，那种成就感是无与伦比的——你为全球无线电爱好者社区贡献了一个"耳朵"。
 
-下一步，我打算基于 3D 地球的架构，做一个全球 SDR 节点的可视化展示页面。如果你也感兴趣，欢迎一起探讨。
+从 RTL-SDR + 树莓派 + OpenWebRX 开始吧，这是最稳妥的第一步。等玩熟了，再考虑升级天线和硬件，甚至搭建多频段的专业节点。
+
+祝你架设顺利，73！（业余无线电祝福用语，意为 "Best Regards"）

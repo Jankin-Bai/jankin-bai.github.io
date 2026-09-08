@@ -1,17 +1,17 @@
 {
   "id": "2026-063",
-  "title": "全球在线 SDR 电台巡礼：用浏览器收听全世界的电波",
+  "title": "从零搭建在线 SDR 电台完全指南：四种方案、硬件选型与网络配置",
   "date": "2026-09-08T08:40:00",
   "tags": ["tech", "works"],
   "milestone": false,
-  "summary": "从零了解 WebSDR / KiwiSDR / OpenWebRX 四大在线 SDR 体系，搜罗全球 50+ 公开接收节点，附中国及亚太低延迟节点推荐，并探讨自建 SDR 电台展示页面的技术方案。",
+  "summary": "从零开始教你搭建自己的在线 SDR 服务器。对比 KiwiSDR/OpenWebRX/WebSDR/SpyServer 四种方案，详解硬件选型（RTL-SDR/SDRplay/AirSpy）、天线选择、软件安装步骤、端口映射与 DDNS 网络配置、发布到全球目录的完整流程，最低成本不到 600 元。",
   "theme": "mono",
   "image": "",
   "links": [
-    {"text": "ReceiverBook 全球 SDR 目录", "url": "https://www.receiverbook.de"},
-    {"text": "KiwiSDR 官方列表", "url": "http://rx.kiwisdr.com"},
-    {"text": "WebSDR 官方站点", "url": "http://www.websdr.org"},
-    {"text": "AB9IL 最佳 SDR 列表", "url": "https://www.ab9il.net/software-defined-radio/best-sdrservers.html"}
+    {"text": "OpenWebRX+ 官方网站", "url": "https://fms.komkon.org/OWRX/"},
+    {"text": "KiwiSDR 官方网站", "url": "http://kiwisdr.com/"},
+    {"text": "WebSDR 官方 FAQ", "url": "https://websdr.org/faq.html"},
+    {"text": "ReceiverBook 全球目录", "url": "https://www.receiverbook.de"}
   ],
   "format": "markdown"
 }
