@@ -1,0 +1,17 @@
+{
+  "id": "2026-063",
+  "title": "全球在线 SDR 电台巡礼：用浏览器收听全世界的电波",
+  "date": "2026-09-08T08:40:00",
+  "tags": ["tech", "works"],
+  "milestone": false,
+  "summary": "从零了解 WebSDR / KiwiSDR / OpenWebRX 四大在线 SDR 体系，搜罗全球 50+ 公开接收节点，附中国及亚太低延迟节点推荐，并探讨自建 SDR 电台展示页面的技术方案。",
+  "theme": "mono",
+  "image": "",
+  "links": [
+    {"text": "ReceiverBook 全球 SDR 目录", "url": "https://www.receiverbook.de"},
+    {"text": "KiwiSDR 官方列表", "url": "http://rx.kiwisdr.com"},
+    {"text": "WebSDR 官方站点", "url": "http://www.websdr.org"},
+    {"text": "AB9IL 最佳 SDR 列表", "url": "https://www.ab9il.net/software-defined-radio/best-sdrservers.html"}
+  ],
+  "format": "markdown"
+}
