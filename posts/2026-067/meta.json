@@ -1,0 +1,24 @@
+{
+  "id": "2026-067",
+  "title": "一图看懂2024知识图谱全景：20+项工作速查与机构分布",
+  "date": "2026-09-08T16:00:00",
+  "tags": [
+    "tech",
+    "books"
+  ],
+  "milestone": false,
+  "summary": "全书地图式拆解，20+项工作速查表（机构/论文/开源/验证状态），机构分布与学习路径。",
+  "theme": "mono",
+  "image": "",
+  "links": [
+    {
+      "text": "大模型时代的知识图谱年度进展报告（安全内参）",
+      "url": "https://www.secrss.com/articles/75214"
+    },
+    {
+      "text": "OpenKG 开放知识图谱",
+      "url": "https://openkg.cn"
+    }
+  ],
+  "format": "markdown"
+}

@@ -1,0 +1,24 @@
+{
+  "id": "2026-074",
+  "title": "OpenKG生态与未来：从规模红利到表示红利",
+  "date": "2026-09-08T16:00:00",
+  "tags": [
+    "tech",
+    "books"
+  ],
+  "milestone": false,
+  "summary": "四大开源工作盘点，三大未来趋势（表示红利、知识解耦、神经符号四范式演化）。",
+  "theme": "mono",
+  "image": "",
+  "links": [
+    {
+      "text": "大模型时代的知识图谱年度进展报告（安全内参）",
+      "url": "https://www.secrss.com/articles/75214"
+    },
+    {
+      "text": "OpenKG 开放知识图谱",
+      "url": "https://openkg.cn"
+    }
+  ],
+  "format": "markdown"
+}

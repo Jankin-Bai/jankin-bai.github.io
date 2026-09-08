@@ -1,0 +1,24 @@
+{
+  "id": "2026-073",
+  "title": "神经符号协同：当逻辑遇见概率——从SymbolicAI到两篇Nature论文",
+  "date": "2026-09-08T16:00:00",
+  "tags": [
+    "tech",
+    "books"
+  ],
+  "milestone": false,
+  "summary": "四种融合范式，FunSearch用LLM+评估器发现数学新构造，AlphaGeometry奥林匹克级几何证明。",
+  "theme": "mono",
+  "image": "",
+  "links": [
+    {
+      "text": "大模型时代的知识图谱年度进展报告（安全内参）",
+      "url": "https://www.secrss.com/articles/75214"
+    },
+    {
+      "text": "OpenKG 开放知识图谱",
+      "url": "https://openkg.cn"
+    }
+  ],
+  "format": "markdown"
+}

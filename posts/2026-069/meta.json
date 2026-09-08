@@ -1,0 +1,24 @@
+{
+  "id": "2026-069",
+  "title": "知识图谱构建：大模型如何帮KG自动长出来——KnowCoder与ADELIE深度拆解",
+  "date": "2026-09-08T16:00:00",
+  "tags": [
+    "tech",
+    "books"
+  ],
+  "milestone": false,
+  "summary": "从传统抽取困境到大模型新解法，深入KnowCoder代码结构对齐与ADELIE指令微调两条路线。",
+  "theme": "mono",
+  "image": "",
+  "links": [
+    {
+      "text": "大模型时代的知识图谱年度进展报告（安全内参）",
+      "url": "https://www.secrss.com/articles/75214"
+    },
+    {
+      "text": "OpenKG 开放知识图谱",
+      "url": "https://openkg.cn"
+    }
+  ],
+  "format": "markdown"
+}

@@ -1,0 +1,24 @@
+{
+  "id": "2026-066",
+  "title": "大模型和知识图谱，谁在帮谁？——2024知识图谱年度进展报告入门导引",
+  "date": "2026-09-08T16:00:00",
+  "tags": [
+    "tech",
+    "books"
+  ],
+  "milestone": false,
+  "summary": "从四个核心问题入门大模型与知识图谱的关系，附OSINT调查方法论与证据等级体系。",
+  "theme": "mono",
+  "image": "",
+  "links": [
+    {
+      "text": "大模型时代的知识图谱年度进展报告（安全内参）",
+      "url": "https://www.secrss.com/articles/75214"
+    },
+    {
+      "text": "OpenKG 开放知识图谱",
+      "url": "https://openkg.cn"
+    }
+  ],
+  "format": "markdown"
+}

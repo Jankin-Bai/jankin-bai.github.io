@@ -1,0 +1,24 @@
+{
+  "id": "2026-071",
+  "title": "知识图谱问答：让大模型读懂图谱——反直觉实验、UniHGKR与CoTKR",
+  "date": "2026-09-08T16:00:00",
+  "tags": [
+    "tech",
+    "books"
+  ],
+  "milestone": false,
+  "summary": "三元组输入优于自然语言的反直觉发现，异构知识统一检索，思维链增强知识改写。",
+  "theme": "mono",
+  "image": "",
+  "links": [
+    {
+      "text": "大模型时代的知识图谱年度进展报告（安全内参）",
+      "url": "https://www.secrss.com/articles/75214"
+    },
+    {
+      "text": "OpenKG 开放知识图谱",
+      "url": "https://openkg.cn"
+    }
+  ],
+  "format": "markdown"
+}
