@@ -1,0 +1,15 @@
+{
+  "id": "2026-077",
+  "title": "一个2000行Python项目里藏着多少种设计模式？",
+  "date": "2026-09-10T21:00:44",
+  "tags": [
+    "tech",
+    "works"
+  ],
+  "milestone": false,
+  "summary": "从dep_tree.py源码中识别出10种设计模式，用生活类比和代码行号引用逐一拆解",
+  "theme": "mono",
+  "image": "",
+  "links": [],
+  "format": "markdown"
+}
