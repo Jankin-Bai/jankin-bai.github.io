@@ -1,4 +1,4 @@
-﻿/**
+/**
  * 首页：时间线
  * 修复内容：
  *   - 加载状态指示
@@ -47,6 +47,22 @@
   });
   document.addEventListener('discover-complete', () => {
     hideLoading();  // 只隐藏加载状态，渲染由 init() 返回后统一处理 [frontend: 避免重复渲染]
+  });
+
+  /* ---------- 标签后台加载完成后更新筛选栏和时间线（必须在 init() 之前注册，避免竞态条件导致事件丢失） ---------- */
+  document.addEventListener('tags-loaded', (e) => {
+    tags = e.detail.tags || [];
+    renderTagFilter();
+    renderMain();
+  });
+
+  /* ---------- 后台更新事件（同样必须提前注册） ---------- */
+  document.addEventListener('posts-updated', (e) => {
+    SiteUtils.log && SiteUtils.log(`📡 博文列表已更新：${e.detail?.count || posts.length} 篇`);
+    posts = DataLoader.getPosts();
+    allPostsLoaded = true;
+    renderTagFilter();
+    renderMain();
   });
 
   // 有缓存时不显示加载状态；无缓存时显示动态扫描进度动画 [hci: 反馈即时性]
@@ -112,12 +128,6 @@
   hideLoading();
   renderMain();  // 首次加载完成后直接渲染
 
-  /* ---------- 标签后台加载完成后更新筛选栏和时间线 ---------- */
-  document.addEventListener('tags-loaded', (e) => {
-    tags = e.detail.tags || [];
-    renderTagFilter();
-    renderMain();  // tags 加载完成后重新渲染，使用正确的标签颜色
-  });
 
   /* ---------- 从 bfcache 恢复时重新渲染标签（解决文章页后退后标签消失） ---------- */
   window.addEventListener('pageshow', (e) => {
@@ -252,14 +262,6 @@
     checkLoadMore();
   }
 
-  /* ---------- 后台更新事件 ---------- */
-  document.addEventListener('posts-updated', (e) => {
-    SiteUtils.log && SiteUtils.log(`📡 博文列表已更新：${e.detail?.count || posts.length} 篇`);
-    posts = DataLoader.getPosts();
-    allPostsLoaded = true;
-    renderTagFilter();
-    renderMain();
-  });
 
   /* ---------- 搜索事件 ---------- */
   const searchInput = $('search-input');
