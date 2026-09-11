@@ -60,39 +60,42 @@
   gap: 4px;
 }
 
-/* 波形动画 */
+/* 真实波形可视化（Web Audio API AnalyserNode） */
 .waveform {
-  display: flex;
-  align-items: flex-end;
-  gap: 3px;
-  height: 30px;
+  position: relative;
+  height: 36px;
   margin-top: 8px;
+  border: 1px solid rgba(74, 255, 74, 0.15);
+  border-radius: 3px;
+  background: rgba(0, 20, 0, 0.3);
+  overflow: hidden;
 }
 
-.waveform .bar {
-  width: 4px;
-  background: #3a5a3a;
-  border-radius: 2px;
-  animation: wave 1s ease-in-out infinite;
+#waveformCanvas {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
-.waveform .bar:nth-child(1) { animation-delay: 0s; height: 40%; }
-.waveform .bar:nth-child(2) { animation-delay: 0.1s; height: 70%; }
-.waveform .bar:nth-child(3) { animation-delay: 0.2s; height: 50%; }
-.waveform .bar:nth-child(4) { animation-delay: 0.3s; height: 90%; }
-.waveform .bar:nth-child(5) { animation-delay: 0.4s; height: 60%; }
-.waveform .bar:nth-child(6) { animation-delay: 0.5s; height: 80%; }
-.waveform .bar:nth-child(7) { animation-delay: 0.6s; height: 45%; }
-.waveform .bar:nth-child(8) { animation-delay: 0.7s; height: 75%; }
-
-@keyframes wave {
-  0%, 100% { transform: scaleY(0.5); }
-  50% { transform: scaleY(1); }
+.waveform.paused #waveformCanvas {
+  opacity: 0.35;
 }
 
-.waveform.paused .bar {
-  animation-play-state: paused;
-  opacity: 0.4;
+/* 波形无信号提示（CORS限制导致Analyser输出全零时显示） */
+.waveform-no-signal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 9px;
+  color: rgba(74, 255, 74, 0.4);
+  font-family: monospace;
+  letter-spacing: 1px;
+  pointer-events: none;
+  display: none;
+}
+.waveform.no-signal .waveform-no-signal {
+  display: block;
 }
 
 /* ---- 品牌标识区 ---- */
@@ -1409,9 +1412,9 @@
       <button class="play-btn" id="playBtn" onclick="togglePlay()">▶</button>
     </div>
     <div class="display-station-desc" id="playerStationDesc">选择一个电台开始收听</div>
-    <div class="waveform paused" id="waveform">
-      <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
-      <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+    <div class="waveform paused no-signal" id="waveform">
+      <canvas id="waveformCanvas"></canvas>
+      <span class="waveform-no-signal">NO SIGNAL</span>
     </div>
     <div class="display-meta">
       <span id="playerStatus">● STANDBY</span>
@@ -2075,6 +2078,103 @@ const NEARBY_RADIUS_KM = 1500; // 附近电台半径(公里)
 const PLAY_TIMEOUT_MS = 300; // 500ms未播放成功则切换下一个
 let hlsInstance = null;
 
+// ===== 真实波形可视化（Web Audio API AnalyserNode） =====
+let audioCtx = null;
+let analyser = null;
+let freqData = null;
+let waveformCanvas = null;
+let waveformCtx2d = null;
+let waveformRAF = null;
+const WAVEFORM_BARS = 48;
+let waveformZeroFrames = 0;
+
+function initWaveform() {
+  waveformCanvas = document.getElementById('waveformCanvas');
+  if (!waveformCanvas) return;
+  waveformCtx2d = waveformCanvas.getContext('2d');
+  resizeWaveformCanvas();
+  window.addEventListener('resize', resizeWaveformCanvas);
+  drawWaveformLoop();
+}
+
+function resizeWaveformCanvas() {
+  if (!waveformCanvas || !waveformCtx2d) return;
+  const dpr = window.devicePixelRatio || 1;
+  const rect = waveformCanvas.getBoundingClientRect();
+  if (rect.width === 0 || rect.height === 0) return;
+  waveformCanvas.width = Math.floor(rect.width * dpr);
+  waveformCanvas.height = Math.floor(rect.height * dpr);
+  waveformCtx2d.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+
+function ensureAudioGraph() {
+  if (audioCtx) return;
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    audioCtx = new AC();
+    const source = audioCtx.createMediaElementSource(audio);
+    analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 256;
+    analyser.smoothingTimeConstant = 0.82;
+    source.connect(analyser);
+    analyser.connect(audioCtx.destination);
+    freqData = new Uint8Array(analyser.frequencyBinCount);
+    console.log('[Waveform] Audio graph created');
+  } catch (e) {
+    console.warn('[Waveform] AudioContext init failed:', e);
+  }
+}
+
+function drawWaveformLoop() {
+  waveformRAF = requestAnimationFrame(drawWaveformLoop);
+  if (!waveformCtx2d || !waveformCanvas) return;
+  const w = waveformCanvas.clientWidth;
+  const h = waveformCanvas.clientHeight;
+  if (w === 0 || h === 0) return;
+  waveformCtx2d.clearRect(0, 0, w, h);
+
+  // 底部基线
+  waveformCtx2d.fillStyle = 'rgba(74, 255, 74, 0.08)';
+  waveformCtx2d.fillRect(0, h - 1, w, 1);
+
+  // 未播放/暂停：画一条低平待机线
+  if (!analyser || !isPlaying) {
+    waveformCtx2d.fillStyle = 'rgba(74, 255, 74, 0.25)';
+    const barW = w / WAVEFORM_BARS;
+    for (let i = 0; i < WAVEFORM_BARS; i++) {
+      waveformCtx2d.fillRect(i * barW + 1, h - 3, barW - 2, 2);
+    }
+    return;
+  }
+
+  analyser.getByteFrequencyData(freqData);
+
+  // 检测连续全零帧（CORS 跨域限制导致 Analyser 输出全零）
+  let sum = 0;
+  for (let i = 0; i < freqData.length; i++) sum += freqData[i];
+  if (sum === 0) {
+    waveformZeroFrames++;
+    if (waveformZeroFrames > 40) waveform.classList.add('no-signal');
+  } else {
+    waveformZeroFrames = 0;
+    waveform.classList.remove('no-signal');
+  }
+
+  // 绘制频谱柱（对数分布，低频更密集，符合听觉特性）
+  const barW = w / WAVEFORM_BARS;
+  for (let i = 0; i < WAVEFORM_BARS; i++) {
+    const idx = Math.floor(Math.pow(i / WAVEFORM_BARS, 1.6) * (freqData.length * 0.65));
+    const value = freqData[idx] || 0;
+    const barH = Math.max(2, (value / 255) * (h - 4));
+    const grad = waveformCtx2d.createLinearGradient(0, h, 0, h - barH);
+    grad.addColorStop(0, '#4aff4a');
+    grad.addColorStop(0.6, '#2d8a2d');
+    grad.addColorStop(1, '#1a4a1a');
+    waveformCtx2d.fillStyle = grad;
+    waveformCtx2d.fillRect(i * barW + 1, h - barH - 1, barW - 2, barH);
+  }
+}
+
 const categoryNames = { cnr: '央广系列', local: '地方电台', hkmt: '港澳台', music: '音乐电台', internet: '网络音乐', singapore: '新加坡', international: '国际广播', ambient: '氛围音乐', russian: '俄语电台', arabic: '阿拉伯语', africa: '非洲电台', india: '印度电台', southamerica: '南美电台', australia: '澳洲电台', usa: '美国电台', uk: '英国电台', japan: '日本电台', asia: '亚洲电台', europe: '欧洲电台', northamerica: '北美电台', oceania: '大洋洲电台', language: '语言学习', all: '全部' };
 
 function renderStations(category) {
@@ -2268,6 +2368,9 @@ function startPlaying() {
     setTimeout(reorderInfoItems, 50);
   document.getElementById('infoStatus').classList.add('playing');
   document.getElementById('displaySignal').textContent = 'SIGNAL: ██████';
+  // 初始化 Web Audio 可视化（懒加载，首次播放时创建）
+  ensureAudioGraph();
+  if (audioCtx && audioCtx.state === 'suspended') { audioCtx.resume(); }
   waveform.classList.remove('paused');
   radarPanel.classList.remove('paused');
   playerError.style.display = 'none';
@@ -2437,6 +2540,8 @@ function togglePlay() {
       playerStatus.style.color = '#4aff4a';
       document.getElementById('infoStatus').textContent = 'PLAYING';
     setTimeout(reorderInfoItems, 50);
+      ensureAudioGraph();
+      if (audioCtx && audioCtx.state === 'suspended') { audioCtx.resume(); }
       waveform.classList.remove('paused');
       radarPanel.classList.remove('paused');
     }).catch(err => showError('play failed: ' + err.message));
@@ -3193,12 +3298,14 @@ function focusGlobeOnStation(stationId) {
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => {
     initGlobe();
+    initWaveform();
 // IP地理定位，聚焦到用户所在地区
 detectUserLocation();
 
   });
 } else {
   initGlobe();
+  initWaveform();
 }
 
 // 地球sticky的top固定为42px（阅读模式reading-header高度，见style.css .reading-header-inner { height: 42px }）
