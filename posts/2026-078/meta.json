@@ -1,0 +1,11 @@
+{
+  "id": "2026-078",
+  "title": "代码项目怎么组织才不乱？聊聊文件夹与文档的元规则",
+  "date": "2026-09-12T12:02:44",
+  "tags": ["tech", "works"],
+  "milestone": false,
+  "summary": "项目组织没有标准答案——本文聊聊文件夹分类的十条原则、Screaming Architecture 的项目自述哲学、文档反黑箱的 Diátaxis 四象限框架，以及 C4 / arc42 / ADR 等业界元标准。",
+  "theme": "mono",
+  "image": "",
+  "links": []
+}
